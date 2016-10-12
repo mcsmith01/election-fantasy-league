@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8FC708AF1DAEF9480034B334 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708AE1DAEF9480034B334 /* AppDelegate.swift */; };
+		8FC708B11DAEF9480034B334 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708B01DAEF9480034B334 /* ViewController.swift */; };
+		8FC708B41DAEF9480034B334 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC708B21DAEF9480034B334 /* Main.storyboard */; };
+		8FC708B71DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708B51DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld */; };
+		8FC708B91DAEF9480034B334 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC708B81DAEF9480034B334 /* Assets.xcassets */; };
+		8FC708BC1DAEF9480034B334 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */; };
+		8FC708C71DAEF9490034B334 /* Electoral_College_Fantasy_LeagueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708C61DAEF9490034B334 /* Electoral_College_Fantasy_LeagueTests.swift */; };
+		8FC708D21DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708D11DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8FC708C31DAEF9490034B334 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8FC708A31DAEF9480034B334 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8FC708AA1DAEF9480034B334;
+			remoteInfo = "Electoral College Fantasy League";
+		};
+		8FC708CE1DAEF9490034B334 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8FC708A31DAEF9480034B334 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8FC708AA1DAEF9480034B334;
+			remoteInfo = "Electoral College Fantasy League";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		8FC708AB1DAEF9480034B334 /* Electoral College Fantasy League.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Electoral College Fantasy League.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC708AE1DAEF9480034B334 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8FC708B01DAEF9480034B334 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8FC708B31DAEF9480034B334 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8FC708B61DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electoral_College_Fantasy_League.xcdatamodel; sourceTree = "<group>"; };
+		8FC708B81DAEF9480034B334 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8FC708BB1DAEF9480034B334 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8FC708BD1DAEF9480034B334 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FC708C21DAEF9490034B334 /* Electoral College Fantasy LeagueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Electoral College Fantasy LeagueTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC708C61DAEF9490034B334 /* Electoral_College_Fantasy_LeagueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electoral_College_Fantasy_LeagueTests.swift; sourceTree = "<group>"; };
+		8FC708C81DAEF9490034B334 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FC708CD1DAEF9490034B334 /* Electoral College Fantasy LeagueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Electoral College Fantasy LeagueUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC708D11DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electoral_College_Fantasy_LeagueUITests.swift; sourceTree = "<group>"; };
+		8FC708D31DAEF9490034B334 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8FC708A81DAEF9480034B334 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708BF1DAEF9490034B334 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708CA1DAEF9490034B334 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8FC708A21DAEF9480034B334 = {
+			isa = PBXGroup;
+			children = (
+				8FC708AD1DAEF9480034B334 /* Electoral College Fantasy League */,
+				8FC708C51DAEF9490034B334 /* Electoral College Fantasy LeagueTests */,
+				8FC708D01DAEF9490034B334 /* Electoral College Fantasy LeagueUITests */,
+				8FC708AC1DAEF9480034B334 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8FC708AC1DAEF9480034B334 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8FC708AB1DAEF9480034B334 /* Electoral College Fantasy League.app */,
+				8FC708C21DAEF9490034B334 /* Electoral College Fantasy LeagueTests.xctest */,
+				8FC708CD1DAEF9490034B334 /* Electoral College Fantasy LeagueUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8FC708AD1DAEF9480034B334 /* Electoral College Fantasy League */ = {
+			isa = PBXGroup;
+			children = (
+				8FC708AE1DAEF9480034B334 /* AppDelegate.swift */,
+				8FC708B01DAEF9480034B334 /* ViewController.swift */,
+				8FC708B21DAEF9480034B334 /* Main.storyboard */,
+				8FC708B81DAEF9480034B334 /* Assets.xcassets */,
+				8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */,
+				8FC708BD1DAEF9480034B334 /* Info.plist */,
+				8FC708B51DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld */,
+			);
+			path = "Electoral College Fantasy League";
+			sourceTree = "<group>";
+		};
+		8FC708C51DAEF9490034B334 /* Electoral College Fantasy LeagueTests */ = {
+			isa = PBXGroup;
+			children = (
+				8FC708C61DAEF9490034B334 /* Electoral_College_Fantasy_LeagueTests.swift */,
+				8FC708C81DAEF9490034B334 /* Info.plist */,
+			);
+			path = "Electoral College Fantasy LeagueTests";
+			sourceTree = "<group>";
+		};
+		8FC708D01DAEF9490034B334 /* Electoral College Fantasy LeagueUITests */ = {
+			isa = PBXGroup;
+			children = (
+				8FC708D11DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift */,
+				8FC708D31DAEF9490034B334 /* Info.plist */,
+			);
+			path = "Electoral College Fantasy LeagueUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8FC708AA1DAEF9480034B334 /* Electoral College Fantasy League */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FC708D61DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy League" */;
+			buildPhases = (
+				8FC708A71DAEF9480034B334 /* Sources */,
+				8FC708A81DAEF9480034B334 /* Frameworks */,
+				8FC708A91DAEF9480034B334 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Electoral College Fantasy League";
+			productName = "Electoral College Fantasy League";
+			productReference = 8FC708AB1DAEF9480034B334 /* Electoral College Fantasy League.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8FC708C11DAEF9490034B334 /* Electoral College Fantasy LeagueTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FC708D91DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy LeagueTests" */;
+			buildPhases = (
+				8FC708BE1DAEF9490034B334 /* Sources */,
+				8FC708BF1DAEF9490034B334 /* Frameworks */,
+				8FC708C01DAEF9490034B334 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8FC708C41DAEF9490034B334 /* PBXTargetDependency */,
+			);
+			name = "Electoral College Fantasy LeagueTests";
+			productName = "Electoral College Fantasy LeagueTests";
+			productReference = 8FC708C21DAEF9490034B334 /* Electoral College Fantasy LeagueTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8FC708CC1DAEF9490034B334 /* Electoral College Fantasy LeagueUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FC708DC1DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy LeagueUITests" */;
+			buildPhases = (
+				8FC708C91DAEF9490034B334 /* Sources */,
+				8FC708CA1DAEF9490034B334 /* Frameworks */,
+				8FC708CB1DAEF9490034B334 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8FC708CF1DAEF9490034B334 /* PBXTargetDependency */,
+			);
+			name = "Electoral College Fantasy LeagueUITests";
+			productName = "Electoral College Fantasy LeagueUITests";
+			productReference = 8FC708CD1DAEF9490034B334 /* Electoral College Fantasy LeagueUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8FC708A31DAEF9480034B334 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "ls -applications";
+				TargetAttributes = {
+					8FC708AA1DAEF9480034B334 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = D7TRX2T2ZU;
+						ProvisioningStyle = Automatic;
+					};
+					8FC708C11DAEF9490034B334 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = D7TRX2T2ZU;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8FC708AA1DAEF9480034B334;
+					};
+					8FC708CC1DAEF9490034B334 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = D7TRX2T2ZU;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8FC708AA1DAEF9480034B334;
+					};
+				};
+			};
+			buildConfigurationList = 8FC708A61DAEF9480034B334 /* Build configuration list for PBXProject "Electoral College Fantasy League" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8FC708A21DAEF9480034B334;
+			productRefGroup = 8FC708AC1DAEF9480034B334 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8FC708AA1DAEF9480034B334 /* Electoral College Fantasy League */,
+				8FC708C11DAEF9490034B334 /* Electoral College Fantasy LeagueTests */,
+				8FC708CC1DAEF9490034B334 /* Electoral College Fantasy LeagueUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8FC708A91DAEF9480034B334 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC708BC1DAEF9480034B334 /* LaunchScreen.storyboard in Resources */,
+				8FC708B91DAEF9480034B334 /* Assets.xcassets in Resources */,
+				8FC708B41DAEF9480034B334 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708C01DAEF9490034B334 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708CB1DAEF9490034B334 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8FC708A71DAEF9480034B334 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC708B71DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld in Sources */,
+				8FC708B11DAEF9480034B334 /* ViewController.swift in Sources */,
+				8FC708AF1DAEF9480034B334 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708BE1DAEF9490034B334 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC708C71DAEF9490034B334 /* Electoral_College_Fantasy_LeagueTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC708C91DAEF9490034B334 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC708D21DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8FC708C41DAEF9490034B334 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8FC708AA1DAEF9480034B334 /* Electoral College Fantasy League */;
+			targetProxy = 8FC708C31DAEF9490034B334 /* PBXContainerItemProxy */;
+		};
+		8FC708CF1DAEF9490034B334 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8FC708AA1DAEF9480034B334 /* Electoral College Fantasy League */;
+			targetProxy = 8FC708CE1DAEF9490034B334 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		8FC708B21DAEF9480034B334 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8FC708B31DAEF9480034B334 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8FC708BB1DAEF9480034B334 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8FC708D41DAEF9490034B334 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8FC708D51DAEF9490034B334 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8FC708D71DAEF9490034B334 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy League/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-League";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		8FC708D81DAEF9490034B334 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy League/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-League";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		8FC708DA1DAEF9490034B334 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy LeagueTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-LeagueTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Electoral College Fantasy League.app/Electoral College Fantasy League";
+			};
+			name = Debug;
+		};
+		8FC708DB1DAEF9490034B334 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy LeagueTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-LeagueTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Electoral College Fantasy League.app/Electoral College Fantasy League";
+			};
+			name = Release;
+		};
+		8FC708DD1DAEF9490034B334 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy LeagueUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-LeagueUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "Electoral College Fantasy League";
+			};
+			name = Debug;
+		};
+		8FC708DE1DAEF9490034B334 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = D7TRX2T2ZU;
+				INFOPLIST_FILE = "Electoral College Fantasy LeagueUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-LeagueUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "Electoral College Fantasy League";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8FC708A61DAEF9480034B334 /* Build configuration list for PBXProject "Electoral College Fantasy League" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC708D41DAEF9490034B334 /* Debug */,
+				8FC708D51DAEF9490034B334 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8FC708D61DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy League" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC708D71DAEF9490034B334 /* Debug */,
+				8FC708D81DAEF9490034B334 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		8FC708D91DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy LeagueTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC708DA1DAEF9490034B334 /* Debug */,
+				8FC708DB1DAEF9490034B334 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		8FC708DC1DAEF9490034B334 /* Build configuration list for PBXNativeTarget "Electoral College Fantasy LeagueUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC708DD1DAEF9490034B334 /* Debug */,
+				8FC708DE1DAEF9490034B334 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		8FC708B51DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				8FC708B61DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodel */,
+			);
+			currentVersion = 8FC708B61DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodel */;
+			path = Electoral_College_Fantasy_League.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 8FC708A31DAEF9480034B334 /* Project object */;
+}
