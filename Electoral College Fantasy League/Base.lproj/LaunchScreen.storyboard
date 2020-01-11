@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,12 +17,71 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Election Fantasy League" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="55I-zG-XEN" userLabel="Electoral College Fantasy League">
+                                <rect key="frame" x="37.5" y="234" width="300" height="32.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="outline 2016" translatesAutoresizingMaskIntoConstraints="NO" id="VJN-eP-Yje">
+                                <rect key="frame" x="20" y="8" width="335" height="206"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="VJN-eP-Yje" secondAttribute="height" multiplier="1852:1140" id="FDW-Jy-Ue0"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" image="president" translatesAutoresizingMaskIntoConstraints="NO" id="Tr5-ml-sXf">
+                                <rect key="frame" x="112" y="348" width="151.5" height="151.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Tr5-ml-sXf" secondAttribute="height" multiplier="1:1" id="CAB-i0-Z3W"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" image="senate" translatesAutoresizingMaskIntoConstraints="NO" id="qdV-M3-5sp">
+                                <rect key="frame" x="16" y="507.5" width="151.5" height="151.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="qdV-M3-5sp" secondAttribute="height" multiplier="1:1" id="xat-12-VJi"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" image="house" translatesAutoresizingMaskIntoConstraints="NO" id="Vo4-qa-TkD">
+                                <rect key="frame" x="207.5" y="507.5" width="151.5" height="151.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Vo4-qa-TkD" secondAttribute="height" multiplier="1:1" id="9kp-82-g5O"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Vo4-qa-TkD" firstAttribute="width" secondItem="Vo4-qa-TkD" secondAttribute="height" multiplier="1:1" id="0Gl-WQ-oNn"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="qdV-M3-5sp" secondAttribute="bottom" constant="8" id="3ag-jA-yDL"/>
+                            <constraint firstItem="qdV-M3-5sp" firstAttribute="width" secondItem="qdV-M3-5sp" secondAttribute="height" multiplier="1:1" id="4Tm-TH-oVB"/>
+                            <constraint firstItem="55I-zG-XEN" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="5Nb-FG-ZJ0"/>
+                            <constraint firstAttribute="trailing" secondItem="Vo4-qa-TkD" secondAttribute="trailing" constant="16" id="5nj-FO-0go"/>
+                            <constraint firstItem="Vo4-qa-TkD" firstAttribute="height" secondItem="qdV-M3-5sp" secondAttribute="height" id="5vj-IN-7cJ"/>
+                            <constraint firstItem="VJN-eP-Yje" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="8" id="6XE-ch-JDj"/>
+                            <constraint firstItem="qdV-M3-5sp" firstAttribute="top" secondItem="Tr5-ml-sXf" secondAttribute="bottom" constant="8" id="8eI-J6-Nmp"/>
+                            <constraint firstItem="55I-zG-XEN" firstAttribute="top" secondItem="VJN-eP-Yje" secondAttribute="bottom" constant="20" id="GCZ-FF-GSr"/>
+                            <constraint firstItem="VJN-eP-Yje" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="I47-F2-PLs"/>
+                            <constraint firstItem="Vo4-qa-TkD" firstAttribute="leading" secondItem="qdV-M3-5sp" secondAttribute="trailing" constant="40" id="QcT-pr-Ul4"/>
+                            <constraint firstItem="Tr5-ml-sXf" firstAttribute="width" secondItem="Tr5-ml-sXf" secondAttribute="height" multiplier="1:1" id="Tl9-tB-Hcw"/>
+                            <constraint firstItem="Tr5-ml-sXf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cSa-0P-xQz"/>
+                            <constraint firstItem="55I-zG-XEN" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.8" id="guF-tu-JVf"/>
+                            <constraint firstItem="Vo4-qa-TkD" firstAttribute="centerY" secondItem="qdV-M3-5sp" secondAttribute="centerY" id="lHP-I0-XSb"/>
+                            <constraint firstItem="qdV-M3-5sp" firstAttribute="height" secondItem="Tr5-ml-sXf" secondAttribute="height" id="ouX-xH-NQb"/>
+                            <constraint firstItem="VJN-eP-Yje" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="20" id="uGN-Tc-7lc"/>
+                            <constraint firstItem="VJN-eP-Yje" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.8" priority="750" id="w3u-pS-nMd"/>
+                            <constraint firstItem="qdV-M3-5sp" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="16" id="zUq-zW-7hn"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="house" width="400" height="400"/>
+        <image name="outline 2016" width="1852" height="1140"/>
+        <image name="president" width="400" height="400"/>
+        <image name="senate" width="400" height="400"/>
+    </resources>
 </document>

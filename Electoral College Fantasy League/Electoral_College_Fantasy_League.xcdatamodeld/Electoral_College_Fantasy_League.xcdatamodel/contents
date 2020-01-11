@@ -1,4 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G95" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Election" representedClassName="Election" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="leagues" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="League" inverseName="election" inverseEntity="League" syncable="YES"/>
+        <relationship name="races" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Race" inverseName="election" inverseEntity="Race" syncable="YES"/>
+    </entity>
+    <entity name="League" representedClassName="League" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isOpen" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="races" optional="YES" attributeType="Transformable" customClassName="[Int]" syncable="YES"/>
+        <relationship name="election" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Election" inverseName="leagues" inverseEntity="Election" syncable="YES"/>
+        <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Member" inverseName="league" inverseEntity="Member" syncable="YES"/>
+    </entity>
+    <entity name="Member" representedClassName="Member" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="scores" optional="YES" attributeType="Transformable" customClassName="[String: Double]" syncable="YES"/>
+        <relationship name="league" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="League" inverseName="members" inverseEntity="League" syncable="YES"/>
+    </entity>
+    <entity name="Player" representedClassName="Player" syncable="YES" codeGenerationType="class">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="predictions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Prediction" inverseName="player" inverseEntity="Prediction" syncable="YES"/>
+    </entity>
+    <entity name="Prediction" representedClassName="Prediction" syncable="YES" codeGenerationType="class">
+        <attribute name="assertion" optional="YES" attributeType="Transformable" customClassName="[String: Int]" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="leagueScores" optional="YES" attributeType="Transformable" customClassName="[String: Double]" syncable="YES"/>
+        <attribute name="rawScore" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="player" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Player" inverseName="predictions" inverseEntity="Player" syncable="YES"/>
+        <relationship name="race" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Race" inverseName="prediction" inverseEntity="Race" syncable="YES"/>
+    </entity>
+    <entity name="Race" representedClassName="Race" syncable="YES" codeGenerationType="class">
+        <attribute name="candidates" optional="YES" attributeType="Transformable" customClassName="[String: String]" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="incumbency" optional="YES" attributeType="Transformable" customClassName="[String: Int]" syncable="YES"/>
+        <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="results" optional="YES" attributeType="Transformable" customClassName="[String: Int]" syncable="YES"/>
+        <attribute name="safety" optional="YES" attributeType="Transformable" customClassName="[String: Int]" syncable="YES"/>
+        <attribute name="splits" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="election" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Election" inverseName="races" inverseEntity="Election" syncable="YES"/>
+        <relationship name="prediction" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Prediction" inverseName="race" inverseEntity="Prediction" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Election" positionX="-45" positionY="81" width="128" height="135"/>
+        <element name="League" positionX="-54" positionY="90" width="128" height="150"/>
+        <element name="Member" positionX="-54" positionY="108" width="128" height="105"/>
+        <element name="Player" positionX="-45" positionY="126" width="128" height="105"/>
+        <element name="Prediction" positionX="-36" positionY="108" width="128" height="135"/>
+        <element name="Race" positionX="-54" positionY="36" width="128" height="210"/>
+    </elements>
 </model>

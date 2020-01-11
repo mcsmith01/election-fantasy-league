@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ElectoralMapView" customModule="Electoral_College_Fantasy_League" customModuleProvider="target">
+            <connections>
+                <outlet property="loadingView" destination="FU4-wk-hMZ" id="rkg-jK-PeT"/>
+                <outlet property="mapView" destination="YoL-ue-Nc2" id="QCG-IR-glb"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iUO-qV-PfI">
+            <rect key="frame" x="0.0" y="0.0" width="240" height="160"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="map_outline" translatesAutoresizingMaskIntoConstraints="NO" id="YoL-ue-Nc2">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="160"/>
+                </imageView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="FU4-wk-hMZ">
+                    <rect key="frame" x="102" y="62" width="37" height="37"/>
+                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </activityIndicatorView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="YoL-ue-Nc2" firstAttribute="top" secondItem="iUO-qV-PfI" secondAttribute="top" id="8mv-98-bD8"/>
+                <constraint firstAttribute="trailing" secondItem="YoL-ue-Nc2" secondAttribute="trailing" id="Wmx-tA-Pc6"/>
+                <constraint firstItem="YoL-ue-Nc2" firstAttribute="leading" secondItem="iUO-qV-PfI" secondAttribute="leading" id="aPD-al-tKb"/>
+                <constraint firstAttribute="bottom" secondItem="YoL-ue-Nc2" secondAttribute="bottom" id="b5P-1A-gjp"/>
+                <constraint firstItem="FU4-wk-hMZ" firstAttribute="centerX" secondItem="YoL-ue-Nc2" secondAttribute="centerX" id="blu-pr-xed"/>
+                <constraint firstItem="FU4-wk-hMZ" firstAttribute="centerY" secondItem="YoL-ue-Nc2" secondAttribute="centerY" id="i3P-5c-WrR"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-8" y="649"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="map_outline" width="1280" height="853"/>
+    </resources>
+</document>
