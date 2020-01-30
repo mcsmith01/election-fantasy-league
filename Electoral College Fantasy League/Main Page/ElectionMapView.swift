@@ -11,15 +11,15 @@ import SwiftUI
 struct ElectionMapView: View {
 	@EnvironmentObject var electionModel: ElectionModel
 	
-    var body: some View {
+	var body: some View {
 		ZStack {
-			Image("outline 2016")
+			Image("map_background")
 				.resizable()
 				.aspectRatio(contentMode: .fit)
-				.brightness(1)
+				.colorMultiply(Color(.sRGB, white: 0.35, opacity: 1))
 				.shadow(color: .gray, radius: 5)
-			ForEach(electionModel.election.racesOfType(electionModel.raceType, activeOnly: false), id: \.id) { race in
-				Image("\(race.state!)_piece")
+			ForEach(electionModel.election.racesOfType(electionModel.raceType, activeOnly: false)) { race in
+				Image("\(race.state)_piece")
 					.resizable()
 					.aspectRatio(contentMode: .fit)
 					.colorMultiply(self.colorFor(race))
@@ -31,10 +31,8 @@ struct ElectionMapView: View {
 	}
 	
 	func colorFor(_ race: Race) -> Color {
-		if !race.isActive {
-			return Color.gray
-		} else if let prediction = race.prediction {
-			return Color(prediction.getColor())
+		if let prediction = race.prediction {
+			return Color(Colors.getColor(for: prediction.prediction))
 		} else {
 			return .white
 		}

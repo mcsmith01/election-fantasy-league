@@ -21,6 +21,7 @@ struct StateChoiceListView: View {
 		}
 	}
 	
+
 }
 
 //struct StateChoiceListView_Previews: PreviewProvider {
@@ -34,7 +35,7 @@ struct StateRow: View {
 	var race: Race
 	var color: Color {
 		if let prediction = race.prediction {
-			return Color(prediction.getColor())
+			return Color(Colors.getColor(for: prediction.prediction))
 		} else {
 			return Color.primary
 		}
@@ -48,17 +49,18 @@ struct StateRow: View {
 				color
 			}
 			HStack {
-				Text(race.state!)
-					.foregroundColor(color == .primary ? Color.primary : .white)
+				Text(race.state)
 				Spacer()
 				Image(systemName: "chevron.right")
 			}
+			.foregroundColor(color == .primary ? Color.primary : .white)
 			.padding()
 		}
-		.clipShape(Capsule())
+		.clipShape(rowShape)
 		.overlay(
-			Capsule()
+			rowShape
 				.stroke(Color.primary, lineWidth: 3)
 		)
 	}
+	
 }

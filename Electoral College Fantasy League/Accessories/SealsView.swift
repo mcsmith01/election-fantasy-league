@@ -14,23 +14,14 @@ struct SealsView: View {
 			VStack {
 				Image("president")
 					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.frame(width: geometry.size.width / 2.5)
-					.shadow(color: .gray, radius: 5)
-					.opacity(0.75)
+					.modifier(SealModifier(viewWidth: geometry.size.width))
 				HStack {
 					Image("senate")
 						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(width: geometry.size.width / 2.5)
-						.shadow(color: .gray, radius: 5)
-						.opacity(0.75)
+						.modifier(SealModifier(viewWidth: geometry.size.width))
 					Image("house")
 						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(width: geometry.size.width / 2.5)
-						.shadow(color: .gray, radius: 5)
-						.opacity(0.75)
+						.modifier(SealModifier(viewWidth: geometry.size.width))
 				}
 			}
 		}
@@ -41,4 +32,16 @@ struct SealsView_Previews: PreviewProvider {
 	static var previews: some View {
 		SealsView()
 	}
+}
+
+struct SealModifier: ViewModifier {
+	var viewWidth: CGFloat
+	
+    func body(content: Content) -> some View {
+        content
+			.aspectRatio(contentMode: .fit)
+			.frame(width: viewWidth / 2.5)
+			.shadow(color: .gray, radius: 5)
+			.opacity(0.75)
+    }
 }

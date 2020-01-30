@@ -20,13 +20,6 @@ struct MultipleCandidateChoiceView: View {
 			return ("Democrats", "Independents", "Republicans")
 		}
 	}
-	var democratsLabel: String {
-		if let candidates = model.race.candidates, let name = candidates["d"] {
-			return name
-		} else {
-			return "Democrats"
-		}
-	}
 	
 	var body: some View {
 		VStack {

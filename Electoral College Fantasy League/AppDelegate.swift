@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		FirebaseApp.configure()
+		Database.database().isPersistenceEnabled = true
 		
 		UNUserNotificationCenter.current().delegate = self
 		
@@ -56,8 +57,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		userDefaults.setValue("Token", forKey: "token")
 	}
 	
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		debugPrint("aadRRNuI")
+//	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//		debugPrint("aadRRNuI")
 //		print(userInfo)
 //		let managedObjectContext = persistentContainer.viewContext
 //		let raceId = userInfo["race"] as! String
@@ -137,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //			print("Error decoding race results\n\(error)")
 //			completionHandler(UIBackgroundFetchResult.failed)
 //		}
-	}
+//	}
 	
 //	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 //		print("aadRRNuIfCH")

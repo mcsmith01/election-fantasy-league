@@ -10,12 +10,7 @@ import SwiftUI
 
 struct LogInView: View {
 	@EnvironmentObject var electionModel: ElectionModel
-	@State var type = LoginType.none {
-		didSet {
-			password = ""
-			passwordVerify = ""
-		}
-	}
+	@State var displayName = ""
 	@State var email = ""
 	@State var password = ""
 	@State var passwordVerify = ""
@@ -23,93 +18,84 @@ struct LogInView: View {
 	
 	var body: some View {
 		VStack {
-			Image("outline 2016")
-				.resizable()
-				.aspectRatio(contentMode: .fit)
-				.padding()
-				.shadow(color: .gray, radius: 5, x: 0, y: 0)
-			Text("Welcome to the\nElection Fantasy League")
-				.font(.title)
-				.multilineTextAlignment(.center)
-			if type == .create {
-				VStack {
-					Text("Create Account")
-					Group {
-						TextField("Email", text: $email)
-							.autocapitalization(.none)
-						TextField("Password", text: $password)
-							.autocapitalization(.none)
-						TextField("Retype Password", text: $passwordVerify)
-							.autocapitalization(.none)
-					}
-					HStack {
-						Button("Submit") {
-							self.electionModel.createAccount(email: self.email, password: self.password) { (errorMessage) in
-								if let message = errorMessage {
-									self.alertMessage = AlertMessage(text: message)
-									self.password = ""
-									self.passwordVerify = ""
-								}
-							}
-						}
-						.disabled(password == "" || email == "" || password != passwordVerify)
-						Button("Cancel") {
-							withAnimation {
-								self.type = .none
-							}
-						}
-						.foregroundColor(.red)
-					}
-				}
-				.padding()
-			} else if type == .login {
-				VStack {
-					Text("Log In")
-					TextField("Username", text: $email)
+			if self.electionModel.logInType == .create {
+				Text("Create Account")
+				Group {
+					TextField("Display Name", text: $displayName)
+						.autocapitalization(.words)
+						.textFieldStyle(RoundedBorderTextFieldStyle())
+					TextField("Email", text: $email)
+						.keyboardType(.emailAddress)
 						.autocapitalization(.none)
-					TextField("Password", text: $password)
-						.autocapitalization(.none)
-					HStack {
-						Button("Submit") {
-							self.electionModel.logIn(email: self.email, password: self.password) { (errorMessage) in
-								if let message = errorMessage {
-									self.alertMessage = AlertMessage(text: message)
-									self.password = ""
-									self.passwordVerify = ""
-								}
-							}
-						}
-						.disabled(password == "" || email == "")
-						Button("Cancel") {
-							withAnimation {
-								self.type = .none
-							}
-						}
-						.foregroundColor(.red)
-					}
+						.textFieldStyle(RoundedBorderTextFieldStyle())
+					SecureField("Password", text: $password)
+						.textFieldStyle(RoundedBorderTextFieldStyle())
+					SecureField("Retype Password", text: $passwordVerify)
+						.textFieldStyle(RoundedBorderTextFieldStyle())
 				}
-				.padding()
-			} else {
-				VStack {
-					HStack {
-						Button("Create Account") {
-							withAnimation {
-								self.type = .create
+				HStack {
+					Spacer()
+					Button("Submit") {
+						let pass = self.password
+						self.password = ""
+						self.passwordVerify = ""
+						self.electionModel.createAccount(email: self.email, password: pass, displayName: self.displayName) { (error) in
+							if let error = error {
+								self.alertMessage = AlertMessage(text: error.localizedDescription)
+							} else {
+								self.electionModel.logInType = .none
 							}
 						}
-						.padding()
-						Button("Log In") {
-							withAnimation {
-								self.type = .login
-							}
-						}
-						.padding()
 					}
-					SealsView()
+					.disabled(password == "" || email == "" || displayName == "" || password != passwordVerify)
+					Spacer()
+					Button("Cancel") {
+						withAnimation {
+							self.electionModel.logInType = .none
+						}
+					}
+					.foregroundColor(.red)
+					Spacer()
+				}
+			} else if self.electionModel.logInType == .login {
+				Text("Log In")
+				TextField("Username", text: $email)
+					.keyboardType(.emailAddress)
+					.autocapitalization(.none)
+					.textFieldStyle(RoundedBorderTextFieldStyle())
+				SecureField("Password", text: $password)
+					.textFieldStyle(RoundedBorderTextFieldStyle())
+				HStack {
+					Spacer()
+					Button("Submit") {
+						let pass = self.password
+						self.password = ""
+						self.passwordVerify = ""
+						self.electionModel.logIn(email: self.email, password: pass) { (errorMessage) in
+							if let message = errorMessage {
+								self.alertMessage = AlertMessage(text: message)
+							} else {
+								self.electionModel.logInType = .none
+							}
+						}
+					}
+					.disabled(password == "" || email == "")
+					Spacer()
+					Button("Cancel") {
+						withAnimation {
+							self.electionModel.logInType = .none
+						}
+					}
+					.foregroundColor(.red)
+					Spacer()
 				}
 			}
-			Spacer()
 		}
+		.padding()
+		.background(Color.primary.colorInvert())
+		.cornerRadius(25)
+		.padding()
+		.shadow(color: .gray, radius: 5)
 		.alert(item: $alertMessage) { (message) -> Alert in
 			Alert(title: Text(message.text))
 		}

@@ -13,18 +13,42 @@ struct MainPageView: View {
 	@State var whichList = "Predictions"
 	@State var selectedRace: Race?
 	@State var navigationTag: Int?
-	
+	@State var mapOffset = CGSize.zero
+	@State var showMap = true
+	var numbers: (dems: Int, inds: Int, reps: Int, total: Int) {
+		get {
+			return electionModel.getNumbers()
+		}
+	}
+
 	var body: some View {
 		VStack {
 			Picker(selection: $electionModel.raceType, label: EmptyView()) {
-				ForEach(electionModel.allRaceTypes, id: \.self) { raceType in
+				ForEach(electionModel.election.raceTypes.sorted(), id: \.self) { raceType in
 					Text(String(describing: raceType).capitalized)
 				}
 			}
 			.pickerStyle(SegmentedPickerStyle())
 			.padding(.horizontal)
-			ElectionMapView()
-				.animation(.easeInOut)
+			ZStack(alignment: .bottom) {
+				ZStack {
+					ElectionMapView()
+						.padding(.bottom)
+						.opacity(showMap ? 1.0 : 0.0)
+				}
+				HStack {
+					Spacer()
+					NumberCell(text: "\(numbers.dems)", color: Colors.democrat)
+					if numbers.inds > 0 {
+						Spacer()
+						NumberCell(text: "\(numbers.inds)", color: Colors.independent)
+					}
+					Spacer()
+					NumberCell(text: "\(numbers.reps)", color: Colors.republican)
+					Spacer()
+				}
+			}
+			.animation(.easeInOut)
 			Section(header:
 				Picker(selection: $whichList, label: EmptyView()) {
 					ForEach(["Predictions", "Results"]) { choice in
@@ -50,7 +74,7 @@ struct MainPageView: View {
 				}
 		})
 		)
-			.sheet(item: $selectedRace, onDismiss: { self.electionModel.refresh.toggle() }) { (selected) in
+			.sheet(item: $selectedRace) { (selected) in
 			StateChoiceView(race: selected).environmentObject(self.electionModel)
 		}
 	}
@@ -66,3 +90,22 @@ struct MainPageView: View {
 //		MainPageView(election: Election.fetchCurrent())
 //    }
 //}
+
+struct NumberCell: View {
+	var text: String
+	var color: Color
+	
+	var body: some View {
+		Text(text)
+			.foregroundColor(.white)
+			.padding(.horizontal)
+			.background(color.opacity(0.65))
+			.clipShape(Capsule())
+			.overlay(Capsule().stroke(color, lineWidth: 2))
+	}
+	
+	init(text: String, color: UIColor) {
+		self.text = text
+		self.color = Color(color)
+	}
+}

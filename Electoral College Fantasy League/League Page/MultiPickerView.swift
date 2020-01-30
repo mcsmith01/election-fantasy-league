@@ -10,7 +10,7 @@ import SwiftUI
 
 struct MultiPickerView: View {
 	var options: [String]
-	@State var selected: Set<Int>
+	@Binding var selected: Set<Int>
 	
     var body: some View {
 		Form {
@@ -18,6 +18,7 @@ struct MultiPickerView: View {
 			.onTapGesture {
 				if self.selected.count == self.options.count {
 					self.selected.removeAll()
+					self.selected.insert(0)
 				} else {
 					for i in 0..<self.options.count {
 						self.selected.insert(i)
@@ -30,6 +31,7 @@ struct MultiPickerView: View {
 				.onTapGesture {
 					if self.selected.contains(optionIndex) {
 						self.selected.remove(optionIndex)
+						self.verifySelection()
 					} else {
 						self.selected.insert(optionIndex)
 					}
@@ -37,11 +39,19 @@ struct MultiPickerView: View {
 			}
 		}
 	}
+	
+	func verifySelection() {
+		if selected.count == 0 {
+			selected.insert(0)
+		}
+	}
 }
 
 struct MultiPickerView_Previews: PreviewProvider {
+	@State static var selected = Set<Int>(0..<4)
+	
     static var previews: some View {
-		MultiPickerView(options: ["President", "Senate", "House", "Governor"], selected: Set<Int>([0, 3]))
+		MultiPickerView(options: ["President", "Senate", "House", "Governor"], selected: $selected)
     }
 	
 	init() {

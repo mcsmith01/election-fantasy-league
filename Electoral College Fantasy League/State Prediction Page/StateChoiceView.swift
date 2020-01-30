@@ -10,7 +10,10 @@ import SwiftUI
 
 struct StateChoiceView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+	@EnvironmentObject var electionModel: ElectionModel
 	@ObservedObject var model: StateChoiceModel
+	@State var isSaving = false
+	@State var alertMessage: AlertMessage?
 
 	var body: some View {
 		GeometryReader { geometry in
@@ -23,23 +26,33 @@ struct StateChoiceView: View {
 						.foregroundColor(.red)
 						Spacer()
 						Button("Save") {
-							self.model.savePrediction() {
-								self.presentationMode.wrappedValue.dismiss()
+							withAnimation {
+								self.isSaving = true
+							}
+							self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
+								withAnimation {
+									self.isSaving = false
+								}
+								if let error = error {
+									self.alertMessage = AlertMessage(text: error.localizedDescription)
+								} else {
+									self.presentationMode.wrappedValue.dismiss()
+								}
 							}
 						}
 						.disabled(!self.model.updated)
 					}
 					.padding()
-					Text(self.model.race.state!)
+					Text(self.model.race.state)
 						.font(.title)
-					Image(self.model.race.state!)
+					Image(self.model.race.state)
 						.resizable()
 						.aspectRatio(contentMode: .fit)
 						.frame(height: geometry.size.height / 2)
 						.colorMultiply(self.model.colorForPrediction())
 						.shadow(color: .gray, radius: 5)
 						.animation(.easeInOut)
-					if self.model.race.raceType == .house || self.model.race.splits {
+					if self.model.race.type == .house || self.model.race.splits {
 						MultipleCandidateChoiceView(model: self.model)
 							.padding(.horizontal)
 							.animation(.easeInOut)
@@ -50,8 +63,8 @@ struct StateChoiceView: View {
 					}
 					Spacer()
 					Picker(selection: self.$model.raceID, label: EmptyView()) {
-						ForEach(self.model.allRaces, id: \.id!) { race in
-							Text(String(describing: race.raceType).capitalized)
+						ForEach(self.model.allRaces) { race in
+							Text(String(describing: race.type).capitalized)
 						}
 					}
 					.pickerStyle(SegmentedPickerStyle())
@@ -60,33 +73,34 @@ struct StateChoiceView: View {
 				}
 				.alert(isPresented: self.$model.showWarning) { () -> Alert in
 					let saveButton = Alert.Button.default(Text("Save")) {
-						self.model.savePrediction() {
-							self.model.updateRace()
+						withAnimation {
+							self.isSaving = true
+						}
+						self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
+							withAnimation {
+								self.isSaving = false
+							}
+							if let error = error {
+								debugPrint("Error saving prediction\n\(error)")
+								//TODO: Display error
+							} else {
+								self.model.updateRace()
+							}
 						}
 					}
 					let cancelButton = Alert.Button.cancel(Text("Discard")) {
 						self.model.updateRace()
 					}
-					return Alert(title: Text("Save changes made to \(self.model.race.state!) \(String(describing: self.model.race.raceType).capitalized) race?"), primaryButton: saveButton, secondaryButton: cancelButton)
+					return Alert(title: Text("Save changes made to \(self.model.race.state) \(String(describing: self.model.race.type).capitalized) race?"), primaryButton: saveButton, secondaryButton: cancelButton)
 				}
-				.blur(radius: self.model.isSaving ? 3 : 0)
-				.disabled(self.model.isSaving)
+				.blur(radius: self.isSaving ? 3 : 0)
+				.disabled(self.isSaving)
 				.onAppear {
 					self.model.updateRace()
 				}
-				if self.model.isSaving {
-					Color.primary.colorInvert()
-						.frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
-						.cornerRadius(25)
-						.shadow(color: .gray, radius: 5)
-					VStack {
-						Spacer()
-						ActivityView(isAnimating: .constant(true), style: .large)
-							.background(Color.primary.colorInvert())
-							.foregroundColor(.primary)
-						Text("Saving...")
-						Spacer()
-					}
+				if self.isSaving {
+					BusyInfoView(text: "Saving...")
+						.transition(.scale)
 				}
 			}
 		}
@@ -100,7 +114,6 @@ struct StateChoiceView: View {
 
 //struct StateChoiceView_Previews: PreviewProvider {
 //	static var previews: some View {
-//		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 //
 //	}
 //}

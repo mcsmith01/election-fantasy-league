@@ -16,20 +16,48 @@ struct SplashPageView: View {
 	
 	var body: some View {
 		NavigationView {
-			VStack {
-				Image("outline 2016")
-					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.padding()
-					.shadow(color: .gray, radius: 5, x: 0, y: 0)
-				Spacer()
-				Text("\(self.electionModel.status)")
-					.font(.subheadline)
-				ActivityView(isAnimating: .constant(true), style: .large)
-				Spacer()
-				SealsView()
-				NavigationLink(destination: MainPageView(), isActive: $loggedIn) {
-					EmptyView()
+			ZStack {
+				VStack {
+					Image("outline 2016")
+						.resizable()
+						.aspectRatio(contentMode: .fit)
+						.padding()
+						.shadow(color: .gray, radius: 5, x: 0, y: 0)
+					Spacer()
+					ZStack {
+						VStack {
+							Text("\(self.electionModel.status)")
+								.font(.subheadline)
+							ActivityView(isAnimating: .constant(true), style: .large)
+						}
+						.opacity(self.electionModel.state == .logInFailure ? 0 : 1)
+						VStack {
+							Button("Create New Account") {
+								withAnimation {
+									self.electionModel.logInType = .create
+								}
+								
+							}
+							.padding()
+							Button("Log In") {
+								withAnimation {
+									self.electionModel.logInType = .login
+								}
+							}
+							.padding()
+						}
+						.opacity(self.electionModel.state == .logInFailure ? 1 : 0)
+					}
+					Spacer()
+					SealsView()
+					Spacer()
+					NavigationLink(destination: MainPageView().environmentObject(electionModel), isActive: $loggedIn) {
+						EmptyView()
+					}
+				}
+				if electionModel.logInType != .none {
+					LogInView()
+						.transition(.scale)
 				}
 			}
 			.navigationBarTitle("Election Fantasy League")
@@ -37,16 +65,8 @@ struct SplashPageView: View {
 		.onAppear {
 			self.electionModel.logIn()
 		}
-		.sheet(isPresented: $requireLogin, onDismiss: nil) {
-			//TODO: onDismiss need to log in again?
-			LogInView()
-		}
 		.onReceive(self.electionModel.$state) { (newState) in
-			if newState == .logInFailure {
-				self.requireLogin = true
-			} else if newState == .logInSuccess {
-				self.requireLogin = false
-			} else if newState == .logInComplete {
+			if newState == .logInComplete {
 				self.loggedIn = true
 			}
 		}

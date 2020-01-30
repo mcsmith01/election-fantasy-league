@@ -80,3 +80,9 @@ extension Int: Identifiable {
 		return self
 	}
 }
+
+extension Bool: Identifiable {
+	public var id: Bool {
+		return self
+	}
+}

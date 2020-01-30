@@ -9,17 +9,16 @@
 import Foundation
 import CoreData
 
-enum Constants: String {
-	case lastElectionUpdate
-	case lastRaceUpdate
-	case lastPredictionUpdate
-	case lastLeagueUpdate
-	case currentElection
-	case setName
+struct Objects {
+	static let dateFormatter: ISO8601DateFormatter = {
+		let formatter = ISO8601DateFormatter()
+		formatter.formatOptions.formUnion(.withFractionalSeconds)
+		return formatter
+	}()
+	static let suiteName = "group.com.lsapps.Electoral-College-Fantasy-League"
 }
 
-enum RaceType: Int, CaseIterable, Comparable, Identifiable
-{
+enum RaceType: Int, CaseIterable, Comparable, Identifiable {
 	var id: Int { return rawValue }
 	
 	static func < (lhs: RaceType, rhs: RaceType) -> Bool {
@@ -30,15 +29,6 @@ enum RaceType: Int, CaseIterable, Comparable, Identifiable
 	case senate
 	case house
 	case governor
-}
-
-struct Objects {
-	static let dateFormatter: ISO8601DateFormatter = {
-		let formatter = ISO8601DateFormatter()
-		formatter.formatOptions.formUnion(.withFractionalSeconds)
-		return formatter
-	}()
-	static let suiteName = "group.com.lsapps.Electoral-College-Fantasy-League"
 }
 
 class CoreDataStack {

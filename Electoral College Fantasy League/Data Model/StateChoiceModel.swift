@@ -10,10 +10,11 @@ import Foundation
 import SwiftUI
 
 class StateChoiceModel: ObservableObject {
+
 	@Published var race: Race {
 		didSet {
-			if let prediction = race.prediction?.assertion {
-				if race.raceType == .house {
+			if let prediction = race.prediction?.prediction {
+				if race.type == .house {
 					demNum = Double(prediction["d"] ?? 0)
 					indNum = Double(prediction["i"] ?? 0)
 					repNum = Double(prediction["r"] ?? 0)
@@ -21,7 +22,7 @@ class StateChoiceModel: ObservableObject {
 					candidateID = prediction.keys.first!
 				}
 			} else {
-				if race.raceType == .house {
+				if race.type == .house {
 					demNum = 0
 					indNum = 0
 					repNum = 0
@@ -31,7 +32,11 @@ class StateChoiceModel: ObservableObject {
 			}
 		}
 	}
-	var allRaces: [Race]
+	var allRaces: [Race] {
+		get {
+			return race.racesForState(activeOnly: true).sorted()
+		}
+	}
 	var raceID: String {
 		didSet {
 			if updated {
@@ -53,12 +58,21 @@ class StateChoiceModel: ObservableObject {
 	}
 	var updated = false
 	@Published var showWarning = false
-	@Published var isSaving = false
-
+	var numbers: [String: Int] {
+		get {
+			let numbers: [String: Int]
+			if race.type == .house || race.splits {
+				numbers = ["d": Int(truncating: demNum), "i": Int(truncating: indNum), "r": Int(truncating: repNum), "t": tccNum]
+			} else {
+				numbers = [candidateID: totalSeats]
+			}
+			return numbers
+		}
+	}
+	
 	init(race: Race) {
 		self.race = race
-		raceID = race.id!
-		allRaces = race.election!.racesForState(race.state!, activeOnly: true).sorted()
+		raceID = race.id
 	}
 	
 	func updateRace() {
@@ -67,29 +81,15 @@ class StateChoiceModel: ObservableObject {
 	}
 
 	func colorForPrediction() -> Color {
-		if race.raceType == .house || race.splits {
+		if race.type == .house || race.splits {
 			return Color(dems: Int(truncating: demNum), inds: Int(truncating: indNum), reps: Int(truncating: repNum), tctc: tccNum)
 		} else {
 			if candidateID != "" {
-				return Color(Colors.getColor(for: [candidateID: 1]))
+				return Color(candidate: candidateID)
 			} else {
-				return Color(Colors.getColor(for: nil))
+				return Color(candidate: nil)
 			}
 		}
 	}
 	
-	func savePrediction(completion: @escaping () -> Void) {
-		isSaving = true
-		let numbers: [String: Int]
-		if race.raceType == .house {
-			numbers = ["d": Int(truncating: demNum), "i": Int(truncating: indNum), "r": Int(truncating: repNum), "t": tccNum]
-		} else {
-			numbers = [candidateID: 1]
-		}
-		race.savePrediction(numbers: numbers) { (_) in
-			completion()
-			self.isSaving = false
-		}
-	}
-
 }
