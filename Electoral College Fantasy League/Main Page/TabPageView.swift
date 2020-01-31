@@ -12,25 +12,43 @@ struct TabPageView: View {
 	@EnvironmentObject var electionModel: ElectionModel
 	
     var body: some View {
-		TabView {
-			MainPageView()
-				.tabItem {
-					Image(systemName: "map")
-					Text("Races")
+		GeometryReader { geometry in
+			ZStack(alignment: .bottomLeading) {
+				TabView {
+					MainPageView()
+//					Text("Map")
+						.tabItem {
+							Image(systemName: "map")
+							Text("Races")
+						}
+					AlertsView()
+//					Text("Alerts")
+						.tabItem {
+							Image(systemName: "exclamationmark.bubble")
+							Text("Alerts")
+						}
+					LeaguesView()
+//					Text("League")
+						.tabItem {
+							Image(systemName: "person.3")
+							Text("Leagues")
+						}
 				}
-			Text("Alerts")
-				.tabItem {
-					Image(systemName: "exclamationmark.triangle")
-					Text("Alerts")
-				}
-			LeaguesView()
-				.tabItem {
-					Image(systemName: "person.3")
-					Text("Leagues")
-				}
+				Circle()
+					.foregroundColor(.red)
+					.frame(width: 10, height: 10)
+					.offset(x: ((2 * 2 - 0.98) * (geometry.size.width / 6)) + 2, y: -33)
+					.opacity(self.electionModel.election.unreadAlerts() ? 1 : 0)
+				Circle()
+					.foregroundColor(.red)
+					.frame(width: 10, height: 10)
+					.offset(x: ((2 * 3 - 0.9) * (geometry.size.width / 6)) + 2, y: -33)
+					.opacity(self.electionModel.election.pendingLeagueRequests() ? 1 : 0)
+
+			}
 		}
-		.navigationBarBackButtonHidden(true)
     }
+	
 }
 
 struct TabPageView_Previews: PreviewProvider {

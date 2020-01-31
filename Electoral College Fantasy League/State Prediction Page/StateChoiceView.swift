@@ -81,11 +81,11 @@ struct StateChoiceView: View {
 								self.isSaving = false
 							}
 							if let error = error {
-								debugPrint("Error saving prediction\n\(error)")
-								//TODO: Display error
-							} else {
-								self.model.updateRace()
+								self.alertMessage = AlertMessage(text: error.localizedDescription)
 							}
+							debugPrint("Updating Model")
+							self.model.updateRace()
+							debugPrint(self.model.race.type)
 						}
 					}
 					let cancelButton = Alert.Button.cancel(Text("Discard")) {

@@ -28,7 +28,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	var handle: AuthStateDidChangeListenerHandle!
 	var raceHandle: DatabaseHandle?
 	
-	@Published var status = "Logging in..."
+	@Published var status: String?
 	@Published var state = LoginState.logInBegan
 	@Published var logInType = LoginType.none
 	@Published var refresh = false
@@ -60,6 +60,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 				self.loadData()
 			} else {
 				self.state = .logInFailure
+				self.status = nil
 			}
 		}
 	}
@@ -139,6 +140,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 						self.listenToElection(election)
 						self.raceType = election.raceTypes.sorted().first!
 						self.state = .logInComplete
+						self.status = nil
 				}
 			}
 			
@@ -179,9 +181,14 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 			}
 		}
 		playerRef.child("elections").child(election.id).child("alerts").observe(.childAdded) { (snapshot) in
-			debugPrint("Received alert \(snapshot.key)")
 			if let data = snapshot.value as? [String: Any] {
-				election.createAlert(withID: snapshot.key, data: data)
+				election.updateOrCreateAlert(withID: snapshot.key, data: data)
+				self.refresh.toggle()
+			}
+		}
+		playerRef.child("elections").child(election.id).child("alerts").observe(.childChanged) { (snapshot) in
+			if let data = snapshot.value as? [String: Any] {
+				election.updateOrCreateAlert(withID: snapshot.key, data: data)
 				self.refresh.toggle()
 			}
 		}
@@ -218,8 +225,10 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	}
 	
 	func joinLeague(_ league: League, completion: @escaping (Error?) -> Void) {
+		status = league.isOpen ? "Joining \(league.name)" : "Applying to \(league.name)"
 		let payload: [String: Any] = ["league": league.id, "election": election.id]
 		Functions.functions().httpsCallable("joinLeague").call(payload) { (_, error) in
+			self.status = nil
 			completion(error)
 		}
 	}
@@ -227,20 +236,33 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	func processLeagueRequest(league: League, player: LeagueMember, accept: Bool, completion: @escaping (Error?) -> Void) {
 		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": player.id]
 		if accept {
+			status = "Accepting \(player.name) to \(league.name)"
 			Functions.functions().httpsCallable("acceptToLeague").call(payload) { (_, error) in
+				self.status = nil
 				completion(error)
 			}
 		} else {
+			status = "Rejecting \(player.name)'s appliction to \(league.name)"
 			Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in
+				self.status = nil
 				completion(error)
 			}
 		}
 	}
 	
 	func removeFromLeague(league: League, player: LeagueMember, completion: @escaping (Error?) -> Void) {
+		status = "Leaving \(league.name)"
 		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": player.id]
 		Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in
+			self.status = nil
 			completion(error)
+		}
+	}
+	
+	func markAlertsRead(_ read: Set<String>) {
+		for alertID in read {
+			playerRef.child("elections")
+				.child(election.id).child("alerts").child(alertID).child("read").setValue(true)
 		}
 	}
 	

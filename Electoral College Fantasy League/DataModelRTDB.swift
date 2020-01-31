@@ -181,6 +181,16 @@ extension Int {
 	
 }
 
+struct RectangleBorder: ViewModifier {
+
+	func body(content: Content) -> some View {
+		content
+			.clipShape(rowShape)
+			.overlay(rowShape.stroke(Color.primary, lineWidth: 3))
+	}
+	
+}
+
 //extension Player {
 //
 //	var ref: DatabaseReference {

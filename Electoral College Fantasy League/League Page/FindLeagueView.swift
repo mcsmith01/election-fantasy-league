@@ -16,11 +16,19 @@ struct FindLeagueView: View {
 	var body: some View {
 		List {
 			Section(header: Text("Search")) {
-				SearchBarView(text: $searchText)
+				HStack {
+					Image(systemName: "magnifyingglass")
+						.foregroundColor(.gray)
+					TextField("Search", text: $searchText)
+				}
+				.padding()
+				.modifier(RectangleBorder())
 			}
-			Section {
-				ForEach(electionModel.election.leagues.filter({ !$0.containsMember(withID: UserData.userID) }).sorted()) { league in
+			Section(header: Text("Leagues")) {
+				ForEach(electionModel.election.leagues.filter({ !$0.containsMember(withID: UserData.userID) && $0.searchFilter(searchText) }).sorted()) { league in
 					LeagueRow(league: league)
+						.padding(.trailing)
+						.modifier(RectangleBorder())
 						.onTapGesture {
 							self.joinLeague = league
 					}

@@ -10,12 +10,8 @@ import SwiftUI
 
 struct SplashPageView: View {
 	@EnvironmentObject var electionModel: ElectionModel
-	@State var requireLogin = false
-	@State var loggedIn = false
-	var rotation: Double = 0
 	
 	var body: some View {
-		NavigationView {
 			ZStack {
 				VStack {
 					Image("outline 2016")
@@ -25,12 +21,12 @@ struct SplashPageView: View {
 						.shadow(color: .gray, radius: 5, x: 0, y: 0)
 					Spacer()
 					ZStack {
-						VStack {
-							Text("\(self.electionModel.status)")
-								.font(.subheadline)
-							ActivityView(isAnimating: .constant(true), style: .large)
-						}
-						.opacity(self.electionModel.state == .logInFailure ? 0 : 1)
+//						VStack {
+//							Text("\(self.electionModel.status)")
+//								.font(.subheadline)
+//							ActivityView(isAnimating: .constant(true), style: .large)
+//						}
+//						.opacity(self.electionModel.state == .logInFailure ? 0 : 1)
 						VStack {
 							Button("Create New Account") {
 								withAnimation {
@@ -51,24 +47,14 @@ struct SplashPageView: View {
 					Spacer()
 					SealsView()
 					Spacer()
-					NavigationLink(destination: MainPageView().environmentObject(electionModel), isActive: $loggedIn) {
-						EmptyView()
-					}
 				}
 				if electionModel.logInType != .none {
 					LogInView()
 						.transition(.scale)
 				}
-			}
-			.navigationBarTitle("Election Fantasy League")
 		}
 		.onAppear {
 			self.electionModel.logIn()
-		}
-		.onReceive(self.electionModel.$state) { (newState) in
-			if newState == .logInComplete {
-				self.loggedIn = true
-			}
 		}
 	}
 	

@@ -56,11 +56,7 @@ struct StateRow: View {
 			.foregroundColor(color == .primary ? Color.primary : .white)
 			.padding()
 		}
-		.clipShape(rowShape)
-		.overlay(
-			rowShape
-				.stroke(Color.primary, lineWidth: 3)
-		)
+		.modifier(RectangleBorder())
 	}
 	
 }

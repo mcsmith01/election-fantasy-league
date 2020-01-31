@@ -24,7 +24,7 @@ class Election: NSObject, Comparable {
 	var raceTypes = Set<RaceType>()
 	var races = [Race]()
 	var leagues = Set<League>()
-	var alerts = [Notice]()
+	var alerts = [ElectionAlert]()
 	
 	init?(id: String, data: [String: Any]) {
 		guard let name = data["name"] as? String, let dateString = data["date"] as? String, let date = Objects.dateFormatter.date(from: dateString) else {
@@ -52,8 +52,10 @@ class Election: NSObject, Comparable {
 		}
 	}
 	
-	func createAlert(withID id: String, data: [String: Any]) {
-		if let alert = Notice(id: id, data: data) {
+	func updateOrCreateAlert(withID id: String, data: [String: Any]) {
+		if let alert = alerts.first(where: {$0.id == id}) {
+			alert.updateFrom(data)
+		} else if let alert = ElectionAlert(id: id, data: data) {
 			alerts.append(alert)
 			alerts.sort()
 		}
@@ -75,6 +77,14 @@ class Election: NSObject, Comparable {
 		} else if let league = League(id: id, data: data) {
 			leagues.insert(league)
 		}
+	}
+	
+	func unreadAlerts() -> Bool {
+		return alerts.contains(where: { !$0.read })
+	}
+	
+	func pendingLeagueRequests() -> Bool {
+		return leagues.contains(where: { $0.owner == UserData.userID && $0.pendingMembers.count > 0 })
 	}
 
 }

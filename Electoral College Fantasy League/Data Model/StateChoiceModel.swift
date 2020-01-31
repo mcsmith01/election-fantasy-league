@@ -14,7 +14,7 @@ class StateChoiceModel: ObservableObject {
 	@Published var race: Race {
 		didSet {
 			if let prediction = race.prediction?.prediction {
-				if race.type == .house {
+				if race.type == .house || race.splits {
 					demNum = Double(prediction["d"] ?? 0)
 					indNum = Double(prediction["i"] ?? 0)
 					repNum = Double(prediction["r"] ?? 0)
@@ -22,7 +22,7 @@ class StateChoiceModel: ObservableObject {
 					candidateID = prediction.keys.first!
 				}
 			} else {
-				if race.type == .house {
+				if race.type == .house || race.splits {
 					demNum = 0
 					indNum = 0
 					repNum = 0

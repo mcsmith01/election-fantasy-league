@@ -18,28 +18,37 @@ struct CreateLeagueView: View {
 		}()
 	@State var selectedOptions = Set<Int>(0..<4)
 	@State var navigationTag: Int?
+	@State var isSaving = false
 
 	var body: some View {
 		NavigationView {
-			VStack {
-				Form {
-					Section(header: Text("League Name")) {
-						TextField("Name", text: $name)
-							.autocapitalization(.words)
-					}
-					
-					Section() {
-						MultiPickerRow(options: pickerOptions, selectedOptions: $selectedOptions)
-							.onTapGesture {
-								self.navigationTag = 1
+			ZStack {
+				VStack {
+					Form {
+						Section(header: Text("League Name")) {
+							TextField("Name", text: $name)
+								.autocapitalization(.words)
 						}
-						Toggle(isOn: $isOpen) {
-							Text("Open Membership")
+						Section() {
+							MultiPickerRow(options: pickerOptions, selectedOptions: $selectedOptions)
+								.onTapGesture {
+									self.navigationTag = 1
+							}
+							Toggle(isOn: $isOpen) {
+								Text("Open Membership")
+							}
 						}
 					}
-				}
-				NavigationLink(destination: MultiPickerView(options: pickerOptions, selected: $selectedOptions), tag: 1, selection: $navigationTag) {
-					EmptyView()
+					.blur(radius: self.isSaving ? 3 : 0)
+					.disabled(self.isSaving)
+					if self.isSaving {
+						BusyInfoView(text: "Creating \(name)...")
+							.transition(.scale)
+					}
+
+					NavigationLink(destination: MultiPickerView(options: pickerOptions, selected: $selectedOptions), tag: 1, selection: $navigationTag) {
+						EmptyView()
+					}
 				}
 			}
 			.navigationBarTitle("Create League", displayMode: .inline)
@@ -51,7 +60,9 @@ struct CreateLeagueView: View {
 				.foregroundColor(.red)
 				, trailing:
 				Button("Create") {
+					self.isSaving = true
 					self.electionModel.createLeague(name: self.name, isOpen: self.isOpen, raceTypes: self.selectedOptions.sorted()) { (error) in
+						self.isSaving = false
 						if let error = error {
 							debugPrint("Error creating league\n\(error)")
 						} else {

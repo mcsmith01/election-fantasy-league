@@ -61,4 +61,12 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 		return allMembers.contains(where: {$0.id == id} )
 	}
 	
+	func searchFilter(_ text: String) -> Bool {
+		if text == "" {
+			return true
+		} else {
+			return  name.contains(text)
+		}
+	}
+	
 }

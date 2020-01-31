@@ -20,62 +20,51 @@ struct MainPageView: View {
 			return electionModel.getNumbers()
 		}
 	}
-
+	
 	var body: some View {
-		VStack {
-			Picker(selection: $electionModel.raceType, label: EmptyView()) {
-				ForEach(electionModel.election.raceTypes.sorted(), id: \.self) { raceType in
-					Text(String(describing: raceType).capitalized)
-				}
-			}
-			.pickerStyle(SegmentedPickerStyle())
-			.padding(.horizontal)
-			ZStack(alignment: .bottom) {
-				ZStack {
-					ElectionMapView()
-						.padding(.bottom)
-						.opacity(showMap ? 1.0 : 0.0)
-				}
-				HStack {
-					Spacer()
-					NumberCell(text: "\(numbers.dems)", color: Colors.democrat)
-					if numbers.inds > 0 {
-						Spacer()
-						NumberCell(text: "\(numbers.inds)", color: Colors.independent)
-					}
-					Spacer()
-					NumberCell(text: "\(numbers.reps)", color: Colors.republican)
-					Spacer()
-				}
-			}
-			.animation(.easeInOut)
-			Section(header:
-				Picker(selection: $whichList, label: EmptyView()) {
-					ForEach(["Predictions", "Results"]) { choice in
-						Text(choice)
+		NavigationView{
+			VStack {
+				Picker(selection: $electionModel.raceType, label: EmptyView()) {
+					ForEach(electionModel.election.raceTypes.sorted(), id: \.self) { raceType in
+						Text(String(describing: raceType).capitalized)
 					}
 				}
 				.pickerStyle(SegmentedPickerStyle())
-				.padding(.horizontal)) {
-					StateChoiceListView(selectedRace: $selectedRace)
-			}
-			NavigationLink(destination: LeaguesView(), tag: 1, selection: $navigationTag) {
-				EmptyView()
-			}
-		}
-		.navigationBarTitle(electionModel.name)
-		.navigationBarBackButtonHidden(true)
-		.navigationBarItems(trailing: Button(
-			action: { self.navigationTag = 1 },
-			label: {
-				HStack {
-					Text("Leagues")
-					Image(systemName: "chevron.right")
+				.padding(.horizontal)
+				ZStack(alignment: .bottom) {
+					ZStack {
+						ElectionMapView()
+							.padding(.bottom)
+							.opacity(showMap ? 1.0 : 0.0)
+					}
+					HStack {
+						Spacer()
+						NumberCell(text: "\(numbers.dems)", color: Colors.democrat)
+						if numbers.inds > 0 {
+							Spacer()
+							NumberCell(text: "\(numbers.inds)", color: Colors.independent)
+						}
+						Spacer()
+						NumberCell(text: "\(numbers.reps)", color: Colors.republican)
+						Spacer()
+					}
 				}
-		})
-		)
+				.animation(.easeInOut)
+				Section(header:
+					Picker(selection: $whichList, label: EmptyView()) {
+						ForEach(["Predictions", "Results"]) { choice in
+							Text(choice)
+						}
+					}
+					.pickerStyle(SegmentedPickerStyle())
+					.padding(.horizontal)) {
+						StateChoiceListView(selectedRace: $selectedRace)
+				}
+			}
+			.navigationBarTitle(electionModel.name)
 			.sheet(item: $selectedRace) { (selected) in
-			StateChoiceView(race: selected).environmentObject(self.electionModel)
+				StateChoiceView(race: selected).environmentObject(self.electionModel)
+			}
 		}
 	}
 	
