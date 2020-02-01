@@ -76,7 +76,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 			if let error = error {
 				completion(error)
 			} else if let user = result?.user {
-				Database.database().reference().child("players").child(user.uid).setValue(["name": displayName])
+				Database.database().reference().child("players").child(user.uid).child("name").setValue(displayName)
 				completion(nil)
 			} else {
 				completion(nil)

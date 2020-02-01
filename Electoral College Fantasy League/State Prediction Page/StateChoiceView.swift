@@ -23,7 +23,7 @@ struct StateChoiceView: View {
 						Button(self.model.updated ? "Cancel" : "Dismiss") {
 							self.presentationMode.wrappedValue.dismiss()
 						}
-						.foregroundColor(.red)
+						.foregroundColor(.republican)
 						Spacer()
 						Button("Save") {
 							withAnimation {
@@ -40,6 +40,7 @@ struct StateChoiceView: View {
 								}
 							}
 						}
+						.foregroundColor(!self.model.updated ? nil : Color.democrat)
 						.disabled(!self.model.updated)
 					}
 					.padding()
@@ -83,9 +84,7 @@ struct StateChoiceView: View {
 							if let error = error {
 								self.alertMessage = AlertMessage(text: error.localizedDescription)
 							}
-							debugPrint("Updating Model")
 							self.model.updateRace()
-							debugPrint(self.model.race.type)
 						}
 					}
 					let cancelButton = Alert.Button.cancel(Text("Discard")) {

@@ -45,7 +45,6 @@ struct CreateLeagueView: View {
 						BusyInfoView(text: "Creating \(name)...")
 							.transition(.scale)
 					}
-
 					NavigationLink(destination: MultiPickerView(options: pickerOptions, selected: $selectedOptions), tag: 1, selection: $navigationTag) {
 						EmptyView()
 					}
@@ -57,7 +56,7 @@ struct CreateLeagueView: View {
 				Button("Cancel") {
 					self.presentationMode.wrappedValue.dismiss()
 				}
-				.foregroundColor(.red)
+				.foregroundColor(.republican)
 				, trailing:
 				Button("Create") {
 					self.isSaving = true
@@ -70,6 +69,7 @@ struct CreateLeagueView: View {
 						}
 					}
 				}
+				.foregroundColor(name == "" ? nil : Color.democrat)
 				.disabled(name == "")
 			)
 		}

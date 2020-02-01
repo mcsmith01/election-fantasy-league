@@ -182,11 +182,12 @@ extension Int {
 }
 
 struct RectangleBorder: ViewModifier {
-
+	var lineWidth: CGFloat = 3
+	
 	func body(content: Content) -> some View {
 		content
 			.clipShape(rowShape)
-			.overlay(rowShape.stroke(Color.primary, lineWidth: 3))
+			.overlay(rowShape.stroke(Color.primary, lineWidth: lineWidth))
 	}
 	
 }

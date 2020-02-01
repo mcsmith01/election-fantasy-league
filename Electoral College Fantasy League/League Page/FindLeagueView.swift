@@ -22,7 +22,7 @@ struct FindLeagueView: View {
 					TextField("Search", text: $searchText)
 				}
 				.padding()
-				.modifier(RectangleBorder())
+				.modifier(RectangleBorder(lineWidth: 1))
 			}
 			Section(header: Text("Leagues")) {
 				ForEach(electionModel.election.leagues.filter({ !$0.containsMember(withID: UserData.userID) && $0.searchFilter(searchText) }).sorted()) { league in

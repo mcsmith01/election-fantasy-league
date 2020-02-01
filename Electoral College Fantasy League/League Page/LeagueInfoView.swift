@@ -10,64 +10,77 @@ import SwiftUI
 
 struct LeagueInfoView: View {
 	@EnvironmentObject var electionModel: ElectionModel
+	@State var editMode: EditMode = .inactive
 	var league: League
 	@State var addMember: LeagueMember?
 	@State var declineMember: LeagueMember?
 	@State var removeMember: LeagueMember?
 	
 	var body: some View {
-		List {
-			Section(header: Text("Members")) {
-				ForEach(league.activeMembers) { member in
-					MemberRow(member: member, owner: self.league.owner)
+		VStack {
+			List {
+				Section(header: Text("Members")) {
+					ForEach(league.activeMembers) { member in
+						MemberRow(member: member, owner: self.league.owner)
+					}
+					.onDelete(perform: delete)
 				}
-				.onDelete(perform: delete)
-			}
-			if league.owner == UserData.userID && league.pendingMembers.count > 0 {
-				Section(header: Text("Pending")) {
-					ForEach(league.pendingMembers) { member in
-						HStack {
-							Image(systemName: "plus.circle.fill")
-								.foregroundColor(.green)
-								.alert(item: self.$addMember) { (member) -> Alert in
-									let confirm = Alert.Button.default(Text("Confirm")) {
-										self.electionModel.processLeagueRequest(league: self.league, player: member, accept: true) { (error) in
-											if let error = error {
-												debugPrint("Error accepting member\n\(error)")
+				if league.owner == UserData.userID && league.pendingMembers.count > 0 {
+					Section(header: Text("Pending")) {
+						ForEach(league.pendingMembers) { member in
+							HStack {
+								Image(systemName: "plus.circle.fill")
+									.foregroundColor(.green)
+									.alert(item: self.$addMember) { (member) -> Alert in
+										let confirm = Alert.Button.default(Text("Confirm")) {
+											self.electionModel.processLeagueRequest(league: self.league, player: member, accept: true) { (error) in
+												if let error = error {
+													debugPrint("Error accepting member\n\(error)")
+												}
 											}
 										}
-									}
-									return Alert(title: Text("Add \(member.name) to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
-							}
-							.onTapGesture {
-								self.addMember = member
-							}
-							Text(member.name)
-								.padding(.trailing)
-							Image(systemName: "minus.circle.fill")
-								.foregroundColor(.red)
-								.alert(item: self.$declineMember) { (member) -> Alert in
-									let confirm = Alert.Button.default(Text("Confirm")) {
-										self.electionModel.processLeagueRequest(league: self.league, player: member, accept: false) { (error) in
-											if let error = error {
-												debugPrint("Error accepting member\n\(error)")
+										return Alert(title: Text("Add \(member.name) to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+								}
+								.onTapGesture {
+									self.addMember = member
+								}
+								Text(member.name)
+									.padding(.trailing)
+								Image(systemName: "minus.circle.fill")
+									.foregroundColor(.red)
+									.alert(item: self.$declineMember) { (member) -> Alert in
+										let confirm = Alert.Button.default(Text("Confirm")) {
+											self.electionModel.processLeagueRequest(league: self.league, player: member, accept: false) { (error) in
+												if let error = error {
+													debugPrint("Error accepting member\n\(error)")
+												}
 											}
 										}
-									}
-									return Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+										return Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+								}
+								.onTapGesture {
+									self.declineMember = member
+								}
+								Spacer()
 							}
-							.onTapGesture {
-								self.declineMember = member
-							}
-							Spacer()
+							.foregroundColor(.gray)
+							.padding()
+							.modifier(RectangleBorder())
 						}
-						.foregroundColor(.gray)
-						.padding()
-						.modifier(RectangleBorder())
 					}
 				}
 			}
+			if editMode == .active {
+				Button("Leave League") {
+					debugPrint("Leave")
+				}
+				.foregroundColor(.republican)
+				.padding()
+				.modifier(RectangleBorder())
+			.padding()
+			}
 		}
+			
 		.alert(item: $removeMember) { (member) -> Alert in
 			let primary = Alert.Button.default(Text("Remove")) {
 				self.electionModel.removeFromLeague(league: self.league, player: member) { (error) in
@@ -81,6 +94,7 @@ struct LeagueInfoView: View {
 		.navigationBarItems(trailing: EditButton().disabled(league.owner != UserData.userID))
 		.listStyle(GroupedListStyle())
 		.navigationBarTitle(league.name)
+		.environment(\.editMode, $editMode)
 	}
 	
 	func delete(at offset: IndexSet) {
@@ -88,7 +102,7 @@ struct LeagueInfoView: View {
 			removeMember = league.activeMembers[index]
 		}
 	}
-
+	
 }
 
 //struct LeagueInfoView_Previews: PreviewProvider {

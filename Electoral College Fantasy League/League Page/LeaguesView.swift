@@ -89,7 +89,7 @@ struct LeagueRow: View {
 			}
 			.padding()
 			.background(
-				Image("flag")
+				Image("american_flag")
 					.opacity(0.1)
 			)
 		}
