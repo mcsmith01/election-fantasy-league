@@ -32,10 +32,10 @@ class ElectionAlert: NSObject, Comparable, Identifiable {
 	var time: Date
 	
 	init?(id: String, data: [String: Any]) {
-		guard let text = data["message"] as? String, let rawStatus = data["status"] as? Int, let read = data["read"] as? Bool, let status = Status(rawValue: rawStatus), let timeString = data["time"] as? String, let time = Objects.dateFormatter.date(from: timeString) else { return nil }
+		guard let text = data["message"] as? String, let rawStatus = data["status"] as? Int, let status = Status(rawValue: rawStatus), let timeString = data["time"] as? String, let time = Objects.dateFormatter.date(from: timeString) else { return nil }
 		self.id = id
 		self.text = text
-		self.read = read
+		self.read = data["read"] as? Bool ?? false
 		self.status = status
 		self.time = time
 	}

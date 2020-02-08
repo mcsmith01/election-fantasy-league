@@ -9,12 +9,15 @@
 import SwiftUI
 
 struct LeagueInfoView: View {
+	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var electionModel: ElectionModel
 	@State var editMode: EditMode = .inactive
 	var league: League
 	@State var addMember: LeagueMember?
 	@State var declineMember: LeagueMember?
 	@State var removeMember: LeagueMember?
+	@State var deleteLeague = false
+	@State var leaveLeague = false
 	
 	var body: some View {
 		VStack {
@@ -24,6 +27,16 @@ struct LeagueInfoView: View {
 						MemberRow(member: member, owner: self.league.owner)
 					}
 					.onDelete(perform: delete)
+				}
+				.alert(item: $removeMember) { (member) -> Alert in
+					let primary = Alert.Button.default(Text("Remove")) {
+						self.electionModel.removeFromLeague(league: self.league, playerID: member.id) { (error) in
+							if let error = error {
+								debugPrint("Error removing member from league\n\(error)")
+							}
+						}
+					}
+					return Alert(title: Text("Remove \(member.name) from \(league.name)?"), message: Text("This operation cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 				}
 				if league.owner == UserData.userID && league.pendingMembers.count > 0 {
 					Section(header: Text("Pending")) {
@@ -70,28 +83,55 @@ struct LeagueInfoView: View {
 					}
 				}
 			}
+			Spacer()
 			if editMode == .active {
-				Button("Leave League") {
-					debugPrint("Leave")
-				}
-				.foregroundColor(.republican)
-				.padding()
-				.modifier(RectangleBorder())
-			.padding()
-			}
-		}
-			
-		.alert(item: $removeMember) { (member) -> Alert in
-			let primary = Alert.Button.default(Text("Remove")) {
-				self.electionModel.removeFromLeague(league: self.league, player: member) { (error) in
-					if let error = error {
-						debugPrint("Error removing member from league\n\(error)")
+				if league.owner == UserData.userID {
+					Button("Delete") {
+						self.deleteLeague = true
+					}
+					.padding(.horizontal)
+					.foregroundColor(.white)
+					.background(Color.republican)
+					.clipShape(Capsule())
+					.padding(.bottom)
+					.alert(isPresented: $deleteLeague) { () -> Alert in
+						let primary = Alert.Button.destructive(Text("Delete League")) {
+							self.electionModel.deleteLeague(league: self.league) { (error) in
+								if let error = error {
+									debugPrint("Error deleting league\n\(error)")
+								} else {
+									self.presentationMode.wrappedValue.dismiss()
+								}
+							}
+						}
+						return Alert(title: Text("Delete \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+					}
+				} else {
+					Button("Leave") {
+						self.leaveLeague = true
+					}
+					.padding(.horizontal)
+					.foregroundColor(.white)
+					.background(Color.republican)
+					.clipShape(Capsule())
+					.padding(.bottom)
+					.alert(isPresented: $leaveLeague) { () -> Alert in
+						let primary = Alert.Button.destructive(Text("Leave League")) {
+							self.electionModel.status = "Leaving \(self.league.name)"
+							self.electionModel.removeFromLeague(league: self.league, playerID: UserData.userID) { (error) in
+								self.electionModel.status = nil
+								if let error = error {
+									debugPrint("Error leaving league\n\(error)")
+								}
+								self.presentationMode.wrappedValue.dismiss()
+							}
+						}
+						return Alert(title: Text("Leave \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 					}
 				}
 			}
-			return Alert(title: Text("Remove \(member.name) from \(league.name)?"), message: Text("This operation cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 		}
-		.navigationBarItems(trailing: EditButton().disabled(league.owner != UserData.userID))
+		.navigationBarItems(trailing: EditButton())
 		.listStyle(GroupedListStyle())
 		.navigationBarTitle(league.name)
 		.environment(\.editMode, $editMode)
@@ -123,7 +163,7 @@ struct MemberRow: View {
 			Spacer()
 			Text(String(format: "%.2f", member.score))
 		}
-		.deleteDisabled(owner == member.id)
+		.deleteDisabled(owner == member.id || owner != UserData.userID)
 		.padding()
 		.modifier(RectangleBorder())
 	}

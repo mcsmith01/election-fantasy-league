@@ -56,6 +56,7 @@ struct AlertRow: View {
 				.font(.caption)
 				.foregroundColor(.gray)
 				.frame(alignment: .center)
+				.multilineTextAlignment(.leading)
 			HStack {
 				if alert.status == .info {
 					Image(systemName: "info.circle.fill")

@@ -14,6 +14,7 @@ struct StateChoiceView: View {
 	@ObservedObject var model: StateChoiceModel
 	@State var isSaving = false
 	@State var alertMessage: AlertMessage?
+//	@State var raceID: String
 
 	var body: some View {
 		GeometryReader { geometry in
@@ -29,7 +30,7 @@ struct StateChoiceView: View {
 							withAnimation {
 								self.isSaving = true
 							}
-							self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
+							self.model.savePrediction() { (error) in
 								withAnimation {
 									self.isSaving = false
 								}
@@ -72,29 +73,41 @@ struct StateChoiceView: View {
 					.padding(.horizontal)
 					.frame(alignment: .bottom)
 				}
-				.alert(isPresented: self.$model.showWarning) { () -> Alert in
-					let saveButton = Alert.Button.default(Text("Save")) {
-						withAnimation {
-							self.isSaving = true
-						}
-						self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
-							withAnimation {
-								self.isSaving = false
-							}
-							if let error = error {
-								self.alertMessage = AlertMessage(text: error.localizedDescription)
-							}
-							self.model.updateRace()
-						}
-					}
-					let cancelButton = Alert.Button.cancel(Text("Discard")) {
-						self.model.updateRace()
-					}
-					return Alert(title: Text("Save changes made to \(self.model.race.state) \(String(describing: self.model.race.type).capitalized) race?"), primaryButton: saveButton, secondaryButton: cancelButton)
-				}
+//				.alert(isPresented: self.$model.showWarning) { () -> Alert in
+//					let saveButton = Alert.Button.default(Text("Save")) {
+//						withAnimation {
+//							self.isSaving = true
+//						}
+//						self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
+//							withAnimation {
+//								self.isSaving = false
+//							}
+//							if let error = error {
+//								self.alertMessage = AlertMessage(text: error.localizedDescription)
+//							}
+//							self.model.updateRace()
+//						}
+//					}
+//					let cancelButton = Alert.Button.cancel(Text("Discard")) {
+//						self.model.updateRace()
+//					}
+//					return Alert(title: Text("Save changes made to \(self.model.race.state) \(String(describing: self.model.race.type).capitalized) race?"), primaryButton: saveButton, secondaryButton: cancelButton)
+//				}
 				.blur(radius: self.isSaving ? 3 : 0)
 				.disabled(self.isSaving)
+//				.onReceive(self.model.$showWarning) { (show) in
+//					debugPrint("Show warning: \(show)")
+//					if show {
+//						self.electionModel.savePrediction(self.model.numbers, forRace: self.model.race) { (error) in
+//							if let error = error {
+//								debugPrint("Error saving prediction\n\(error)")
+//							}
+//						}
+//						self.model.updateRace()
+//					}
+//				}
 				.onAppear {
+					debugPrint("Appeared")
 					self.model.updateRace()
 				}
 				if self.isSaving {

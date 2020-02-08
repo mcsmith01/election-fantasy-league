@@ -45,7 +45,8 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 	}
 
 	func updateFrom(_ data: [String: Any]) {
-		guard let members = data["members"] as? [String: [String: Any]] else { return }
+		guard let name = data["name"] as? String, let members = data["members"] as? [String: [String: Any]] else { return }
+		self.name = name
 		allMembers.removeAll()
 		for (memberID, info) in members {
 			if let member = LeagueMember(id: memberID, data: info) {
@@ -65,7 +66,7 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 		if text == "" {
 			return true
 		} else {
-			return  name.contains(text)
+			return name.contains(text)
 		}
 	}
 	

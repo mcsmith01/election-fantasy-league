@@ -11,11 +11,13 @@ import SwiftUI
 struct LeaguesView: View {
 	@EnvironmentObject var electionModel: ElectionModel
 	@State var navigationTag: Int?
+	@State var findLeague = false
 	@State var joinLeague: League?
+	@State var withdrawApplication: League?
 	
 	var body: some View {
 		NavigationView {
-			VStack {
+			ZStack {
 				List {
 					ForEach(electionModel.election.leagues.filter({ $0.activeMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
 						NavigationLink(destination: LeagueInfoView(league: league)) {
@@ -23,6 +25,18 @@ struct LeaguesView: View {
 						}
 						.padding(.trailing)
 						.modifier(RectangleBorder())
+					}
+					.alert(item: $withdrawApplication) { (league) -> Alert in
+						let primary = Alert.Button.destructive(Text("Withdraw")) {
+							self.electionModel.status = "Withdrawing application to \(league.name)"
+							self.electionModel.removeFromLeague(league: league, playerID: UserData.userID) { (error) in
+								self.electionModel.status = nil
+								if let error = error {
+									debugPrint("Error withdrawing application to league\n\(error)")
+								}
+							}
+						}
+						return Alert(title: Text("Withdraw application to \(league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 					}
 					if electionModel.election.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).count > 0 {
 						Section(header: Text("Pending Leagues")) {
@@ -35,16 +49,28 @@ struct LeaguesView: View {
 						}
 					}
 				}
-				NavigationLink(destination: FindLeagueView()) {
-					Text("Find a League")
-						.foregroundColor(.primary)
-						.padding()
-						.modifier(RectangleBorder())
-						.padding(.bottom)
+				VStack {
+					Spacer()
+					HStack {
+						Spacer()
+						Button("Find a League") { self.findLeague = true }
+							.padding()
+							.background(Color.democrat)
+							.foregroundColor(.white)
+							.clipShape(Capsule())
+							.padding(.vertical)
+						Button("Create a League") { self.navigationTag = 1 }
+							.padding()
+							.background(Color.democrat)
+							.foregroundColor(.white)
+							.clipShape(Capsule())
+						Spacer()
+						NavigationLink(destination: FindLeagueView(), isActive: $findLeague, label: { EmptyView() })
+					}
+					.background(Color.white.opacity(0.9))
 				}
 			}
 			.navigationBarTitle("My Leagues")
-			.navigationBarItems(trailing: Button("Create") { self.navigationTag = 1 })
 			.sheet(item: $navigationTag) { (tag) in
 				if tag == 1 {
 					CreateLeagueView()

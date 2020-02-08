@@ -180,6 +180,10 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 				self.refresh.toggle()
 			}
 		}
+		electionRef.child("leagues").observe(.childRemoved) { (snapshot) in
+			election.removeLeague(withID: snapshot.key)
+			self.refresh.toggle()
+		}
 		playerRef.child("elections").child(election.id).child("alerts").observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				election.updateOrCreateAlert(withID: snapshot.key, data: data)
@@ -198,6 +202,10 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		if election != nil {
 			electionRef.child("races").removeAllObservers()
 			electionRef.child("predictions").removeAllObservers()
+			electionRef.child("leagues").removeAllObservers()
+			playerRef.child("elections").child(election.id).child("alerts").removeAllObservers()
+			electionRef.child("predictions").queryOrdered(byChild: "owner").queryEqual(toValue: UserData.userID).removeAllObservers()
+			
 		}
 	}
 
@@ -209,13 +217,13 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		print("Logged in")
 	}
 	
-	func savePrediction(_ numbers: [String: Int], forRace race: Race, completion: @escaping (Error?) -> Void) {
-		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": race.id]
-		Functions.functions().httpsCallable("makePrediction").call(payload) {
-			(_, error) in
-			completion(error)
-		}
-	}
+//	func savePrediction(_ numbers: [String: Int], forRace race: Race, completion: @escaping (Error?) -> Void) {
+//		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": race.id]
+//		Functions.functions().httpsCallable("makePrediction").call(payload) {
+//			(_, error) in
+//			completion(error)
+//		}
+//	}
 	
 	func createLeague(name: String, isOpen: Bool, raceTypes: [Int], completion: @escaping (Error?) -> Void) {
 		let payload: [String: Any] = ["name": name, "isOpen": isOpen, "races": raceTypes, "election": election.id]
@@ -250,10 +258,19 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		}
 	}
 	
-	func removeFromLeague(league: League, player: LeagueMember, completion: @escaping (Error?) -> Void) {
-		status = "Leaving \(league.name)"
-		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": player.id]
+	func removeFromLeague(league: League, playerID: String, completion: @escaping (Error?) -> Void) {
+		status = "Leaving \(league.name)..."
+		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": playerID]
 		Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in
+			self.status = nil
+			completion(error)
+		}
+	}
+	
+	func deleteLeague(league: League, completion: @escaping (Error?) -> Void) {
+		status = "Deleting \(league.name)..."
+		let payload: [String: Any] = ["league": league.id, "election": election.id]
+		Functions.functions().httpsCallable("deleteLeague").call(payload) { (_, error) in
 			self.status = nil
 			completion(error)
 		}

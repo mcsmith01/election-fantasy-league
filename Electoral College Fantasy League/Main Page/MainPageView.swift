@@ -15,6 +15,7 @@ struct MainPageView: View {
 	@State var navigationTag: Int?
 	@State var mapOffset = CGSize.zero
 	@State var showMap = true
+	//	@State var
 	var numbers: (dems: Int, inds: Int, reps: Int, total: Int) {
 		get {
 			return electionModel.getNumbers()
@@ -32,24 +33,38 @@ struct MainPageView: View {
 				.pickerStyle(SegmentedPickerStyle())
 				.padding(.horizontal)
 				ZStack(alignment: .bottom) {
-					ZStack {
+					if showMap {
 						ElectionMapView()
 							.padding(.bottom)
-							.opacity(showMap ? 1.0 : 0.0)
+							.transition(.scale(scale: 0.0, anchor: .top))
 					}
 					HStack {
 						Spacer()
-						NumberCell(text: "\(numbers.dems)", color: Colors.democrat)
+						NumberCell(text: "\(numbers.dems)", color: Colors.democrat, oversized: !showMap)
 						if numbers.inds > 0 {
 							Spacer()
-							NumberCell(text: "\(numbers.inds)", color: Colors.independent)
+							NumberCell(text: "\(numbers.inds)", color: Colors.independent, oversized: !showMap)
 						}
 						Spacer()
-						NumberCell(text: "\(numbers.reps)", color: Colors.republican)
+						NumberCell(text: "\(numbers.reps)", color: Colors.republican, oversized: !showMap)
 						Spacer()
 					}
 				}
 				.animation(.easeInOut)
+				.gesture(
+					DragGesture()
+						.onEnded { (value) in
+							if value.translation.height < -50 {
+								withAnimation {
+									self.showMap = false
+								}
+							} else if value.translation.height > 25 {
+								withAnimation {
+									self.showMap = true
+								}
+							}
+					}
+				)
 				Section(header:
 					Picker(selection: $whichList, label: EmptyView()) {
 						ForEach(["Predictions", "Results"]) { choice in
@@ -83,9 +98,11 @@ struct MainPageView: View {
 struct NumberCell: View {
 	var text: String
 	var color: Color
+	var oversized: Bool
 	
 	var body: some View {
 		Text(text)
+			.font(oversized ? Font.largeTitle : Font.body)
 			.foregroundColor(.white)
 			.padding(.horizontal)
 			.background(color.opacity(0.65))
@@ -93,8 +110,10 @@ struct NumberCell: View {
 			.overlay(Capsule().stroke(color, lineWidth: 2))
 	}
 	
-	init(text: String, color: UIColor) {
+	init(text: String, color: UIColor, oversized: Bool) {
 		self.text = text
 		self.color = Color(color)
+		self.oversized = oversized
 	}
+	
 }

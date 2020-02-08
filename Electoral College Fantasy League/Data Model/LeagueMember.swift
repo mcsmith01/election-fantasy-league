@@ -43,7 +43,8 @@ class LeagueMember: NSObject, Identifiable, Comparable {
 	}
 	
 	func updateFrom(_ data: [String: Any]) {
-		guard let member = data["member"] as? Bool else { return }
+		guard let name = data["name"] as? String, let member = data["member"] as? Bool else { return }
+		self.name = name
 		self.member = member
 	}
 	

@@ -8,11 +8,13 @@
 
 import Foundation
 import SwiftUI
-
+import Firebase
+		
 class StateChoiceModel: ObservableObject {
 
 	@Published var race: Race {
 		didSet {
+			debugPrint("Race Changed")
 			if let prediction = race.prediction?.prediction {
 				if race.type == .house || race.splits {
 					demNum = Double(prediction["d"] ?? 0)
@@ -30,6 +32,7 @@ class StateChoiceModel: ObservableObject {
 					candidateID = ""
 				}
 			}
+			updated = false
 		}
 	}
 	var allRaces: [Race] {
@@ -39,11 +42,7 @@ class StateChoiceModel: ObservableObject {
 	}
 	var raceID: String {
 		didSet {
-			if updated {
-				showWarning = true
-			} else {
-				updateRace()
-			}
+			updateRace()
 		}
 	}
 	@Published var candidateID: String = "" { didSet { updated = true } }
@@ -57,7 +56,6 @@ class StateChoiceModel: ObservableObject {
 		return race.seats
 	}
 	var updated = false
-	@Published var showWarning = false
 	var numbers: [String: Int] {
 		get {
 			let numbers: [String: Int]
@@ -69,6 +67,7 @@ class StateChoiceModel: ObservableObject {
 			return numbers
 		}
 	}
+	@Published var saving = false
 	
 	init(race: Race) {
 		self.race = race
@@ -76,8 +75,21 @@ class StateChoiceModel: ObservableObject {
 	}
 	
 	func updateRace() {
-		self.race = allRaces.first(where: { $0.id == raceID })!
-		updated = false
+		if updated {
+			self.saving = true
+			savePrediction() { (error) in
+				self.saving = false
+				if let error = error {
+					debugPrint("Error saving race on transition\n\(error)")
+				}
+				debugPrint(self.numbers)
+				debugPrint(self.race.type)
+				debugPrint(self.race.state)
+			}
+			self.race = self.allRaces.first(where: { $0.id == self.raceID })!
+		} else {
+			self.race = self.allRaces.first(where: { $0.id == self.raceID })!
+		}
 	}
 
 	func colorForPrediction() -> Color {
@@ -89,6 +101,16 @@ class StateChoiceModel: ObservableObject {
 			} else {
 				return Color(candidate: nil)
 			}
+		}
+	}
+	
+	func savePrediction(completion: @escaping (Error?) -> Void) {
+		debugPrint("Saving Prediction")
+		let payload: [String: Any] = ["prediction": numbers, "election": race.election.id, "race": race.id]
+		Functions.functions().httpsCallable("makePrediction").call(payload) {
+			(_, error) in
+			debugPrint("Prediction Saved")
+			completion(error)
 		}
 	}
 	

@@ -79,6 +79,12 @@ class Election: NSObject, Comparable {
 		}
 	}
 	
+	func removeLeague(withID id: String) {
+		if let league = leagues.first(where: { $0.id == id }) {
+			leagues.remove(league)
+		}
+	}
+	
 	func unreadAlerts() -> Bool {
 		return alerts.contains(where: { !$0.read })
 	}
