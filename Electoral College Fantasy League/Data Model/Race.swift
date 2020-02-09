@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Race: NSObject, Identifiable, Comparable {
+class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	
 	static func < (lhs: Race, rhs: Race) -> Bool {
 		if lhs.state != rhs.state {
@@ -28,8 +28,9 @@ class Race: NSObject, Identifiable, Comparable {
 	var state: String
 	var type: RaceType
 	var candidates: [String: String]?
+	var safety: [String: Int]?
 	var results: [String: Int]?
-	var prediction: Prediction?
+	@Published var prediction: Prediction?
 	var seats: Int {
 		get {
 			var count = 0
@@ -54,6 +55,9 @@ class Race: NSObject, Identifiable, Comparable {
 			isActive = true
 		} else {
 			isActive = false
+		}
+		if let safety = data["safety"] as? [String: Int] {
+			self.safety = safety
 		}
 		if let splits = data["splits"] as? Bool {
 			self.splits = splits

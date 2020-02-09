@@ -15,7 +15,7 @@ struct MainPageView: View {
 	@State var navigationTag: Int?
 	@State var mapOffset = CGSize.zero
 	@State var showMap = true
-	//	@State var
+
 	var numbers: (dems: Int, inds: Int, reps: Int, total: Int) {
 		get {
 			return electionModel.getNumbers()
@@ -78,7 +78,7 @@ struct MainPageView: View {
 			}
 			.navigationBarTitle(electionModel.name)
 			.sheet(item: $selectedRace) { (selected) in
-				StateChoiceView(race: selected).environmentObject(self.electionModel)
+				StateChoiceView(race: selected)
 			}
 		}
 	}

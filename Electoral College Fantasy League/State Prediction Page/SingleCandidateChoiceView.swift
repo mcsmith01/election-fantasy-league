@@ -21,12 +21,15 @@ struct SingleCandidateChoiceView: View {
 	}
 	
 	var body: some View {
+		VStack {
 			Picker(selection: $model.candidateID, label: EmptyView()) {
 				ForEach(partyList, id: \.self) { party in
 					Text(self.candidates[party] ?? "Too Close to Call")
 				}
 			}
 			.pickerStyle(SegmentedPickerStyle())
+			Spacer()
+		}
 	}
 	
 }

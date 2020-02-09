@@ -14,7 +14,6 @@ class StateChoiceModel: ObservableObject {
 
 	@Published var race: Race {
 		didSet {
-			debugPrint("Race Changed")
 			if let prediction = race.prediction?.prediction {
 				if race.type == .house || race.splits {
 					demNum = Double(prediction["d"] ?? 0)
@@ -42,7 +41,12 @@ class StateChoiceModel: ObservableObject {
 	}
 	var raceID: String {
 		didSet {
-			updateRace()
+					if updated {
+						showWarning = true
+					} else {
+						updateRace()
+					}
+			
 		}
 	}
 	@Published var candidateID: String = "" { didSet { updated = true } }
@@ -67,29 +71,16 @@ class StateChoiceModel: ObservableObject {
 			return numbers
 		}
 	}
-	@Published var saving = false
+	@Published var saving: Bool = false
+	@Published var showWarning: Bool = false
 	
 	init(race: Race) {
 		self.race = race
-		raceID = race.id
+		self.raceID = race.id
 	}
 	
 	func updateRace() {
-		if updated {
-			self.saving = true
-			savePrediction() { (error) in
-				self.saving = false
-				if let error = error {
-					debugPrint("Error saving race on transition\n\(error)")
-				}
-				debugPrint(self.numbers)
-				debugPrint(self.race.type)
-				debugPrint(self.race.state)
-			}
-			self.race = self.allRaces.first(where: { $0.id == self.raceID })!
-		} else {
-			self.race = self.allRaces.first(where: { $0.id == self.raceID })!
-		}
+		self.race = self.allRaces.first(where: { $0.id == self.raceID })!
 	}
 
 	func colorForPrediction() -> Color {
@@ -105,11 +96,11 @@ class StateChoiceModel: ObservableObject {
 	}
 	
 	func savePrediction(completion: @escaping (Error?) -> Void) {
-		debugPrint("Saving Prediction")
+		saving = true
 		let payload: [String: Any] = ["prediction": numbers, "election": race.election.id, "race": race.id]
 		Functions.functions().httpsCallable("makePrediction").call(payload) {
 			(_, error) in
-			debugPrint("Prediction Saved")
+			self.saving = false
 			completion(error)
 		}
 	}

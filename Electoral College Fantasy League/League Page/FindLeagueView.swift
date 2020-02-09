@@ -25,7 +25,7 @@ struct FindLeagueView: View {
 				.modifier(RectangleBorder(lineWidth: 1))
 			}
 			Section(header: Text("Leagues")) {
-				ForEach(electionModel.election.leagues.filter({ !$0.containsMember(withID: UserData.userID) && $0.searchFilter(searchText) }).sorted()) { league in
+				ForEach(electionModel.leaguesModel.leagues.filter({ !$0.containsMember(withID: UserData.userID) && $0.searchFilter(searchText) }).sorted()) { league in
 					LeagueRow(league: league)
 						.padding(.trailing)
 						.modifier(RectangleBorder())

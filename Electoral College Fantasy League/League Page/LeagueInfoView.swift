@@ -58,7 +58,6 @@ struct LeagueInfoView: View {
 									self.addMember = member
 								}
 								Text(member.name)
-									.padding(.trailing)
 								Image(systemName: "minus.circle.fill")
 									.foregroundColor(.red)
 									.alert(item: self.$declineMember) { (member) -> Alert in

@@ -9,13 +9,14 @@
 import SwiftUI
 
 struct AlertsView: View {
+	@ObservedObject var alertsModel: AlertsModel
 	@EnvironmentObject var electionModel: ElectionModel
 	@State var viewedAlerts = Set<String>()
 	
     var body: some View {
 		NavigationView {
 			List {
-				ForEach(electionModel.election.alerts) { alert in
+				ForEach(alertsModel.alerts) { alert in
 					AlertRow(alert: alert)
 //						.modifier(RectangleBorder())
 						.onAppear() {
@@ -36,14 +37,16 @@ struct AlertsView: View {
     }
 }
 
-struct AlertsView_Previews: PreviewProvider {
-    static var previews: some View {
-        AlertsView()
-    }
-}
+//struct AlertsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AlertsView()
+//    }
+//}
 
 struct AlertRow: View {
+	
 	var alert: ElectionAlert
+	
 	let dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "EEE MMM dd, h:mm:ss a"

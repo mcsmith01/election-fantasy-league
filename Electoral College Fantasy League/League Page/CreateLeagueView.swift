@@ -50,13 +50,18 @@ struct CreateLeagueView: View {
 					}
 				}
 			}
+			.disabled(isSaving)
+			.blur(radius: isSaving ? 3.0 : 0.0)
 			.navigationBarTitle("Create League", displayMode: .inline)
 			.navigationBarBackButtonHidden(true)
 			.navigationBarItems(leading:
 				Button("Cancel") {
 					self.presentationMode.wrappedValue.dismiss()
 				}
-				.foregroundColor(.republican)
+				.foregroundColor(.white)
+				.padding(.horizontal)
+				.background(Color.republican)
+				.clipShape(Capsule())
 				, trailing:
 				Button("Create") {
 					self.isSaving = true
@@ -69,7 +74,10 @@ struct CreateLeagueView: View {
 						}
 					}
 				}
-				.foregroundColor(name == "" ? nil : Color.democrat)
+				.foregroundColor(.white)
+				.padding(.horizontal)
+				.background(name == "" ? Color.gray : Color.democrat)
+				.clipShape(Capsule())
 				.disabled(name == "")
 			)
 		}

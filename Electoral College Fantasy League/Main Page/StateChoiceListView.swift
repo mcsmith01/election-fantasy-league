@@ -31,8 +31,7 @@ struct StateChoiceListView: View {
 //}
 
 struct StateRow: View {
-	@EnvironmentObject var electionModel: ElectionModel
-	var race: Race
+	@ObservedObject var race: Race
 	var color: Color {
 		if let prediction = race.prediction {
 			return Color(Colors.getColor(for: prediction.prediction))
@@ -49,7 +48,7 @@ struct StateRow: View {
 				color
 			}
 			HStack {
-				Text(race.state)
+				Text("\(race.state)\(race.type == .president || race.type == .house ? " (\(race.seats))" : "")")
 				Spacer()
 				Image(systemName: "chevron.right")
 			}

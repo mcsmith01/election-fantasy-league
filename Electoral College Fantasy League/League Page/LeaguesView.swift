@@ -17,66 +17,52 @@ struct LeaguesView: View {
 	
 	var body: some View {
 		NavigationView {
-			ZStack {
-				List {
-					ForEach(electionModel.election.leagues.filter({ $0.activeMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
-						NavigationLink(destination: LeagueInfoView(league: league)) {
-							LeagueRow(league: league)
-						}
-						.padding(.trailing)
-						.modifier(RectangleBorder())
+			List {
+				ForEach(electionModel.leaguesModel.leagues.filter({ $0.activeMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
+					NavigationLink(destination: LeagueInfoView(league: league)) {
+						LeagueRow(league: league)
 					}
-					.alert(item: $withdrawApplication) { (league) -> Alert in
-						let primary = Alert.Button.destructive(Text("Withdraw")) {
-							self.electionModel.status = "Withdrawing application to \(league.name)"
-							self.electionModel.removeFromLeague(league: league, playerID: UserData.userID) { (error) in
-								self.electionModel.status = nil
-								if let error = error {
-									debugPrint("Error withdrawing application to league\n\(error)")
-								}
-							}
-						}
-						return Alert(title: Text("Withdraw application to \(league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
-					}
-					if electionModel.election.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).count > 0 {
-						Section(header: Text("Pending Leagues")) {
-							ForEach(electionModel.election.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
-								LeagueRow(league: league)
-									.foregroundColor(.gray)
-									.modifier(RectangleBorder())
-							}
-							.onDelete(perform: removeAppliction)
-						}
-					}
+					.padding(.trailing)
+					.modifier(RectangleBorder())
 				}
-				VStack {
-					Spacer()
-					HStack {
-						Spacer()
-						Button("Find a League") { self.findLeague = true }
-							.padding()
-							.background(Color.democrat)
-							.foregroundColor(.white)
-							.clipShape(Capsule())
-							.padding(.vertical)
-						Button("Create a League") { self.navigationTag = 1 }
-							.padding()
-							.background(Color.democrat)
-							.foregroundColor(.white)
-							.clipShape(Capsule())
-						Spacer()
-						NavigationLink(destination: FindLeagueView(), isActive: $findLeague, label: { EmptyView() })
+				.alert(item: $withdrawApplication) { (league) -> Alert in
+					let primary = Alert.Button.destructive(Text("Withdraw")) {
+						self.electionModel.status = "Withdrawing application to \(league.name)"
+						self.electionModel.removeFromLeague(league: league, playerID: UserData.userID) { (error) in
+							self.electionModel.status = nil
+							if let error = error {
+								debugPrint("Error withdrawing application to league\n\(error)")
+							}
+						}
 					}
-					.background(Color.white.opacity(0.9))
+					return Alert(title: Text("Withdraw application to \(league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+				}
+				if electionModel.leaguesModel.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).count > 0 {
+					Section(header: Text("Pending Leagues")) {
+						ForEach(electionModel.leaguesModel.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
+							LeagueRow(league: league)
+								.foregroundColor(.gray)
+								.modifier(RectangleBorder())
+						}
+						.onDelete(perform: removeAppliction)
+					}
 				}
 			}
-			.navigationBarTitle("My Leagues")
 			.sheet(item: $navigationTag) { (tag) in
 				if tag == 1 {
 					CreateLeagueView()
 						.environmentObject(self.electionModel)
 				}
 			}
+			.navigationBarTitle("My Leagues")
+			.navigationBarItems(trailing:
+				HStack {
+					Button(action: { self.findLeague = true }, label: { Image(systemName: "magnifyingglass.circle.fill") })
+					Button(action: { self.navigationTag = 1 }, label: { Image(systemName: "plus.circle.fill") })
+					NavigationLink(destination: FindLeagueView(), isActive: $findLeague, label: { EmptyView() })
+				}
+				.imageScale(Image.Scale.large)
+			)
 		}
 	}
 	

@@ -31,14 +31,16 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	@Published var status: String?
 	@Published var state = LoginState.logInBegan
 	@Published var logInType = LoginType.none
-	@Published var refresh = false
 	@Published var raceType: RaceType = .house
-	@Published var isSaving = false
+//	@Published var isSaving = false
+
 	var name: String {
 		return election.name
 	}
 	var elections = [Election]()
 	var election: Election!
+	var leaguesModel = LeaguesModel()
+	var alertsModel = AlertsModel()
 	var electionRef: DatabaseReference {
 		return Database.database().reference().child("elections").child(election.id)
 	}
@@ -124,7 +126,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 			self.electionRef.child("leagues").observeSingleEvent(of: .value) { (snapshot) in
 				for snap in snapshot.children {
 					if let child = snap as? DataSnapshot, let data = child.value as? [String: Any] {
-						election.updateOrCreateLeague(withID: child.key, data: data)
+						self.leaguesModel.updateOrCreateLeague(withID: child.key, data: data)
 					}
 				}
 				
@@ -153,47 +155,39 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		electionRef.child("races").observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				election.updateOrCreateRace(withID: snapshot.key, data: data)
-				self.refresh.toggle()
 			}
 		}
 		predictionQuery.observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
-				self.refresh.toggle()
 			}
 		}
 		predictionQuery.observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
-				self.refresh.toggle()
 			}
 		}
 		electionRef.child("leagues").observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
-				election.updateOrCreateLeague(withID: snapshot.key, data: data)
-				self.refresh.toggle()
+				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
 		electionRef.child("leagues").observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
-				election.updateOrCreateLeague(withID: snapshot.key, data: data)
-				self.refresh.toggle()
+				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
 		electionRef.child("leagues").observe(.childRemoved) { (snapshot) in
-			election.removeLeague(withID: snapshot.key)
-			self.refresh.toggle()
+			self.leaguesModel.removeLeague(withID: snapshot.key)
 		}
 		playerRef.child("elections").child(election.id).child("alerts").observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
-				election.updateOrCreateAlert(withID: snapshot.key, data: data)
-				self.refresh.toggle()
+				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
 		}
 		playerRef.child("elections").child(election.id).child("alerts").observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
-				election.updateOrCreateAlert(withID: snapshot.key, data: data)
-				self.refresh.toggle()
+				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
 		}
 	}
@@ -217,13 +211,13 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		print("Logged in")
 	}
 	
-//	func savePrediction(_ numbers: [String: Int], forRace race: Race, completion: @escaping (Error?) -> Void) {
-//		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": race.id]
-//		Functions.functions().httpsCallable("makePrediction").call(payload) {
-//			(_, error) in
-//			completion(error)
-//		}
-//	}
+	func savePrediction(_ numbers: [String: Int], forRaceWithID raceID: String, completion: ((Error?) -> Void)?) {
+		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": raceID]
+		Functions.functions().httpsCallable("makePrediction").call(payload) {
+			(_, error) in
+			completion?(error)
+		}
+	}
 	
 	func createLeague(name: String, isOpen: Bool, raceTypes: [Int], completion: @escaping (Error?) -> Void) {
 		let payload: [String: Any] = ["name": name, "isOpen": isOpen, "races": raceTypes, "election": election.id]
@@ -284,11 +278,11 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	}
 	
 	func getNumbers() -> (dems: Int, inds: Int, reps: Int, total: Int) {
-//		debugPrint("Got Numbers")
 		var dems = 0
 		var inds = 0
 		var reps = 0
 		var total = 0
+		
 		for race in election.racesOfType(raceType) {
 			if let prediction = race.prediction {
 				for (party, count) in prediction.prediction {
@@ -301,11 +295,33 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 					}
 				}
 			}
-			for (_, count) in race.incumbency {
+			for count in race.incumbency.values {
 				total += count
 			}
 		}
 		return (dems: dems, inds: inds, reps: reps, total: total)
+	}
+	
+	func getSafety() -> (dems: Int, inds: Int, reps: Int) {
+		guard raceType == .senate || raceType == .governor else { return (0, 0, 0) }
+		var dems = 0
+		var inds = 0
+		var reps = 0
+
+		for race in election.racesOfType(raceType) {
+			if let safety = race.safety {
+				for (party, count) in safety {
+					if party.starts(with: "d") {
+						dems += count
+					} else if party.starts(with: "i") {
+						inds += count
+					} else if party.starts(with: "r") {
+						reps += count
+					}
+				}
+			}
+		}
+		return (dems: dems, inds: inds, reps: reps)
 	}
 
 }
