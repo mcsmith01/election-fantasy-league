@@ -64,28 +64,28 @@ struct Colors {
 	static let independent = blend(dems: 0, inds: 1, reps: 0, tctc: 0)
 	static let tooClose = blend(dems: 0, inds: 0, reps: 0, tctc: 1)
 	
-	static func getColor(for prediction: [String: Int]?) -> UIColor {
-		if let prediction = prediction {
-			var demNumber = 0
-			var indNumber = 0
-			var repNumber = 0
-			var tccNumber = 0
-			for (party, num) in prediction {
-				if party.starts(with: "d") {
-					demNumber += num
-				} else if party.starts(with: "r") {
-					repNumber += num
-				} else if party.starts(with: "i") {
-					indNumber += num
-				} else if party.starts(with: "t") {
-					tccNumber += num
-				}
-			}
-			return Colors.blend(dems: demNumber, inds: indNumber, reps: repNumber, tctc: tccNumber)
-		} else {
-			return .darkGray
-		}
-	}
+//	static func getColor(for prediction: [String: Int]?) -> UIColor {
+//		if let prediction = prediction {
+//			var demNumber = 0
+//			var indNumber = 0
+//			var repNumber = 0
+//			var tccNumber = 0
+//			for (party, num) in prediction {
+//				if party.starts(with: "d") {
+//					demNumber += num
+//				} else if party.starts(with: "r") {
+//					repNumber += num
+//				} else if party.starts(with: "i") {
+//					indNumber += num
+//				} else if party.starts(with: "t") {
+//					tccNumber += num
+//				}
+//			}
+//			return Colors.blend(dems: demNumber, inds: indNumber, reps: repNumber, tctc: tccNumber)
+//		} else {
+//			return .darkGray
+//		}
+//	}
 	
 	private static func blend(dems: Int, inds: Int, reps: Int, tctc: Int) -> UIColor {
 		let total = Float(dems + inds + reps + tctc)
@@ -147,28 +147,55 @@ struct Colors {
 
 extension Color {
 	
+	private static var dem: (r: Double, g: Double, b: Double) = (r: 35, g: 32, b: 102)
+	private static var ind: (r: Double, g: Double, b: Double) = (r: 0, g: 190, b: 97)
+	private static var rep: (r: Double, g: Double, b: Double) = (r: 233, g: 29, b: 14)
+	private static var tcc: (r: Double, g: Double, b: Double) = (r: 102, g: 51, b: 153)
+
 	static var democrat: Color {
-		return Color(Colors.democrat)
+		return Color(red: dem.r / 255.0, green: dem.g / 255.0, blue: dem.b / 255.0)
 	}
 
 	static var independent: Color {
-		return Color(Colors.independent)
+		return Color(red: ind.r / 255.0, green: ind.g / 255.0, blue: ind.b / 255.0)
 	}
 
 	static var republican: Color {
-		return Color(Colors.republican)
-	}
-
-	init(candidate: String?) {
-		if let candidate = candidate {
-			self.init(Colors.getColor(for: [candidate: 1]))
-		} else {
-			self.init(Colors.getColor(for: nil))
-		}
+		return Color(red: rep.r / 255.0, green: rep.g / 255.0, blue: rep.b / 255.0)
 	}
 	
-	init(dems: Int, inds: Int, reps: Int, tctc: Int) {
-		self.init(Colors.getColor(for: ["d": dems, "i": inds, "r": reps, "t": tctc]))
+	static var tooCloseToCall: Color {
+		return Color(red: tcc.r / 255.0, green: tcc.g / 255.0, blue: tcc.b / 255.0)
+	}
+
+	private static func blend(dems: Double, inds: Double, reps: Double, tctc: Double) -> Color {
+		let total = dems + inds + reps + tctc
+		let red = (dem.r * dems + ind.r * inds + rep.r * reps + tcc.r * tctc) / total
+		let green = (dem.g * dems + ind.g * inds + rep.g * reps + tcc.g * tctc) / total
+		let blue = (dem.b * dems + ind.b * inds + rep.b * reps + tcc.b * tctc) / total
+		return Color(red: red / 255, green: green / 255, blue: blue / 255)
+	}
+	
+	static func blend(_ numbers: [String: Int]) -> Color {
+		if numbers.count == 0 || (numbers.count == 1 && numbers.keys.first! == "") {
+			return .gray
+		}
+		var dems = 0
+		var inds = 0
+		var reps = 0
+		var tctc = 0
+		for (key, count) in numbers {
+			if key.starts(with: "d") {
+				dems += count
+			} else if key.starts(with: "i") {
+				inds += count
+			} else if key.starts(with: "r") {
+				reps += count
+			} else if key.starts(with: "t") {
+				tctc += count
+			}
+		}
+		return blend(dems: Double(dems), inds: Double(inds), reps: Double(reps), tctc: Double(tctc))
 	}
 	
 }

@@ -42,15 +42,26 @@ struct StateChoiceView: View {
 						.disabled(!self.model.updated)
 					}
 					.padding()
-					Text("\(self.model.race.state)\(self.model.race.type == .president ? " (\(self.model.race.seats))" : "")")
+					Text("\(self.model.race.state)\(self.model.race.type == .president || self.model.race.type == .house ? " (\(self.model.race.seats))" : "")")
 						.font(.title)
-					Image(self.model.race.state)
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(height: geometry.size.height / 2)
-						.colorMultiply(self.model.colorForPrediction())
-						.shadow(color: .gray, radius: 5)
-						.animation(.easeInOut)
+					ZStack {
+						Image(self.model.race.state)
+							.resizable()
+							.aspectRatio(contentMode: .fit)
+							.frame(height: geometry.size.height / 2.5)
+							.colorMultiply(self.model.colorForPrediction())
+							.shadow(color: .gray, radius: 5)
+							.animation(.easeInOut)
+						if self.model.called {
+							Image(self.model.race.state)
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.frame(height: geometry.size.height / 2.5)
+								.colorMultiply(self.model.colorForResults())
+								.animation(.easeInOut)
+								.clipShape(Triangle())
+						}
+					}
 					if self.model.race.type == .house || self.model.race.splits {
 						MultipleCandidateChoiceView(model: self.model)
 							.padding(.horizontal)
@@ -67,7 +78,7 @@ struct StateChoiceView: View {
 						}
 					}
 					.pickerStyle(SegmentedPickerStyle())
-					.padding(.horizontal)
+					.padding([.horizontal, .bottom])
 				}
 				.blur(radius: self.model.saving ? 3 : 0)
 				.disabled(self.model.saving)
@@ -96,8 +107,8 @@ struct StateChoiceView: View {
 		}
 	}
 	
-	init(race: Race) {
-		self.model = StateChoiceModel(race: race)
+	init(race: Race, isClosed: Bool) {
+		self.model = StateChoiceModel(race: race, isClosed: isClosed)
 	}
 	
 }
@@ -108,22 +119,22 @@ struct StateChoiceView: View {
 //	}
 //}
 
-struct ImageTestView: View {
-	var state = "Alabama"
-	
-	var body: some View {
-		Image(self.state)
-			.resizable()
-			.aspectRatio(contentMode: .fit)
-			.contrast(0)
-			.brightness(1)
-			.colorMultiply(Color(Colors.getColor(for: nil)))
-			.shadow(color: .gray, radius: 5)
-	}
-}
-
-struct ImageTestView_Previews: PreviewProvider {
-	static var previews: some View {
-		ImageTestView()
-	}
-}
+//struct ImageTestView: View {
+//	var state = "Alabama"
+//
+//	var body: some View {
+//		Image(self.state)
+//			.resizable()
+//			.aspectRatio(contentMode: .fit)
+//			.contrast(0)
+//			.brightness(1)
+//			.colorMultiply(Color(Colors.getColor(for: nil)))
+//			.shadow(color: .gray, radius: 5)
+//	}
+//}
+//
+//struct ImageTestView_Previews: PreviewProvider {
+//	static var previews: some View {
+//		ImageTestView()
+//	}
+//}

@@ -59,6 +59,7 @@ class StateChoiceModel: ObservableObject {
 	var totalSeats: Int {
 		return race.seats
 	}
+	var isClosed: Bool
 	var updated = false
 	var numbers: [String: Int] {
 		get {
@@ -73,10 +74,14 @@ class StateChoiceModel: ObservableObject {
 	}
 	@Published var saving: Bool = false
 	@Published var showWarning: Bool = false
+	var called: Bool {
+		return race.results != nil
+	}
 	
-	init(race: Race) {
+	init(race: Race, isClosed: Bool) {
 		self.race = race
 		self.raceID = race.id
+		self.isClosed = isClosed
 	}
 	
 	func updateRace() {
@@ -84,15 +89,23 @@ class StateChoiceModel: ObservableObject {
 	}
 
 	func colorForPrediction() -> Color {
-		if race.type == .house || race.splits {
-			return Color(dems: Int(truncating: demNum), inds: Int(truncating: indNum), reps: Int(truncating: repNum), tctc: tccNum)
+		return Color.blend(numbers)
+	}
+	
+	func colorForResults() -> Color {
+		return Color.blend(race.results ?? [:])
+	}
+	
+	func backgroundForState() -> LinearGradient {
+		if called {
+			let predictionColor = Color.blend(race.prediction?.prediction ?? [:])
+			let resultsColor = Color.blend(race.results ?? [:])
+			return LinearGradient(gradient: Gradient(colors: [predictionColor, resultsColor]), startPoint: .topLeading, endPoint: .bottomTrailing)
 		} else {
-			if candidateID != "" {
-				return Color(candidate: candidateID)
-			} else {
-				return Color(candidate: nil)
-			}
+			let color = Color.blend(numbers)
+			return LinearGradient(gradient: Gradient(colors: [color, color]), startPoint: .topLeading, endPoint: .bottomTrailing)
 		}
+
 	}
 	
 	func savePrediction(completion: @escaping (Error?) -> Void) {
@@ -104,5 +117,9 @@ class StateChoiceModel: ObservableObject {
 			completion(error)
 		}
 	}
+	
+//	func colorForResults() -> Color {
+//		if let 
+//	}
 	
 }

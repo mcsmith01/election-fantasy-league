@@ -9,30 +9,26 @@
 import Foundation
 import SwiftUI
 import Firebase
-import FirebaseUI
 
 var rowShape: RoundedRectangle {
 	return RoundedRectangle(cornerRadius: 20, style: .continuous)
 }
 
 enum Constants: String {
-	case lastElectionUpdate
-	case lastRaceUpdate
-	case lastPredictionUpdate
-	case lastLeagueUpdate
 	case currentElection
-	case setName
 }
 
-class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
+class ElectionModel: NSObject, ObservableObject {
 	var handle: AuthStateDidChangeListenerHandle!
-	var raceHandle: DatabaseHandle?
 	
 	@Published var status: String?
 	@Published var state = LoginState.logInBegan
 	@Published var logInType = LoginType.none
-	@Published var raceType: RaceType = .house
-//	@Published var isSaving = false
+	@Published var raceType: RaceType = .house {
+		didSet {
+			numbersModel.races = election.racesOfType(raceType, activeOnly: false)
+		}
+	}
 
 	var name: String {
 		return election.name
@@ -41,18 +37,47 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	var election: Election!
 	var leaguesModel = LeaguesModel()
 	var alertsModel = AlertsModel()
+	var numbersModel = NumbersModel()
+	@Published var listIndex = 0 {
+		didSet {
+			numbersModel.results = showResults
+		}
+	}
+	var showResults: Bool {
+		return listIndex == 1
+	}
+	var lists = ["Predictions", "Results"]
+	var predictionsLocked: Bool {
+		return election.date <= Date()
+	}
+
 	var electionRef: DatabaseReference {
 		return Database.database().reference().child("elections").child(election.id)
+	}
+	var racesRef: DatabaseReference {
+		return electionRef.child("races")
+	}
+	var leagueInfoRef: DatabaseReference {
+		return electionRef.child("leagueInfo")
+	}
+	var leagueDataRef: DatabaseReference {
+		return electionRef.child("leagueData")
+	}
+	var predictionsQuery: DatabaseQuery {
+		return electionRef.child("predictions").queryOrdered(byChild: "owner").queryEqual(toValue: UserData.userID)
 	}
 	var playerRef: DatabaseReference {
 		return Database.database().reference().child("players").child(UserData.userID)
 	}
+	var alertsRef: DatabaseReference {
+		return playerRef.child("elections").child(election.id).child("alerts")
+	}
+	var leaguesRef: DatabaseReference {
+		return playerRef.child("elections").child(election.id).child("leagues")
+	}
+	var observedLeagues = Set<String>()
 
 	func logIn() {
-//		try! Auth.auth().signOut()
-		let authUI = FUIAuth.defaultAuthUI()
-		authUI?.delegate = self
-		authUI?.providers = [FUIEmailAuth()]
 		handle = Auth.auth().addStateDidChangeListener() {
 			(auth, user) in
 			if let user = user {
@@ -89,6 +114,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	func loadData() {
 		status =  "Loading Election Data..."
 		elections = [Election]()
+		Database.database().reference().child("electionInfo").keepSynced(true)
 		Database.database().reference().child("electionInfo").observeSingleEvent(of: .value) { (snapshot) in
 			for snap in snapshot.children {
 				if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let election = Election(id: child.key, data: data) {
@@ -114,7 +140,7 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 		self.election = election
 
 		// Load Races
-		electionRef.child("races").observeSingleEvent(of: .value) { (snapshot) in
+		racesRef.observeSingleEvent(of: .value) { (snapshot) in
 			for snap in snapshot.children {
 				if let child = snap as? DataSnapshot, let data = child.value as? [String: Any] {
 					election.updateOrCreateRace(withID: child.key, data: data)
@@ -122,18 +148,23 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 			}
 			
 			// Load Leagues
-			self.status = "Loading League Data.."
-			self.electionRef.child("leagues").observeSingleEvent(of: .value) { (snapshot) in
+			self.status = "Loading Leagues.."
+			self.leagueInfoRef.observeSingleEvent(of: .value) { (snapshot) in
 				for snap in snapshot.children {
 					if let child = snap as? DataSnapshot, let data = child.value as? [String: Any] {
 						self.leaguesModel.updateOrCreateLeague(withID: child.key, data: data)
 					}
 				}
+				for league in self.leaguesModel.memberLeagues {
+					self.listenToLeague(league)
+				}
 				
 				// Load Predictions
 				self.status = "Loading User Data..."
-				self.electionRef.child("predictions").queryOrdered(byChild: "owner")
-					.queryEqual(toValue: UserData.userID).observeSingleEvent(of: .value) { (snapshot) in
+				
+				
+				
+				self.predictionsQuery.observeSingleEvent(of: .value) { (snapshot) in
 						for snap in snapshot.children {
 							if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let raceID = data["race"] as? String {
 								election.setPredictionForRace(withID: raceID, predictionID: child.key, data: data)
@@ -145,72 +176,117 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 						self.status = nil
 				}
 			}
-			
 		}
 	}
 	
 	func listenToElection(_ election: Election) {
-		let predictionQuery = electionRef.child("predictions")
-			.queryOrdered(byChild: "owner").queryEqual(toValue: UserData.userID)
-		electionRef.child("races").observe(.childChanged) { (snapshot) in
+		
+		racesRef.observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				election.updateOrCreateRace(withID: snapshot.key, data: data)
+				self.numbersModel.updateNumbers()
 			}
 		}
-		predictionQuery.observe(.childAdded) { (snapshot) in
+		predictionsQuery.observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
+				self.numbersModel.updateNumbers()
 			}
 		}
-		predictionQuery.observe(.childChanged) { (snapshot) in
+		predictionsQuery.observe(.childChanged) { (snapshot) in
+			//TODO: Update prediction, so view can change in real time
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
+				self.numbersModel.updateNumbers()
 			}
 		}
-		electionRef.child("leagues").observe(.childAdded) { (snapshot) in
+		leagueInfoRef.observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
-		electionRef.child("leagues").observe(.childChanged) { (snapshot) in
+		leagueInfoRef.observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
-		electionRef.child("leagues").observe(.childRemoved) { (snapshot) in
+		leagueInfoRef.observe(.childRemoved) { (snapshot) in
 			self.leaguesModel.removeLeague(withID: snapshot.key)
 		}
-		playerRef.child("elections").child(election.id).child("alerts").observe(.childAdded) { (snapshot) in
+		alertsRef.observe(.childAdded) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
 		}
-		playerRef.child("elections").child(election.id).child("alerts").observe(.childChanged) { (snapshot) in
+		alertsRef.observe(.childChanged) { (snapshot) in
 			if let data = snapshot.value as? [String: Any] {
 				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
+		}
+		leaguesRef.observe(.childAdded) { (snapshot) in
+			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
+				self.listenToLeague(league)
+			}
+		}
+		leaguesRef.observe(.childChanged) { (snapshot) in
+			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
+				self.listenToLeague(league)
+			}
+		}
+		leaguesRef.observe(.childRemoved) { (snapshot) in
+			if let league = self.leaguesModel.removeMembershipFromLeague(withID: snapshot.key) {
+				self.listenToLeague(league)
+			}
+		}
+	}
+	
+	func listenToLeague(_ league: League) {
+		if !observedLeagues.contains(league.id) && league.status == .member {
+			leagueDataRef.child(league.id).child("scores").observe(.childAdded) { (snapshot) in
+				if let data = snapshot.value as? [String: Double] {
+					self.leaguesModel.updateScores(forLeagueWithID: league.id, withData: data, forRaceWithID: snapshot.key)
+				}
+			}
+			leagueDataRef.child(league.id).child("members").observe(.value) { (snapshot) in
+				if let data = snapshot.value as? [String: [String: Any]] {
+					self.leaguesModel.updateActiveMembersForLeague(withID: league.id, data: data)
+				}
+			}
+			if league.ownerID == UserData.userID {
+				leagueDataRef.child(league.id).child("pending").observe(.childAdded) { (snapshot) in
+					if let data = snapshot.value as? [String: Any] {
+						self.leaguesModel.addPendingMemberToLeague(withID: league.id, playerID: snapshot.key, data: data)
+					}
+				}
+				leagueDataRef.child(league.id).child("pending").observe(.childRemoved) { (snapshot) in
+					self.leaguesModel.removePendingMemberFromLeague(withID: league.id, playerID: snapshot.key)
+				}
+			}
+			observedLeagues.insert(league.id)
+		} else if observedLeagues.contains(league.id) && league.status != .member {
+			leagueDataRef.child(league.id).child("scores").child(league.id).removeAllObservers()
+			leagueDataRef.child(league.id).child("active").removeAllObservers()
+			leagueDataRef.child(league.id).child("pending").removeAllObservers()
+			observedLeagues.remove(league.id)
 		}
 	}
 	
 	func clearElectionData() {
 		if election != nil {
-			electionRef.child("races").removeAllObservers()
-			electionRef.child("predictions").removeAllObservers()
-			electionRef.child("leagues").removeAllObservers()
-			playerRef.child("elections").child(election.id).child("alerts").removeAllObservers()
-			electionRef.child("predictions").queryOrdered(byChild: "owner").queryEqual(toValue: UserData.userID).removeAllObservers()
-			
+			racesRef.removeAllObservers()
+			predictionsQuery.removeAllObservers()
+			leagueInfoRef.removeAllObservers()
+			alertsRef.removeAllObservers()
+			for league in observedLeagues {
+				leagueDataRef.child(league.id).child("scores").removeAllObservers()
+				leagueDataRef.child(league.id).child("active").removeAllObservers()
+				leagueDataRef.child(league.id).child("pending").removeAllObservers()
+			}
+			leaguesModel.clearAll()
+			alertsModel.clearAll()
 		}
 	}
 
-	func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
-		if let error = error {
-			print("Error logging in\n\(error)")
-			return
-		}
-		print("Logged in")
-	}
-	
 	func savePrediction(_ numbers: [String: Int], forRaceWithID raceID: String, completion: ((Error?) -> Void)?) {
 		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": raceID]
 		Functions.functions().httpsCallable("makePrediction").call(payload) {
@@ -253,7 +329,12 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	}
 	
 	func removeFromLeague(league: League, playerID: String, completion: @escaping (Error?) -> Void) {
-		status = "Leaving \(league.name)..."
+		if playerID == UserData.userID {
+			status = "Leaving \(league.name)..."
+		} else {
+			// TODO: Take in LeagueMember
+			status = "Removing player from \(league.name)..."
+		}
 		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": playerID]
 		Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in
 			self.status = nil
@@ -272,56 +353,13 @@ class ElectionModel: NSObject, ObservableObject, FUIAuthDelegate {
 	
 	func markAlertsRead(_ read: Set<String>) {
 		for alertID in read {
-			playerRef.child("elections")
-				.child(election.id).child("alerts").child(alertID).child("read").setValue(true)
+			alertsRef.child(alertID).child("read").setValue(true)
 		}
-	}
-	
-	func getNumbers() -> (dems: Int, inds: Int, reps: Int, total: Int) {
-		var dems = 0
-		var inds = 0
-		var reps = 0
-		var total = 0
-		
-		for race in election.racesOfType(raceType) {
-			if let prediction = race.prediction {
-				for (party, count) in prediction.prediction {
-					if party.starts(with: "d") {
-						dems += count
-					} else if party.starts(with: "i") {
-						inds += count
-					} else if party.starts(with: "r") {
-						reps += count
-					}
-				}
-			}
-			for count in race.incumbency.values {
-				total += count
-			}
-		}
-		return (dems: dems, inds: inds, reps: reps, total: total)
-	}
-	
-	func getSafety() -> (dems: Int, inds: Int, reps: Int) {
-		guard raceType == .senate || raceType == .governor else { return (0, 0, 0) }
-		var dems = 0
-		var inds = 0
-		var reps = 0
-
-		for race in election.racesOfType(raceType) {
-			if let safety = race.safety {
-				for (party, count) in safety {
-					if party.starts(with: "d") {
-						dems += count
-					} else if party.starts(with: "i") {
-						inds += count
-					} else if party.starts(with: "r") {
-						reps += count
-					}
-				}
-			}
-		}
-		return (dems: dems, inds: inds, reps: reps)
 	}
 
+	func logout() {
+		clearElectionData()
+		try! Auth.auth().signOut()
+	}
+	
 }

@@ -19,7 +19,7 @@ struct SealsView: View {
 					Image("senate")
 						.resizable()
 						.modifier(SealModifier(viewWidth: geometry.size.width))
-					Image("house")
+					Image("house_seal")
 						.resizable()
 						.modifier(SealModifier(viewWidth: geometry.size.width))
 				}

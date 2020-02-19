@@ -14,6 +14,7 @@ struct SplashPageView: View {
 	var body: some View {
 			ZStack {
 				VStack {
+					Spacer()
 					Image("outline 2016")
 						.resizable()
 						.aspectRatio(contentMode: .fit)
@@ -21,25 +22,26 @@ struct SplashPageView: View {
 						.shadow(color: .gray, radius: 5, x: 0, y: 0)
 					Spacer()
 					ZStack {
-//						VStack {
-//							Text("\(self.electionModel.status)")
-//								.font(.subheadline)
-//							ActivityView(isAnimating: .constant(true), style: .large)
-//						}
-//						.opacity(self.electionModel.state == .logInFailure ? 0 : 1)
 						VStack {
 							Button("Create New Account") {
 								withAnimation {
 									self.electionModel.logInType = .create
 								}
-								
 							}
+							.foregroundColor(.white)
+							.padding(.horizontal)
+							.background(Color.democrat)
+							.clipShape(Capsule())
 							.padding()
 							Button("Log In") {
 								withAnimation {
 									self.electionModel.logInType = .login
 								}
 							}
+							.foregroundColor(.white)
+							.padding(.horizontal)
+							.background(Color.democrat)
+							.clipShape(Capsule())
 							.padding()
 						}
 						.opacity(self.electionModel.state == .logInFailure ? 1 : 0)

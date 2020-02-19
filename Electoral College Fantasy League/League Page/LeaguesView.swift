@@ -10,6 +10,7 @@ import SwiftUI
 
 struct LeaguesView: View {
 	@EnvironmentObject var electionModel: ElectionModel
+	@ObservedObject var leaguesModel: LeaguesModel
 	@State var navigationTag: Int?
 	@State var findLeague = false
 	@State var joinLeague: League?
@@ -18,7 +19,7 @@ struct LeaguesView: View {
 	var body: some View {
 		NavigationView {
 			List {
-				ForEach(electionModel.leaguesModel.leagues.filter({ $0.activeMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
+				ForEach(electionModel.leaguesModel.memberLeagues) { league in
 					NavigationLink(destination: LeagueInfoView(league: league)) {
 						LeagueRow(league: league)
 					}
@@ -37,9 +38,9 @@ struct LeaguesView: View {
 					}
 					return Alert(title: Text("Withdraw application to \(league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 				}
-				if electionModel.leaguesModel.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).count > 0 {
+				if electionModel.leaguesModel.pendingLeagues.count > 0 {
 					Section(header: Text("Pending Leagues")) {
-						ForEach(electionModel.leaguesModel.leagues.filter({ $0.pendingMembers.contains(where: { $0.id == UserData.userID }) }).sorted()) { league in
+						ForEach(electionModel.leaguesModel.pendingLeagues) { league in
 							LeagueRow(league: league)
 								.foregroundColor(.gray)
 								.modifier(RectangleBorder())
@@ -57,12 +58,23 @@ struct LeaguesView: View {
 			.navigationBarTitle("My Leagues")
 			.navigationBarItems(trailing:
 				HStack {
-					Button(action: { self.findLeague = true }, label: { Image(systemName: "magnifyingglass.circle.fill") })
+					NavigationLink(destination: FindLeagueView(leaguesModel: leaguesModel
+					), label: { Image(systemName: "magnifyingglass.circle.fill") })
 					Button(action: { self.navigationTag = 1 }, label: { Image(systemName: "plus.circle.fill") })
-					NavigationLink(destination: FindLeagueView(), isActive: $findLeague, label: { EmptyView() })
 				}
 				.imageScale(Image.Scale.large)
 			)
+//				.navigationBarTitle("")
+//				.navigationBarItems(
+//					leading: Text("My Leagues").font(.largeTitle).bold(),
+//					trailing:
+//					HStack {
+//						Button(action: { self.findLeague = true }, label: { Image(systemName: "magnifyingglass.circle.fill") })
+//						Button(action: { self.navigationTag = 1 }, label: { Image(systemName: "plus.circle.fill") })
+//						NavigationLink(destination: FindLeagueView(), isActive: $findLeague, label: { EmptyView() })
+//					}
+//					.imageScale(Image.Scale.large)
+//			)
 		}
 	}
 	
@@ -72,11 +84,11 @@ struct LeaguesView: View {
 	
 }
 
-struct LeaguesView_Previews: PreviewProvider {
-	static var previews: some View {
-		LeaguesView()
-	}
-}
+//struct LeaguesView_Previews: PreviewProvider {
+//	static var previews: some View {
+//		LeaguesView()
+//	}
+//}
 
 struct LeagueRow: View {
 	@ObservedObject var league: League
@@ -87,16 +99,16 @@ struct LeagueRow: View {
 			VStack(alignment: .leading) {
 				HStack {
 					Text(league.name)
-						.underline(league.owner == UserData.userID)
-						.font(league.owner == UserData.userID ? Font.body.bold() : nil)
-					if league.owner == UserData.userID && league.pendingMembers.count > 0 {
+						.underline(league.ownerID == UserData.userID)
+						.font(league.ownerID == UserData.userID ? Font.body.bold() : nil)
+					if league.ownerID == UserData.userID && league.pendingMembers.count > 0 {
 						Image(systemName: "exclamationmark.circle.fill")
 							.foregroundColor(.orange)
 						
 					}
 					Spacer()
 				}
-				Text("\t\(league.activeMembers.count) member\(league.activeMembers.count != 1 ? "s" : "")")
+				Text("\t\(league.memberCount) member\(league.memberCount != 1 ? "s" : "")")
 					.font(.subheadline)
 			}
 			.padding()

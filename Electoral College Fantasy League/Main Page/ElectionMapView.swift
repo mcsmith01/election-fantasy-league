@@ -19,11 +19,7 @@ struct ElectionMapView: View {
 				.colorMultiply(Color(.sRGB, white: 0.35, opacity: 1))
 				.shadow(color: .gray, radius: 5)
 			ForEach(electionModel.election.racesOfType(electionModel.raceType, activeOnly: false)) { race in
-				MapPiece(race: race)
-//				Image("\(race.state)_piece")
-//					.resizable()
-//					.aspectRatio(contentMode: .fit)
-//					.colorMultiply(self.colorFor(race))
+				MapPiece(race: race, showResults: self.electionModel.showResults)
 			}
 			Image("map_outline")
 				.resizable()
@@ -41,6 +37,7 @@ struct ElectionMapView: View {
 
 struct MapPiece: View {
 	@ObservedObject var race: Race
+	var showResults: Bool
 	
 	var body: some View {
 		Image("\(race.state)_piece")
@@ -50,10 +47,20 @@ struct MapPiece: View {
 	}
 	
 	func colorFor(_ race: Race) -> Color {
-		if let prediction = race.prediction {
-			return Color(Colors.getColor(for: prediction.prediction))
+		if !race.isActive {
+			return .gray
+		} else if showResults {
+			if let results = race.results {
+				return Color.blend(results)
+			} else {
+				return .white
+			}
 		} else {
-			return .white
+			if let prediction = race.prediction {
+				return Color.blend(prediction.prediction)
+			} else {
+				return .white
+			}
 		}
 	}
 }

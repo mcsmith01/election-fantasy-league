@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -42,7 +42,7 @@
                                     <constraint firstAttribute="width" secondItem="qdV-M3-5sp" secondAttribute="height" multiplier="1:1" id="xat-12-VJi"/>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" image="house" translatesAutoresizingMaskIntoConstraints="NO" id="Vo4-qa-TkD">
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" image="house_seal" translatesAutoresizingMaskIntoConstraints="NO" id="Vo4-qa-TkD">
                                 <rect key="frame" x="207.5" y="507.5" width="151.5" height="151.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Vo4-qa-TkD" secondAttribute="height" multiplier="1:1" id="9kp-82-g5O"/>
@@ -79,7 +79,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="house" width="400" height="400"/>
+        <image name="house_seal" width="400" height="400"/>
         <image name="outline 2016" width="1852" height="1140"/>
         <image name="president" width="400" height="400"/>
         <image name="senate" width="400" height="400"/>

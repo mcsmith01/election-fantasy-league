@@ -23,4 +23,9 @@ class AlertsModel: NSObject, ObservableObject {
 		unreadAlerts = alerts.filter({ !$0.read }).count
 	}
 	
+	func clearAll() {
+		alerts.removeAll()
+		unreadAlerts = 0
+	}
+	
 }

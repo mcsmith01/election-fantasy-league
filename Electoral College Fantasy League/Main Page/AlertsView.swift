@@ -62,7 +62,7 @@ struct AlertRow: View {
 				.multilineTextAlignment(.leading)
 			HStack {
 				if alert.status == .info {
-					Image(systemName: "info.circle.fill")
+					Image(systemName: "exclamationmark.circle.fill")
 						.foregroundColor(.green)
 				} else if alert.status == .alert {
 					Image(systemName: "exclamationmark.triangle.fill")
@@ -73,6 +73,7 @@ struct AlertRow: View {
 				}
 				Text(alert.text)
 					.font(alert.read ? Font.body : Font.body.bold())
+					.lineLimit(nil)
 					.frame(alignment: .leading)
 				Spacer()
 			}

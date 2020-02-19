@@ -27,8 +27,12 @@
 		8F46465823DCA8FE00C9F16E /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F46465723DCA8FE00C9F16E /* League.swift */; };
 		8F46465A23DD17C100C9F16E /* BusyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F46465923DD17C100C9F16E /* BusyInfoView.swift */; };
 		8F7CE9ED1DB3B10B00C62ACE /* ElectoralMapView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F7CE9EC1DB3B10B00C62ACE /* ElectoralMapView.xib */; };
+		8F7E03D423F859A70062DFBE /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7E03D323F859A70062DFBE /* Triangle.swift */; };
+		8F7E03D623F8C8680062DFBE /* ScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7E03D523F8C8680062DFBE /* ScoresView.swift */; };
 		8F8143D723EFAAA70060FFF3 /* LeaguesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8143D623EFAAA70060FFF3 /* LeaguesModel.swift */; };
 		8F8143D923EFADD70060FFF3 /* AlertsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8143D823EFADD70060FFF3 /* AlertsModel.swift */; };
+		8F8143DB23F026E10060FFF3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8143DA23F026E10060FFF3 /* SettingsView.swift */; };
+		8F8143DD23F08FAA0060FFF3 /* NumbersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8143DC23F08FAA0060FFF3 /* NumbersModel.swift */; };
 		8F9737982180AE710026722C /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9737972180AE710026722C /* CoreDataStack.swift */; };
 		8F97379A2180AFBA0026722C /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9737972180AE710026722C /* CoreDataStack.swift */; };
 		8F97BA8523978A5B0059A40F /* StateChoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97BA8423978A5B0059A40F /* StateChoiceModel.swift */; };
@@ -135,8 +139,12 @@
 		8F7CE9F81DB4223A00C62ACE /* Electoral College Fantasy League.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Electoral College Fantasy League.entitlements"; sourceTree = "<group>"; };
 		8F7CE9F91DB42A5000C62ACE /* LeagueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeagueViewController.swift; sourceTree = "<group>"; };
 		8F7CE9FB1DB550BD00C62ACE /* LeagueChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeagueChoiceViewController.swift; sourceTree = "<group>"; };
+		8F7E03D323F859A70062DFBE /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		8F7E03D523F8C8680062DFBE /* ScoresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresView.swift; sourceTree = "<group>"; };
 		8F8143D623EFAAA70060FFF3 /* LeaguesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaguesModel.swift; sourceTree = "<group>"; };
 		8F8143D823EFADD70060FFF3 /* AlertsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsModel.swift; sourceTree = "<group>"; };
+		8F8143DA23F026E10060FFF3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8F8143DC23F08FAA0060FFF3 /* NumbersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumbersModel.swift; sourceTree = "<group>"; };
 		8F9737972180AE710026722C /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		8F97379E2180C2970026722C /* RaceCalledServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RaceCalledServiceExtension.entitlements; sourceTree = "<group>"; };
 		8F97BA8423978A5B0059A40F /* StateChoiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChoiceModel.swift; sourceTree = "<group>"; };
@@ -232,7 +240,9 @@
 				8F14200B239432B0009DD458 /* ElectionMapView.swift */,
 				8F99597223E3005E00586FE3 /* AlertsView.swift */,
 				8F36E3D223DA1DEA00C47E94 /* ElectionGraphView.swift */,
+				8F7E03D523F8C8680062DFBE /* ScoresView.swift */,
 				8F14200D23944741009DD458 /* StateChoiceListView.swift */,
+				8F8143DA23F026E10060FFF3 /* SettingsView.swift */,
 			);
 			path = "Main Page";
 			sourceTree = "<group>";
@@ -265,6 +275,7 @@
 				8F1420012392FE49009DD458 /* SealsView.swift */,
 				8F141FFF2392FAC9009DD458 /* AcivityView.swift */,
 				8F99596923E20C7F00586FE3 /* SearchBarView.swift */,
+				8F7E03D323F859A70062DFBE /* Triangle.swift */,
 				8F46465923DD17C100C9F16E /* BusyInfoView.swift */,
 			);
 			path = Accessories;
@@ -400,6 +411,7 @@
 				8F8143D623EFAAA70060FFF3 /* LeaguesModel.swift */,
 				8F8143D823EFADD70060FFF3 /* AlertsModel.swift */,
 				8F97BA8423978A5B0059A40F /* StateChoiceModel.swift */,
+				8F8143DC23F08FAA0060FFF3 /* NumbersModel.swift */,
 				8FF79C0B23CA53AE00E804CC /* Election.swift */,
 				8FF79C0D23CA9DC700E804CC /* Race.swift */,
 				8FF79C0F23CAA39000E804CC /* Prediction.swift */,
@@ -639,12 +651,14 @@
 				8FF79C0E23CA9DC700E804CC /* Race.swift in Sources */,
 				8F1D26F72399EF9F0035E5EA /* LeaguesView.swift in Sources */,
 				8F14200E23944741009DD458 /* StateChoiceListView.swift in Sources */,
+				8F8143DB23F026E10060FFF3 /* SettingsView.swift in Sources */,
 				8F14200423930275009DD458 /* SceneDelegate.swift in Sources */,
 				8F142012239591BF009DD458 /* SingleCandidateChoiceView.swift in Sources */,
 				8FF79C1023CAA39000E804CC /* Prediction.swift in Sources */,
 				8F1D26F52398156A0035E5EA /* ElectionModel.swift in Sources */,
 				8FDE67D7231B200C00B25C67 /* DataModelRTDB.swift in Sources */,
 				8F99596A23E20C7F00586FE3 /* SearchBarView.swift in Sources */,
+				8F7E03D623F8C8680062DFBE /* ScoresView.swift in Sources */,
 				8FC708B71DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld in Sources */,
 				8F99596423DD2FC800586FE3 /* LeagueMember.swift in Sources */,
 				8F14200823932492009DD458 /* LogInView.swift in Sources */,
@@ -656,8 +670,10 @@
 				8F9737982180AE710026722C /* CoreDataStack.swift in Sources */,
 				8F99596623DE15C900586FE3 /* LeagueInfoView.swift in Sources */,
 				8F1420022392FE49009DD458 /* SealsView.swift in Sources */,
+				8F8143DD23F08FAA0060FFF3 /* NumbersModel.swift in Sources */,
 				8F46465A23DD17C100C9F16E /* BusyInfoView.swift in Sources */,
 				8F14201023944C61009DD458 /* StateChoiceView.swift in Sources */,
+				8F7E03D423F859A70062DFBE /* Triangle.swift in Sources */,
 				8F46465823DCA8FE00C9F16E /* League.swift in Sources */,
 				8F8143D723EFAAA70060FFF3 /* LeaguesModel.swift in Sources */,
 				8F36E3D323DA1DEB00C47E94 /* ElectionGraphView.swift in Sources */,
@@ -835,7 +851,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Electoral College Fantasy League/Electoral College Fantasy League.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -859,7 +875,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Electoral College Fantasy League/Electoral College Fantasy League.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -885,11 +901,11 @@
 				CODE_SIGN_ENTITLEMENTS = RaceCalledServiceExtension/RaceCalledServiceExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = RaceCalledServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -912,11 +928,11 @@
 				CODE_SIGN_ENTITLEMENTS = RaceCalledServiceExtension/RaceCalledServiceExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = RaceCalledServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 2.0;
 				MTL_FAST_MATH = YES;

@@ -47,7 +47,19 @@ class Election: NSObject, Comparable {
 		} else if let race = Race(id: id, data: data, election: self) {
 			races.append(race)
 			raceTypes.insert(race.type)
+		} else {
+			debugPrint("Could not create race \(id) with type \(data["type"] as? Int ?? -1)")
 		}
+	}
+	
+	func calledRaces() -> [Race] {
+		return races.filter({ $0.results != nil }).sorted(by: {
+			if $0.type != $1.type {
+				return $0.type < $1.type
+			} else {
+				return $0 < $1
+			}
+		})
 	}
 	
 	func setPredictionForRace(withID id: String, predictionID pid: String, data: [String: Any]) {

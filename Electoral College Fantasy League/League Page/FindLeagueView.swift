@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FindLeagueView: View {
 	@EnvironmentObject var electionModel: ElectionModel
+	@ObservedObject var leaguesModel: LeaguesModel
 	@State var joinLeague: League?
 	@State var searchText: String = ""
 	
@@ -25,7 +26,7 @@ struct FindLeagueView: View {
 				.modifier(RectangleBorder(lineWidth: 1))
 			}
 			Section(header: Text("Leagues")) {
-				ForEach(electionModel.leaguesModel.leagues.filter({ !$0.containsMember(withID: UserData.userID) && $0.searchFilter(searchText) }).sorted()) { league in
+				ForEach(electionModel.leaguesModel.allLeagues.filter({ $0.status == .none && $0.searchFilter(searchText) }).sorted()) { league in
 					LeagueRow(league: league)
 						.padding(.trailing)
 						.modifier(RectangleBorder())
@@ -49,8 +50,8 @@ struct FindLeagueView: View {
     }
 }
 
-struct FindLeagueView_Previews: PreviewProvider {
-    static var previews: some View {
-        FindLeagueView()
-    }
-}
+//struct FindLeagueView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FindLeagueView()
+//    }
+//}

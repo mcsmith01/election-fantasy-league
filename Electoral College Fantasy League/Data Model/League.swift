@@ -18,22 +18,33 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 		}
 	}
 	
+	enum MemberStatus {
+		case member
+		case pending
+		case none
+	}
+	
 	var id: String
 	var name: String
 	var isOpen: Bool
-	var owner: String
+	var ownerID: String
+	var ownerName: String
+	var desc: String?
+	@Published var memberCount: Int
+	var status: MemberStatus = .none
 	var raceTypes: Set<RaceType>
 	var allMembers = Set<LeagueMember>()
 	var activeMembers = [LeagueMember]()
 	var pendingMembers = [LeagueMember]()
-	@Published var refresh = false
 
 	init?(id: String, data: [String: Any]) {
-		guard let name = data["name"] as? String, let isOpen = data["isOpen"] as? Bool, let owner = data["owner"] as? String, let races = data["raceTypes"] as? [Int], let _ = data["members"] as? [String: [String: Any]] else { return nil }
+		guard let name = data["name"] as? String, let isOpen = data["isOpen"] as? Bool, let owner = data["owner"] as? [String: String], let ownerName = owner["name"], let ownerID = owner["id"], let races = data["raceTypes"] as? [Int], let memberCount = data["members"] as? Int else { return nil }
 		self.id = id
 		self.name = name
 		self.isOpen = isOpen
-		self.owner = owner
+		self.ownerID = ownerID
+		self.ownerName = ownerName
+		self.memberCount = memberCount
 		self.raceTypes = Set<RaceType>()
 		for rawRace in races {
 			if let race = RaceType(rawValue: rawRace) {
@@ -41,21 +52,57 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 			}
 		}
 		super.init()
-		updateFrom(data)
 	}
 
-	func updateFrom(_ data: [String: Any]) {
-		guard let name = data["name"] as? String, let members = data["members"] as? [String: [String: Any]] else { return }
+	func updateInfoFrom(_ data: [String: Any]) {
+		debugPrint("Updating league \(name)")
+		guard let name = data["name"] as? String, let memberCount = data["members"] as? Int else { return }
 		self.name = name
-		allMembers.removeAll()
-		for (memberID, info) in members {
-			if let member = LeagueMember(id: memberID, data: info) {
-				allMembers.insert(member)
+		self.memberCount = memberCount
+	}
+	
+	func updateActiveMembers(fromData data: [String: [String: Any]]) {
+		activeMembers.removeAll()
+		for (memberID, info) in data {
+			if let member = allMembers.first(where: { $0.id == memberID }) {
+				member.updateFrom(info, member: true)
+				activeMembers.append(member)
+			} else if let name = info["name"] as? String {
+				let member = LeagueMember(id: memberID, name: name, member: true)
+				activeMembers.append(member)
 			}
 		}
-		activeMembers = self.allMembers.filter({ $0.member }).sorted(by: { $0.score != $1.score ? $0.score > $1.score : $0 < $1 })
-		pendingMembers = self.allMembers.filter({ !$0.member }).sorted(by: { $0.score != $1.score ? $0.score > $1.score : $0 < $1 })
-		refresh.toggle()
+		allMembers.removeAll()
+		allMembers.formUnion(activeMembers)
+		allMembers.formUnion(pendingMembers)
+		activeMembers.sort(by: { $0.score != $1.score ? $0.score > $1.score : $0 < $1 })
+		objectWillChange.send()
+	}
+	
+	func addPendingMember(withID playerID: String, fromData data: [String: Any]) {
+		if let name = data["name"] as? String {
+			let member = LeagueMember(id: playerID, name: name, member: false)
+			pendingMembers.append(member)
+			allMembers.insert(member)
+			pendingMembers.sort()
+			objectWillChange.send()
+		}
+	}
+	
+	func removePendingMember(withID playerID: String) {
+		if let index = pendingMembers.firstIndex(where: { $0.id == playerID }) {
+			let member = pendingMembers.remove(at: index)
+			allMembers.remove(member)
+			objectWillChange.send()
+		}
+	}
+	
+	func updateScores(fromData data: [String: Double], forRaceWithID raceID: String) {
+		for (player, score) in data {
+			if let member = allMembers.first(where: { $0.id == player }) {
+				member.updateScore(score, forRaceWithID: raceID)
+			}
+		}
 	}
 	
 	func containsMember(withID id: String) -> Bool {
@@ -63,11 +110,7 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 	}
 	
 	func searchFilter(_ text: String) -> Bool {
-		if text == "" {
-			return true
-		} else {
-			return name.contains(text)
-		}
+		return text == "" || name.contains(text)
 	}
 	
 }

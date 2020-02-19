@@ -14,8 +14,8 @@ class Prediction {
 	var raceID: String
 	var prediction: [String: Int]
 	var leagueScores: [String: Double]?
-	var rawScore: Double?
-	var weightedScore: Double?
+	var accuracy: Double?
+	var score: Double?
 	
 	init?(id: String, data: [String: Any]) {
 		guard let prediction = data["prediction"] as? [String: Int], let race = data["race"] as? String else { return nil }
@@ -23,12 +23,8 @@ class Prediction {
 		self.raceID = race
 		self.prediction = prediction
 //		updatePrediction(withData: data)
-		if let score = data["rawScore"] as? Double {
-			rawScore = score
-		}
-		if let score = data["weightedScore"] as? Double {
-			weightedScore = score
-		}
+		accuracy = data["accuracy"] as? Double
+		score = data["score"] as? Double
 	}
 	
 //	func updatePrediction(withData data: [String: Any]) {

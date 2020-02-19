@@ -28,12 +28,18 @@ struct TabPageView: View {
 							Text("Alerts")
 						}
 					.tag(1)
-					LeaguesView()
+					LeaguesView(leaguesModel: self.electionModel.leaguesModel)
 						.tabItem {
 							Image(systemName: "person.3\(self.selectedTab == 2 ? ".fill" : "")")
 							Text("Leagues")
 						}
 					.tag(2)
+					ScoresView()
+						.tabItem {
+							Image(systemName: "1.circle\(self.selectedTab == 3 ? ".fill" : "")")
+							Text("Scores")
+						}
+					.tag(3)
 				}
 				.accentColor(.democrat)
 				TabCirclesImageView(size: geometry.size, leaguesModel: self.electionModel.leaguesModel, alertsModel: self.electionModel.alertsModel)
@@ -59,12 +65,12 @@ struct TabCirclesImageView: View {
 				Circle()
 					.foregroundColor(.red)
 					.frame(width: 10, height: 10)
-					.offset(x: ((2 * 2 - 0.98) * (size.width / 6)) + 2, y: -33)
+					.offset(x: ((2 * 2 - 0.98) * (size.width / 8)) + 2, y: -33)
 					.opacity(self.alertsModel.unreadAlerts > 0 ? 1 : 0)
 				Circle()
 					.foregroundColor(.red)
 					.frame(width: 10, height: 10)
-					.offset(x: ((2 * 3 - 0.9) * (size.width / 6)) + 2, y: -33)
+					.offset(x: ((2 * 3 - 0.9) * (size.width / 8)) + 2, y: -33)
 					.opacity(self.leaguesModel.leagueRequests > 0 ? 1 : 0)
 			}
 	}

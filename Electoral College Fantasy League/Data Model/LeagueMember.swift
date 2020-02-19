@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LeagueMember: NSObject, Identifiable, Comparable {
+class LeagueMember: NSObject, Identifiable, Comparable, ObservableObject {
 
 	static func < (lhs: LeagueMember, rhs: LeagueMember) -> Bool {
 		if lhs.score != rhs.score {
@@ -27,6 +27,7 @@ class LeagueMember: NSObject, Identifiable, Comparable {
 	
 	var score: Double {
 		get {
+			//TODO: Make reduce
 			var total: Double = 0
 			for score in scores.values {
 				total += score
@@ -35,23 +36,21 @@ class LeagueMember: NSObject, Identifiable, Comparable {
 		}
 	}
 	
-	init?(id: String, data: [String: Any]) {
-		guard let name = data["name"] as? String, let member = data["member"] as? Bool else { return nil }
+	init(id: String, name: String, member: Bool) {
 		self.id = id
 		self.name  = name
 		self.member = member
 	}
 	
-	func updateFrom(_ data: [String: Any]) {
-		guard let name = data["name"] as? String, let member = data["member"] as? Bool else { return }
+	func updateFrom(_ data: [String: Any], member: Bool) {
+		guard let name = data["name"] as? String else { return }
 		self.name = name
 		self.member = member
 	}
 	
-	func updateScores(data: [String: Double]) {
-		for (race, score) in data {
-			scores[race] = score
-		}
+	func updateScore(_ score: Double, forRaceWithID raceID: String) {
+		scores[raceID] = score
+		objectWillChange.send()
 	}
 	
 }

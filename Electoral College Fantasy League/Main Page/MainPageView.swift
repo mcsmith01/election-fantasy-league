@@ -15,12 +15,7 @@ struct MainPageView: View {
 	@State var navigationTag: Int?
 	@State var mapOffset = CGSize.zero
 	@State var showMap = true
-
-	var numbers: (dems: Int, inds: Int, reps: Int, total: Int) {
-		get {
-			return electionModel.getNumbers()
-		}
-	}
+	@State var showSettings = false
 	
 	var body: some View {
 		NavigationView{
@@ -31,6 +26,7 @@ struct MainPageView: View {
 					}
 				}
 				.pickerStyle(SegmentedPickerStyle())
+				.disabled(electionModel.predictionsLocked)
 				.padding(.horizontal)
 				ZStack(alignment: .bottom) {
 					if showMap {
@@ -38,17 +34,7 @@ struct MainPageView: View {
 							.padding(.bottom)
 							.transition(.scale(scale: 0.0, anchor: .top))
 					}
-					HStack {
-						Spacer()
-						NumberCell(text: "\(numbers.dems)", color: Colors.democrat, oversized: !showMap)
-						if numbers.inds > 0 {
-							Spacer()
-							NumberCell(text: "\(numbers.inds)", color: Colors.independent, oversized: !showMap)
-						}
-						Spacer()
-						NumberCell(text: "\(numbers.reps)", color: Colors.republican, oversized: !showMap)
-						Spacer()
-					}
+					NumbersView(model: electionModel.numbersModel, smallSize: $showMap)
 				}
 				.animation(.easeInOut)
 				.gesture(
@@ -66,20 +52,32 @@ struct MainPageView: View {
 					}
 				)
 				Section(header:
-					Picker(selection: $whichList, label: EmptyView()) {
-						ForEach(["Predictions", "Results"]) { choice in
-							Text(choice)
+					Picker(selection: $electionModel.listIndex, label: EmptyView()) {
+						ForEach(0..<electionModel.lists.count) { index in
+							Text(self.electionModel.lists[index])
 						}
 					}
+					.disabled(!electionModel.predictionsLocked)
 					.pickerStyle(SegmentedPickerStyle())
 					.padding(.horizontal)) {
 						StateChoiceListView(selectedRace: $selectedRace)
 				}
 			}
-			.navigationBarTitle(electionModel.name)
 			.sheet(item: $selectedRace) { (selected) in
-				StateChoiceView(race: selected)
+				StateChoiceView(race: selected, isClosed: self.electionModel.predictionsLocked)
 			}
+			.navigationBarTitle(electionModel.name)
+			.navigationBarItems(trailing:
+				HStack {
+					Button(
+						action: { self.showSettings = true },
+						label: {
+							Image(systemName: "person.crop.circle.fill")
+					})
+						.sheet(isPresented: $showSettings, content: { SettingsView().environmentObject(self.electionModel) })
+				}
+				.imageScale(Image.Scale.large)
+			)
 		}
 	}
 	
@@ -94,6 +92,25 @@ struct MainPageView: View {
 //		MainPageView(election: Election.fetchCurrent())
 //    }
 //}
+
+struct NumbersView: View {
+	@ObservedObject var model: NumbersModel
+	@Binding var smallSize: Bool
+	
+	var body: some View {
+		HStack {
+			Spacer()
+			NumberCell(text: model.demText, color: Colors.democrat, oversized: !smallSize)
+			if model.indText != "0" {
+				Spacer()
+				NumberCell(text: model.indText, color: Colors.independent, oversized: !smallSize)
+			}
+			Spacer()
+			NumberCell(text: model.repText, color: Colors.republican, oversized: !smallSize)
+			Spacer()
+		}
+	}
+}
 
 struct NumberCell: View {
 	var text: String

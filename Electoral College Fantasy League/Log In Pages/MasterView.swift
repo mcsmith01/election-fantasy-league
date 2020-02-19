@@ -26,17 +26,15 @@ struct MasterView: View {
 			}
 		}
 		.onReceive(self.electionModel.$state) { (newState) in
-			if newState == .logInComplete {
-				withAnimation {
-					self.loggedIn = true
-				}
+			withAnimation {
+				self.loggedIn = newState == .logInComplete
 			}
 		}
 	}
 }
 
 struct MasterView_Previews: PreviewProvider {
-    static var previews: some View {
-        MasterView()
+	static var previews: some View {
+		MasterView()
     }
 }

@@ -23,7 +23,7 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	var election: Election
 	var id: String
 	var isActive: Bool
-	var incumbency: [String: Int]
+	var incumbency: [String: Int]?
 	var splits: Bool
 	var state: String
 	var type: RaceType
@@ -34,20 +34,24 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	var seats: Int {
 		get {
 			var count = 0
-			for num in incumbency.values {
-				count += num
+			if let incumbency = incumbency {
+				for num in incumbency.values {
+					count += num
+				}
 			}
 			return count
 		}
 	}
 
 	init?(id: String, data: [String: Any], election: Election) {
-		guard let rawType = data["type"] as? Int, let type = RaceType(rawValue: rawType), let state = data["state"] as? String, let incumbency = data["incumbency"] as? [String: Int] else { return nil }
+		guard let rawType = data["type"] as? Int, let type = RaceType(rawValue: rawType), let state = data["state"] as? String else { return nil }
 		self.election = election
 		self.id = id
-		self.incumbency = incumbency
 		self.state = state
 		self.type = type
+		if let incumbency = data["incumbency"] as? [String: Int] {
+			self.incumbency = incumbency
+		}
 		if let candidates = data["candidates"] as? [String: String] {
 			self.candidates = candidates
 			isActive = true
@@ -59,10 +63,9 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 		if let safety = data["safety"] as? [String: Int] {
 			self.safety = safety
 		}
-		if let splits = data["splits"] as? Bool {
-			self.splits = splits
-		} else {
-			self.splits = false
+		self.splits = data["splits"] as? Bool ?? false
+		if let results = data["results"] as? [String: Int] {
+			self.results = results
 		}
 	}
 	

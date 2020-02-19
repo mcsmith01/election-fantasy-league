@@ -14,7 +14,7 @@ struct StateChoiceListView: View {
 	
 	var body: some View {
 		List(electionModel.election.racesOfType(electionModel.raceType).sorted(), id: \.id) { race in
-			StateRow(race: race)
+			StateRow(race: race, showResults: self.electionModel.showResults)
 				.onTapGesture {
 					self.selectedRace = race
 			}
@@ -32,11 +32,21 @@ struct StateChoiceListView: View {
 
 struct StateRow: View {
 	@ObservedObject var race: Race
+	var showResults: Bool
+	
 	var color: Color {
-		if let prediction = race.prediction {
-			return Color(Colors.getColor(for: prediction.prediction))
+		if showResults {
+			if let results = race.results {
+				return Color.blend(results)
+			} else {
+				return Color.primary
+			}
 		} else {
-			return Color.primary
+			if let prediction = race.prediction {
+				return Color.blend(prediction.prediction)
+			} else {
+				return Color.primary
+			}
 		}
 	}
 	
