@@ -27,24 +27,13 @@ struct FindLeagueView: View {
 			}
 			Section(header: Text("Leagues")) {
 				ForEach(electionModel.leaguesModel.allLeagues.filter({ $0.status == .none && $0.searchFilter(searchText) }).sorted()) { league in
-					LeagueRow(league: league)
-						.padding(.trailing)
-						.modifier(RectangleBorder())
-						.onTapGesture {
-							self.joinLeague = league
+					NavigationLink(destination: LeagueInfoView(league: league)) {
+						LeagueRow(league: league)
 					}
+					.padding(.trailing)
+					.modifier(RectangleBorder())
 				}
 			}
-		}
-		.alert(item: $joinLeague) { (league) -> Alert in
-			let confirm = Alert.Button.default(Text("Join")) {
-				self.electionModel.joinLeague(league) { (error) in
-					if let error = error {
-						debugPrint("Error creating league\n\(error)")
-					}
-				}
-			}
-			return Alert(title: Text("Join \(league.name)?"), message: !league.isOpen ? Text("This is a closed league and will require the owner to approve your membership") : nil, primaryButton: confirm, secondaryButton: .cancel())
 		}
 		.navigationBarTitle("All Leagues")
     }

@@ -30,9 +30,9 @@ struct CreateLeagueView: View {
 							TextField("Name", text: $name)
 								.autocapitalization(.words)
 						}
-//						Section(header: Text("Description")) {
-//							TextField("Description (Optional)", text: $desc)
-//						}
+						Section(header: Text("Description")) {
+							TextField("Description (Optional)\n\n", text: $desc)
+						}
 						Section() {
 							MultiPickerRow(options: pickerOptions, selectedOptions: $selectedOptions)
 								.onTapGesture {

@@ -41,11 +41,13 @@ struct LeaguesView: View {
 				if electionModel.leaguesModel.pendingLeagues.count > 0 {
 					Section(header: Text("Pending Leagues")) {
 						ForEach(electionModel.leaguesModel.pendingLeagues) { league in
-							LeagueRow(league: league)
-								.foregroundColor(.gray)
-								.modifier(RectangleBorder())
+							NavigationLink(destination: LeagueInfoView(league: league)) {
+								LeagueRow(league: league)
+							}
+							.foregroundColor(.gray)
+							.padding(.trailing)
+							.modifier(RectangleBorder())
 						}
-						.onDelete(perform: removeAppliction)
 					}
 				}
 			}

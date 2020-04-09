@@ -9,15 +9,12 @@
 import SwiftUI
 
 struct LeagueInfoView: View {
+	
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var electionModel: ElectionModel
 	@ObservedObject var league: League
 	@State var editMode: EditMode = .inactive
-	@State var addMember: LeagueMember?
-	@State var declineMember: LeagueMember?
-	@State var removeMember: LeagueMember?
-	@State var deleteLeague = false
-	@State var leaveLeague = false
+	@State var alert: IdentifiableAlert?
 	var raceTypesString: String {
 		let typesArray = league.raceTypes.sorted().map { (type) -> String in
 			String(describing: type).capitalized
@@ -26,17 +23,30 @@ struct LeagueInfoView: View {
 	}
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			Text("Commissioner:")
-				.font(Font.body.bold())
-			.padding(.horizontal)
-			Text(league.ownerName)
+		VStack {
+			HStack {
+			VStack(alignment: .leading) {
+				Text("Commissioner:")
+					.font(Font.body.bold())
 				.padding(.horizontal)
-			Text("Scored Races:")
-				.font(Font.body.bold())
-				.padding([.horizontal, .top])
-			Text(raceTypesString)
-				.padding(.horizontal)
+				Text(league.ownerName)
+					.padding(.horizontal)
+				Text("Scored Races:")
+					.font(Font.body.bold())
+					.padding([.horizontal, .top])
+				Text(raceTypesString)
+					.padding(.horizontal)
+				Text("Membership:")
+					.font(Font.body.bold())
+					.padding([.horizontal, .top])
+				Text(league.isOpen ? "Open" : "Restricted")
+					.padding(.horizontal)
+			}
+				Spacer()
+			}
+			.alert(item: $alert) { (alert) -> Alert in
+				return alert.alert
+			}
 			if league.status == .member {
 				List {
 					Section(header: Text("Members")) {
@@ -45,23 +55,13 @@ struct LeagueInfoView: View {
 						}
 						.onDelete(perform: delete)
 					}
-					.alert(item: $removeMember) { (member) -> Alert in
-						let primary = Alert.Button.default(Text("Remove")) {
-							self.electionModel.removeFromLeague(league: self.league, playerID: member.id) { (error) in
-								if let error = error {
-									debugPrint("Error removing member from league\n\(error)")
-								}
-							}
-						}
-						return Alert(title: Text("Remove \(member.name) from \(league.name)?"), message: Text("This operation cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
-					}
 					if league.ownerID == UserData.userID && league.pendingMembers.count > 0 {
 						Section(header: Text("Pending")) {
 							ForEach(league.pendingMembers) { member in
 								HStack {
 									Image(systemName: "plus.circle.fill")
 										.foregroundColor(.green)
-										.alert(item: self.$addMember) { (member) -> Alert in
+										.onTapGesture {
 											let confirm = Alert.Button.default(Text("Confirm")) {
 												self.electionModel.processLeagueRequest(league: self.league, player: member, accept: true) { (error) in
 													if let error = error {
@@ -69,15 +69,13 @@ struct LeagueInfoView: View {
 													}
 												}
 											}
-											return Alert(title: Text("Add \(member.name) to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
-									}
-									.onTapGesture {
-										self.addMember = member
+											let alert = Alert(title: Text("Add \(member.name) to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+											self.alert = IdentifiableAlert(alert: alert)
 									}
 									Text(member.name)
 									Image(systemName: "minus.circle.fill")
 										.foregroundColor(.red)
-										.alert(item: self.$declineMember) { (member) -> Alert in
+										.onTapGesture {
 											let confirm = Alert.Button.default(Text("Confirm")) {
 												self.electionModel.processLeagueRequest(league: self.league, player: member, accept: false) { (error) in
 													if let error = error {
@@ -85,10 +83,8 @@ struct LeagueInfoView: View {
 													}
 												}
 											}
-											return Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
-									}
-									.onTapGesture {
-										self.declineMember = member
+											let alert = Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+											self.alert = IdentifiableAlert(alert: alert)
 									}
 									Spacer()
 								}
@@ -100,38 +96,51 @@ struct LeagueInfoView: View {
 					}
 				}
 			} else if league.status == .pending {
-				Button("Cancel Applicatioon") {
-					debugPrint("Cancel Application")
+				Spacer()
+				Button("Cancel Application") {
+					let primary = Alert.Button.destructive(Text("Proceed")) {
+						self.electionModel.removeFromLeague(league: self.league, playerID: UserData.userID) { (error) in
+							if let error = error {
+								debugPrint("Error withdrawing application from league\n\(error)")
+							} else {
+								self.presentationMode.wrappedValue.dismiss()
+							}
+						}
+					}
+					let alert = Alert(title: Text("Withdraw application to \(self.league.name)?"), message: nil, primaryButton: primary, secondaryButton: .cancel())
+					self.alert = IdentifiableAlert(alert: alert)
 				}
-				.padding(.horizontal)
+				.padding()
 				.foregroundColor(.white)
 				.background(Color.republican)
 				.clipShape(Capsule())
-				.padding()
 			} else if league.status == .none {
+				Spacer()
 				Button("Join League") {
-					debugPrint("Cancel Application")
+					let primary = Alert.Button.destructive(Text("Join")) {
+						self.electionModel.joinLeague(self.league) { (error) in
+							if let error = error {
+								debugPrint("Error joining league\n\(error)")
+							} else {
+								self.presentationMode.wrappedValue.dismiss()
+							}
+						}
+					}
+					let alert = Alert(title: Text("Join \(self.league.name)?"), message: self.league.isOpen
+						? nil : Text("This is a closed league; the league commissioner must approve your request"), primaryButton: primary, secondaryButton: .cancel())
+					self.alert = IdentifiableAlert(alert: alert)
 				}
-				.padding(.horizontal)
+				.padding()
 				.foregroundColor(.white)
 				.background(Color.democrat)
 				.clipShape(Capsule())
-				.padding()
 			}
 			Spacer()
 			if editMode == .active {
 				if league.ownerID == UserData.userID {
 					Button("Delete") {
-						self.deleteLeague = true
-					}
-					.padding(.horizontal)
-					.foregroundColor(.white)
-					.background(Color.republican)
-					.clipShape(Capsule())
-					.padding(.bottom)
-					.alert(isPresented: $deleteLeague) { () -> Alert in
 						let primary = Alert.Button.destructive(Text("Delete League")) {
-							self.electionModel.deleteLeague(league: self.league) { (error) in
+							self.electionModel.deleteLeague(self.league) { (error) in
 								if let error = error {
 									debugPrint("Error deleting league\n\(error)")
 								} else {
@@ -139,18 +148,16 @@ struct LeagueInfoView: View {
 								}
 							}
 						}
-						return Alert(title: Text("Delete \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
-					}
-				} else {
-					Button("Leave") {
-						self.leaveLeague = true
+						let alert = Alert(title: Text("Delete \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+						self.alert = IdentifiableAlert(alert: alert)
 					}
 					.padding(.horizontal)
 					.foregroundColor(.white)
 					.background(Color.republican)
 					.clipShape(Capsule())
 					.padding(.bottom)
-					.alert(isPresented: $leaveLeague) { () -> Alert in
+				} else if league.status == .member {
+					Button("Leave") {
 						let primary = Alert.Button.destructive(Text("Leave League")) {
 							self.electionModel.status = "Leaving \(self.league.name)"
 							self.electionModel.removeFromLeague(league: self.league, playerID: UserData.userID) { (error) in
@@ -161,20 +168,37 @@ struct LeagueInfoView: View {
 								self.presentationMode.wrappedValue.dismiss()
 							}
 						}
-						return Alert(title: Text("Leave \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+						let alert = Alert(title: Text("Leave \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+						self.alert = IdentifiableAlert(alert: alert)
 					}
+					.padding(.horizontal)
+					.foregroundColor(.white)
+					.background(Color.republican)
+					.clipShape(Capsule())
+					.padding(.bottom)
 				}
 			}
+			
 		}
 		.navigationBarItems(trailing: EditButton())
 		.listStyle(GroupedListStyle())
 		.navigationBarTitle(league.name)
 		.environment(\.editMode, $editMode)
+//		.navigationBarItems(trailing: league.status != .none ? EditButton() : EditButton().hidden())
 	}
 	
 	func delete(at offset: IndexSet) {
 		if let index = offset.first {
-			removeMember = league.activeMembers[index]
+			let member = league.activeMembers[index]
+			let primary = Alert.Button.default(Text("Remove")) {
+				self.electionModel.removeFromLeague(league: self.league, playerID: member.id) { (error) in
+					if let error = error {
+						debugPrint("Error removing member from league\n\(error)")
+					}
+				}
+			}
+			let alert = Alert(title: Text("Remove \(member.name) from \(league.name)?"), message: Text("This operation cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+			self.alert = IdentifiableAlert(alert: alert)
 		}
 	}
 	

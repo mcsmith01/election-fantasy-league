@@ -16,6 +16,7 @@ var rowShape: RoundedRectangle {
 
 enum Constants: String {
 	case currentElection
+	case seenTutorial
 }
 
 class ElectionModel: NSObject, ObservableObject {
@@ -115,6 +116,7 @@ class ElectionModel: NSObject, ObservableObject {
 		status =  "Loading Election Data..."
 		elections = [Election]()
 		Database.database().reference().child("electionInfo").keepSynced(true)
+		// TODO: Is there enough time to ensure changes are synced before observing?
 		Database.database().reference().child("electionInfo").observeSingleEvent(of: .value) { (snapshot) in
 			for snap in snapshot.children {
 				if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let election = Election(id: child.key, data: data) {
@@ -155,10 +157,6 @@ class ElectionModel: NSObject, ObservableObject {
 						self.leaguesModel.updateOrCreateLeague(withID: child.key, data: data)
 					}
 				}
-				for league in self.leaguesModel.memberLeagues {
-					self.listenToLeague(league)
-				}
-				
 				// Load Predictions
 				self.status = "Loading User Data..."
 				
@@ -180,60 +178,70 @@ class ElectionModel: NSObject, ObservableObject {
 	}
 	
 	func listenToElection(_ election: Election) {
-		
 		racesRef.observe(.childChanged) { (snapshot) in
+			// Race called
 			if let data = snapshot.value as? [String: Any] {
 				election.updateOrCreateRace(withID: snapshot.key, data: data)
 				self.numbersModel.updateNumbers()
 			}
 		}
 		predictionsQuery.observe(.childAdded) { (snapshot) in
+			// Made new prediction
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
 				self.numbersModel.updateNumbers()
 			}
 		}
 		predictionsQuery.observe(.childChanged) { (snapshot) in
-			//TODO: Update prediction, so view can change in real time
+			// Prediction changed or scored
 			if let data = snapshot.value as? [String: Any], let raceID = data["race"] as? String {
 				election.setPredictionForRace(withID: raceID, predictionID: snapshot.key, data: data)
 				self.numbersModel.updateNumbers()
 			}
 		}
 		leagueInfoRef.observe(.childAdded) { (snapshot) in
+			// League created
 			if let data = snapshot.value as? [String: Any] {
 				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
 		leagueInfoRef.observe(.childChanged) { (snapshot) in
+			// League membership changed
 			if let data = snapshot.value as? [String: Any] {
 				self.leaguesModel.updateOrCreateLeague(withID: snapshot.key, data: data)
 			}
 		}
 		leagueInfoRef.observe(.childRemoved) { (snapshot) in
+			// League deleted
 			self.leaguesModel.removeLeague(withID: snapshot.key)
 		}
 		alertsRef.observe(.childAdded) { (snapshot) in
+			// Alert sent
 			if let data = snapshot.value as? [String: Any] {
 				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
 		}
 		alertsRef.observe(.childChanged) { (snapshot) in
+			// Alert marked as read
 			if let data = snapshot.value as? [String: Any] {
 				self.alertsModel.updateOrCreateAlert(withID: snapshot.key, data: data)
 			}
 		}
 		leaguesRef.observe(.childAdded) { (snapshot) in
+			// Joined or applied to league
 			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
 				self.listenToLeague(league)
 			}
 		}
 		leaguesRef.observe(.childChanged) { (snapshot) in
+			// Accepted to league
 			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
+				debugPrint("League \(league.name) removed")
 				self.listenToLeague(league)
 			}
 		}
 		leaguesRef.observe(.childRemoved) { (snapshot) in
+			// Left league / withdrew application
 			if let league = self.leaguesModel.removeMembershipFromLeague(withID: snapshot.key) {
 				self.listenToLeague(league)
 			}
@@ -242,28 +250,34 @@ class ElectionModel: NSObject, ObservableObject {
 	
 	func listenToLeague(_ league: League) {
 		if !observedLeagues.contains(league.id) && league.status == .member {
+			// I am a mmeber but not observing the league
 			leagueDataRef.child(league.id).child("scores").observe(.childAdded) { (snapshot) in
+				// Scores updated
 				if let data = snapshot.value as? [String: Double] {
 					self.leaguesModel.updateScores(forLeagueWithID: league.id, withData: data, forRaceWithID: snapshot.key)
 				}
 			}
 			leagueDataRef.child(league.id).child("members").observe(.value) { (snapshot) in
+				// Members added or removed
 				if let data = snapshot.value as? [String: [String: Any]] {
 					self.leaguesModel.updateActiveMembersForLeague(withID: league.id, data: data)
 				}
 			}
 			if league.ownerID == UserData.userID {
 				leagueDataRef.child(league.id).child("pending").observe(.childAdded) { (snapshot) in
+					// Member request added
 					if let data = snapshot.value as? [String: Any] {
 						self.leaguesModel.addPendingMemberToLeague(withID: league.id, playerID: snapshot.key, data: data)
 					}
 				}
 				leagueDataRef.child(league.id).child("pending").observe(.childRemoved) { (snapshot) in
+					// member request removed (accepted, denied, or withdrawn)
 					self.leaguesModel.removePendingMemberFromLeague(withID: league.id, playerID: snapshot.key)
 				}
 			}
 			observedLeagues.insert(league.id)
 		} else if observedLeagues.contains(league.id) && league.status != .member {
+			// I am not a member but am observing the league
 			leagueDataRef.child(league.id).child("scores").child(league.id).removeAllObservers()
 			leagueDataRef.child(league.id).child("active").removeAllObservers()
 			leagueDataRef.child(league.id).child("pending").removeAllObservers()
@@ -342,7 +356,7 @@ class ElectionModel: NSObject, ObservableObject {
 		}
 	}
 	
-	func deleteLeague(league: League, completion: @escaping (Error?) -> Void) {
+	func deleteLeague(_ league: League, completion: @escaping (Error?) -> Void) {
 		status = "Deleting \(league.name)..."
 		let payload: [String: Any] = ["league": league.id, "election": election.id]
 		Functions.functions().httpsCallable("deleteLeague").call(payload) { (_, error) in

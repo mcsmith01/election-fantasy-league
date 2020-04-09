@@ -55,7 +55,6 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 	}
 
 	func updateInfoFrom(_ data: [String: Any]) {
-		debugPrint("Updating league \(name)")
 		guard let name = data["name"] as? String, let memberCount = data["members"] as? Int else { return }
 		self.name = name
 		self.memberCount = memberCount

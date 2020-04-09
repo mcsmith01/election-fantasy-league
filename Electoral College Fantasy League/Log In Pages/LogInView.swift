@@ -113,6 +113,11 @@ struct AlertMessage: Identifiable {
 	let text: String
 }
 
+struct IdentifiableAlert: Identifiable {
+	let id = UUID()
+	let alert: Alert
+}
+
 enum LoginType {
 	case none
 	case create

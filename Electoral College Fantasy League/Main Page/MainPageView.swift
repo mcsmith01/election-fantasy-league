@@ -74,7 +74,9 @@ struct MainPageView: View {
 						label: {
 							Image(systemName: "person.crop.circle.fill")
 					})
-						.sheet(isPresented: $showSettings, content: { SettingsView().environmentObject(self.electionModel) })
+						.sheet(isPresented: $showSettings) {
+							SettingsView().environmentObject(self.electionModel)
+					}
 				}
 				.imageScale(Image.Scale.large)
 			)
@@ -100,13 +102,13 @@ struct NumbersView: View {
 	var body: some View {
 		HStack {
 			Spacer()
-			NumberCell(text: model.demText, color: Colors.democrat, oversized: !smallSize)
+			NumberCell(text: model.demText, color: .democrat, oversized: !smallSize)
 			if model.indText != "0" {
 				Spacer()
-				NumberCell(text: model.indText, color: Colors.independent, oversized: !smallSize)
+				NumberCell(text: model.indText, color: .independent, oversized: !smallSize)
 			}
 			Spacer()
-			NumberCell(text: model.repText, color: Colors.republican, oversized: !smallSize)
+			NumberCell(text: model.repText, color: .republican, oversized: !smallSize)
 			Spacer()
 		}
 	}
@@ -125,12 +127,6 @@ struct NumberCell: View {
 			.background(color.opacity(0.65))
 			.clipShape(Capsule())
 			.overlay(Capsule().stroke(color, lineWidth: 2))
-	}
-	
-	init(text: String, color: UIColor, oversized: Bool) {
-		self.text = text
-		self.color = Color(color)
-		self.oversized = oversized
 	}
 	
 }

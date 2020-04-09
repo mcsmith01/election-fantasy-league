@@ -30,13 +30,13 @@ struct MultipleCandidateChoiceView: View {
 				GeometryReader { geometry in
 					HStack {
 						Spacer()
-						VerticalSliderView(num: self.$model.demNum, model: self.model, title: self.labels.dems, color: Color(Colors.democrat), height: geometry.size.height, width: geometry.size.width / 5)
+						VerticalSliderView(num: self.$model.demNum, model: self.model, title: self.labels.dems, color: Color.democrat, height: geometry.size.height, width: geometry.size.width / 5)
 						if self.labels.inds != "" {
 							Spacer()
-							VerticalSliderView(num: self.$model.indNum, model: self.model, title: self.labels.inds, color: Color(Colors.independent), height: geometry.size.height, width: geometry.size.width / 5)
+							VerticalSliderView(num: self.$model.indNum, model: self.model, title: self.labels.inds, color: Color.independent, height: geometry.size.height, width: geometry.size.width / 5)
 						}
 						Spacer()
-						VerticalSliderView(num: self.$model.repNum, model: self.model, title: self.labels.reps, color: Color(Colors.republican), height: geometry.size.height, width: geometry.size.width / 5)
+						VerticalSliderView(num: self.$model.repNum, model: self.model, title: self.labels.reps, color: Color.republican, height: geometry.size.height, width: geometry.size.width / 5)
 						Spacer()
 					}
 					.disabled(self.model.isClosed)
