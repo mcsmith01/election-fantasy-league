@@ -56,8 +56,36 @@ struct SettingsView: View {
 	
 }
 
-struct SettingsView_Previews: PreviewProvider {
+//struct SettingsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingsView()
+//    }
+//}
+
+struct ScoringRulesView: View {
+	
+	var body: some View {
+		VStack {
+			Section(header: Text("Raw Score").bold(), footer: Text(" ")) {
+				Text("• One point for each race")
+				Text("• Partial points for House races based on accuracy")
+			}
+			Section(header: Text("Overall Score").bold()) {
+				VStack {
+					Text("• Raw score weighted according to accuracy of all players")
+				}
+			}
+			Section(header: Text("League Score").bold()) {
+				VStack {
+					Text("• Raw score weighted according to accuracy of all players")
+				}
+			}
+		}
+	}
+}
+
+struct ScoringRulesView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        ScoringRulesView()
     }
 }

@@ -63,6 +63,7 @@ class StateChoiceModel: ObservableObject {
 			return numbers
 		}
 	}
+	private var savedNumbers: [String: Int]?
 	@Published var saving: Bool = false
 	@Published var showWarning: Bool = false
 	var called: Bool {
@@ -70,6 +71,9 @@ class StateChoiceModel: ObservableObject {
 	}
 	@Published var showIncumbents = false {
 		didSet {
+			if showIncumbents {
+				savedNumbers = numbers
+			}
 			updateNumbers()
 		}
 	}
@@ -134,6 +138,15 @@ class StateChoiceModel: ObservableObject {
 			} else {
 				candidateID = race.incumbency!.keys.first!
 			}
+		} else if let savedNumbers = savedNumbers {
+			if race.type == .house || race.splits {
+				demNum = Double(savedNumbers["d"] ?? 0)
+				indNum = Double(savedNumbers["i"] ?? 0)
+				repNum = Double(savedNumbers["r"] ?? 0)
+			} else {
+				candidateID = savedNumbers.keys.first!
+			}
+			self.savedNumbers = nil
 		} else if let prediction = race.prediction?.prediction {
 			if race.type == .house || race.splits {
 				demNum = Double(prediction["d"] ?? 0)
@@ -152,6 +165,14 @@ class StateChoiceModel: ObservableObject {
 			}
 		}
 		updated = updateSave
+	}
+	
+	func getNextRace() -> Race {
+		return race.election.nextRace(after: race)
+	}
+	
+	func getPrevRace() -> Race {
+		return race.election.nextRace(before: race)
 	}
 	
 }

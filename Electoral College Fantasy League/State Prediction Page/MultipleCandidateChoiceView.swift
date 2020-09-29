@@ -48,17 +48,17 @@ struct MultipleCandidateChoiceView: View {
 					.disabled(self.model.isClosed)
 				}
 				HStack {
-					if model.race.type == .president {
-						if !model.showIncumbents {
-							Text("Too Close to Call:")
-							Text("\(self.model.tccNum >= 0 ? self.model.tccNum : 0)")
-						} else {
-							Text(" ")
-						}
-					} else {
-						Text(!model.showIncumbents ? "Too Close to Call:" : "Open Seats:")
+					if !model.showIncumbents {
+						Text("Too Close to Call:")
 						Text("\(self.model.tccNum >= 0 ? self.model.tccNum : 0)")
-					}
+					} else {
+						if model.race.type == .president || self.model.tccNum <= 0 {
+							Text(" ")
+						} else {
+							Text("Open Seats:")
+							Text("\(self.model.tccNum)")
+						}
+					}					
 					Spacer()
 				}
 				.padding(.horizontal)

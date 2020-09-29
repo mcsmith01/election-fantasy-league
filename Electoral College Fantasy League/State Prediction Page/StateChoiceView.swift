@@ -45,13 +45,24 @@ struct StateChoiceView: View {
 					Text("\(self.model.race.state)\(self.model.race.type == .president || self.model.race.type == .house ? " (\(self.model.race.seats))" : "")")
 						.font(.title)
 					HStack {
-						Image(systemName: "chevron.left.circle.fill")
-							.foregroundColor(.blue)
-							.padding()
-							.onTapGesture {
-								let newRace = model.race.election.nextRace(before: model.race)
-								model.changeRaceTo(newRace)
-							}
+						VStack(alignment: .leading) {
+							Image(systemName: "chevron.left.circle.fill")
+								.resizable()
+								.frame(width: geometry.size.width / 12, height:  geometry.size.width / 12)
+								.aspectRatio(contentMode: .fit)
+								.foregroundColor(.blue)
+								.padding(.leading)
+								.onTapGesture {
+									model.changeRaceTo(model.getPrevRace())
+								}
+							Text(model.getPrevRace().state)
+								.font(.caption)
+								.padding(.top, 5)
+						}
+						.padding()
+//						ChevronView(direction: .left, text: model.getPrevRace().state)
+//							.frame(width: geometry.size.width / 12)
+//							.padding()
 						Spacer()
 						VStack {
 							ZStack {
@@ -75,19 +86,27 @@ struct StateChoiceView: View {
 								Spacer()
 								Text("Incumbency")
 								Image(systemName: model.showIncumbents ? "checkmark.square.fill" : "square")
-									.onTapGesture {
-										model.showIncumbents.toggle()
-									}
+							}
+							.onTapGesture {
+								model.showIncumbents.toggle()
 							}
 						}
 						Spacer()
-						Image(systemName: "chevron.right.circle.fill")
-							.foregroundColor(.blue)
-							.padding()
-							.onTapGesture {
-								let newRace = model.race.election.nextRace(after: model.race)
-								model.changeRaceTo(newRace)
-							}
+						VStack(alignment: .trailing) {
+							Image(systemName: "chevron.right.circle.fill")
+								.resizable()
+								.frame(width: geometry.size.width / 12, height:  geometry.size.width / 12)
+								.aspectRatio(contentMode: .fit)
+								.foregroundColor(.blue)
+								.padding(.trailing)
+								.onTapGesture {
+									model.changeRaceTo(model.getNextRace())
+								}
+							Text(model.getNextRace().state)
+								.font(.caption)
+								.padding(.top, 5)
+						}
+						.padding()
 					}
 					if self.model.race.type == .house || self.model.race.splits {
 						MultipleCandidateChoiceView(model: self.model)
