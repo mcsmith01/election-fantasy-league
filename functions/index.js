@@ -75,7 +75,6 @@ exports.makePrediction = functions.https.onCall((data, context) => {
 	})
 	.then((reference) => {
 		var id = reference.key;
-		console.log(`Prediction has id ${id}`);
 		return admin.database().ref(`/players/${player}/elections/${election}/predictions/${race}`).set(id);
 	});
 });
