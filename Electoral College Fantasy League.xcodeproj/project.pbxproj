@@ -37,7 +37,6 @@
 		8F8143DD23F08FAA0060FFF3 /* NumbersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8143DC23F08FAA0060FFF3 /* NumbersModel.swift */; };
 		8F9253AA251E7C4900630CD5 /* PagedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9253A9251E7C4900630CD5 /* PagedView.swift */; };
 		8F9737982180AE710026722C /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9737972180AE710026722C /* CoreDataStack.swift */; };
-		8F97379A2180AFBA0026722C /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9737972180AE710026722C /* CoreDataStack.swift */; };
 		8F97BA8523978A5B0059A40F /* StateChoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97BA8423978A5B0059A40F /* StateChoiceModel.swift */; };
 		8F99596423DD2FC800586FE3 /* LeagueMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F99596323DD2FC800586FE3 /* LeagueMember.swift */; };
 		8F99596623DE15C900586FE3 /* LeagueInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F99596523DE15C900586FE3 /* LeagueInfoView.swift */; };
@@ -53,9 +52,6 @@
 		8FC708B91DAEF9480034B334 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC708B81DAEF9480034B334 /* Assets.xcassets */; };
 		8FC708BC1DAEF9480034B334 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */; };
 		8FD019F71F63726500120303 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FD019F61F63726500120303 /* CloudKit.framework */; };
-		8FD97F2F21809FE700E3E1BF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD97F2E21809FE700E3E1BF /* NotificationService.swift */; };
-		8FD97F3321809FE700E3E1BF /* RaceCalledServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FD97F2C21809FE700E3E1BF /* RaceCalledServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		8FD97F382180A5BC00E3E1BF /* Electoral_College_Fantasy_League.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FC708B51DAEF9480034B334 /* Electoral_College_Fantasy_League.xcdatamodeld */; };
 		8FDE67D7231B200C00B25C67 /* DataModelRTDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FDE67D6231B200C00B25C67 /* DataModelRTDB.swift */; };
 		8FDE67E0231F21DA00B25C67 /* president.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8FDE67DE231F21DA00B25C67 /* president.xml */; };
 		8FDE67E1231F21DA00B25C67 /* senate.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8FDE67DF231F21DA00B25C67 /* senate.xml */; };
@@ -66,16 +62,6 @@
 		8FF79C1023CAA39000E804CC /* Prediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF79C0F23CAA39000E804CC /* Prediction.swift */; };
 		E431FB7810A1F83B13B51C7C /* Pods_Electoral_College_Fantasy_League.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C55108F7BC7565AFFC6E86B3 /* Pods_Electoral_College_Fantasy_League.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		8FD97F3121809FE700E3E1BF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8FC708A31DAEF9480034B334 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8FD97F2B21809FE700E3E1BF;
-			remoteInfo = RaceCalledServiceExtension;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8F3548F3202A3838007E0308 /* Embed Frameworks */ = {
@@ -94,7 +80,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				8FD97F3321809FE700E3E1BF /* RaceCalledServiceExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,7 +163,6 @@
 		8FC708D11DAEF9490034B334 /* Electoral_College_Fantasy_LeagueUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electoral_College_Fantasy_LeagueUITests.swift; sourceTree = "<group>"; };
 		8FC708D31DAEF9490034B334 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FD019F61F63726500120303 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
-		8FD97F2C21809FE700E3E1BF /* RaceCalledServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RaceCalledServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FD97F2E21809FE700E3E1BF /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		8FD97F3021809FE700E3E1BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FDE67D6231B200C00B25C67 /* DataModelRTDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelRTDB.swift; sourceTree = "<group>"; };
@@ -208,13 +192,6 @@
 			files = (
 				8FD019F71F63726500120303 /* CloudKit.framework in Frameworks */,
 				E431FB7810A1F83B13B51C7C /* Pods_Electoral_College_Fantasy_League.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8FD97F2921809FE700E3E1BF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +312,6 @@
 			isa = PBXGroup;
 			children = (
 				8FC708AB1DAEF9480034B334 /* Electoral College Fantasy League.app */,
-				8FD97F2C21809FE700E3E1BF /* RaceCalledServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -455,29 +431,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				8FD97F3221809FE700E3E1BF /* PBXTargetDependency */,
 			);
 			name = "Electoral College Fantasy League";
 			productName = "Electoral College Fantasy League";
 			productReference = 8FC708AB1DAEF9480034B334 /* Electoral College Fantasy League.app */;
 			productType = "com.apple.product-type.application";
-		};
-		8FD97F2B21809FE700E3E1BF /* RaceCalledServiceExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8FD97F3621809FE700E3E1BF /* Build configuration list for PBXNativeTarget "RaceCalledServiceExtension" */;
-			buildPhases = (
-				8FD97F2821809FE700E3E1BF /* Sources */,
-				8FD97F2921809FE700E3E1BF /* Frameworks */,
-				8FD97F2A21809FE700E3E1BF /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = RaceCalledServiceExtension;
-			productName = RaceCalledServiceExtension;
-			productReference = 8FD97F2C21809FE700E3E1BF /* RaceCalledServiceExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -512,17 +470,6 @@
 							};
 						};
 					};
-					8FD97F2B21809FE700E3E1BF = {
-						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = D7TRX2T2ZU;
-						LastSwiftMigration = 1030;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
 				};
 			};
 			buildConfigurationList = 8FC708A61DAEF9480034B334 /* Build configuration list for PBXProject "Electoral College Fantasy League" */;
@@ -539,7 +486,6 @@
 			projectRoot = "";
 			targets = (
 				8FC708AA1DAEF9480034B334 /* Electoral College Fantasy League */,
-				8FD97F2B21809FE700E3E1BF /* RaceCalledServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -558,13 +504,6 @@
 				8FDE67E4231F21E400B25C67 /* governor.xml in Resources */,
 				8FC708B91DAEF9480034B334 /* Assets.xcassets in Resources */,
 				8F34B6022173F3D60049ADFC /* GoogleService-Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8FD97F2A21809FE700E3E1BF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,25 +622,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8FD97F2821809FE700E3E1BF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8F97379A2180AFBA0026722C /* CoreDataStack.swift in Sources */,
-				8FD97F2F21809FE700E3E1BF /* NotificationService.swift in Sources */,
-				8FD97F382180A5BC00E3E1BF /* Electoral_College_Fantasy_League.xcdatamodeld in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		8FD97F3221809FE700E3E1BF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8FD97F2B21809FE700E3E1BF /* RaceCalledServiceExtension */;
-			targetProxy = 8FD97F3121809FE700E3E1BF /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */ = {
@@ -880,59 +801,6 @@
 			};
 			name = Release;
 		};
-		8FD97F3421809FE700E3E1BF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = RaceCalledServiceExtension/RaceCalledServiceExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = D7TRX2T2ZU;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = RaceCalledServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 2.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-League.RaceCalledServiceExtension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		8FD97F3521809FE700E3E1BF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = RaceCalledServiceExtension/RaceCalledServiceExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = D7TRX2T2ZU;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = RaceCalledServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 2.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lsapps.Electoral-College-Fantasy-League.RaceCalledServiceExtension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -950,15 +818,6 @@
 			buildConfigurations = (
 				8FC708D71DAEF9490034B334 /* Debug */,
 				8FC708D81DAEF9490034B334 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8FD97F3621809FE700E3E1BF /* Build configuration list for PBXNativeTarget "RaceCalledServiceExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8FD97F3421809FE700E3E1BF /* Debug */,
-				8FD97F3521809FE700E3E1BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
