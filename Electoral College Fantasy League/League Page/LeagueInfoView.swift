@@ -25,24 +25,27 @@ struct LeagueInfoView: View {
 	var body: some View {
 		VStack {
 			HStack {
-			VStack(alignment: .leading) {
-				Text("Commissioner:")
-					.font(Font.body.bold())
-				.padding(.horizontal)
-				Text(league.ownerName)
-					.padding(.horizontal)
-				Text("Scored Races:")
-					.font(Font.body.bold())
-					.padding([.horizontal, .top])
-				Text(raceTypesString)
-					.padding(.horizontal)
-				Text("Membership:")
-					.font(Font.body.bold())
-					.padding([.horizontal, .top])
-				Text(league.isOpen ? "Open" : "Restricted")
-					.padding(.horizontal)
-			}
+				VStack(alignment: .leading) {
+					Text("Commissioner:")
+						.font(Font.body.bold())
+						.padding(.horizontal)
+					Text(league.ownerName)
+						.padding(.horizontal)
+					Text("Scored Races:")
+						.font(Font.body.bold())
+						.padding([.horizontal, .top])
+					Text(raceTypesString)
+						.padding(.horizontal)
+					Text("Membership:")
+						.font(Font.body.bold())
+						.padding([.horizontal, .top])
+					Text(league.isOpen ? "Open" : "Restricted")
+						.padding(.horizontal)
+				}
 				Spacer()
+			}
+			.onAppear() {
+				debugPrint(self.league.id)
 			}
 			.alert(item: $alert) { (alert) -> Alert in
 				return alert.alert
@@ -51,7 +54,7 @@ struct LeagueInfoView: View {
 				List {
 					Section(header: Text("Members")) {
 						ForEach(league.activeMembers) { member in
-							MemberRow(member: member, owner: self.league.ownerID)
+							MemberRow(member: member, owner: self.league.ownerID, ranking: self.league.rankingFor(member))
 						}
 						.onDelete(perform: delete)
 					}
@@ -79,12 +82,12 @@ struct LeagueInfoView: View {
 											let confirm = Alert.Button.default(Text("Confirm")) {
 												self.electionModel.processLeagueRequest(league: self.league, player: member, accept: false) { (error) in
 													if let error = error {
-														debugPrint("Error accepting member\n\(error)")
+														debugPrint("Error declining member\n\(error)")
 													}
 												}
 											}
-											let alert = Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
-											self.alert = IdentifiableAlert(alert: alert)
+											let alertText = Alert(title: Text("Decline \(member.name)'s application to \(self.league.name)?"), primaryButton: confirm, secondaryButton: .cancel())
+											self.alert = IdentifiableAlert(alert: alertText)
 									}
 									Spacer()
 								}
@@ -107,8 +110,8 @@ struct LeagueInfoView: View {
 							}
 						}
 					}
-					let alert = Alert(title: Text("Withdraw application to \(self.league.name)?"), message: nil, primaryButton: primary, secondaryButton: .cancel())
-					self.alert = IdentifiableAlert(alert: alert)
+					let alertText = Alert(title: Text("Withdraw application to \(self.league.name)?"), message: nil, primaryButton: primary, secondaryButton: .cancel())
+					self.alert = IdentifiableAlert(alert: alertText)
 				}
 				.padding()
 				.foregroundColor(.white)
@@ -126,13 +129,13 @@ struct LeagueInfoView: View {
 							}
 						}
 					}
-					let alert = Alert(title: Text("Join \(self.league.name)?"), message: self.league.isOpen
+					let alertText = Alert(title: Text("Join '\(self.league.name)'?"), message: self.league.isOpen
 						? nil : Text("This is a closed league; the league commissioner must approve your request"), primaryButton: primary, secondaryButton: .cancel())
-					self.alert = IdentifiableAlert(alert: alert)
+					self.alert = IdentifiableAlert(alert: alertText)
 				}
 				.padding()
 				.foregroundColor(.white)
-				.background(Color.democrat)
+				.background(Color("democrat"))
 				.clipShape(Capsule())
 			}
 			Spacer()
@@ -148,7 +151,7 @@ struct LeagueInfoView: View {
 								}
 							}
 						}
-						let alert = Alert(title: Text("Delete \(self.league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
+						let alert = Alert(title: Text("Delete '\(self.league.name)'?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 						self.alert = IdentifiableAlert(alert: alert)
 					}
 					.padding(.horizontal)
@@ -184,7 +187,7 @@ struct LeagueInfoView: View {
 		.listStyle(GroupedListStyle())
 		.navigationBarTitle(league.name)
 		.environment(\.editMode, $editMode)
-//		.navigationBarItems(trailing: league.status != .none ? EditButton() : EditButton().hidden())
+		//		.navigationBarItems(trailing: league.status != .none ? EditButton() : EditButton().hidden())
 	}
 	
 	func delete(at offset: IndexSet) {
@@ -213,6 +216,7 @@ struct LeagueInfoView: View {
 struct MemberRow: View {
 	@ObservedObject var member: LeagueMember
 	var owner: String
+	var ranking: Double
 	
 	var body: some View {
 		HStack {
@@ -224,6 +228,9 @@ struct MemberRow: View {
 		}
 		.deleteDisabled(owner == member.id || owner != UserData.userID)
 		.padding()
-		.modifier(RectangleBorder())
+		.modifier(ScoreCell(score: ranking))
+		.onAppear() {
+			debugPrint("\(self.member.name) \(self.ranking)")
+		}
 	}
 }

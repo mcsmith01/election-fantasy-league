@@ -30,7 +30,7 @@ struct SplashPageView: View {
 							}
 							.foregroundColor(.white)
 							.padding(.horizontal)
-							.background(Color.democrat)
+							.background(Color("democrat"))
 							.clipShape(Capsule())
 							.padding()
 							Button("Log In") {
@@ -40,7 +40,7 @@ struct SplashPageView: View {
 							}
 							.foregroundColor(.white)
 							.padding(.horizontal)
-							.background(Color.democrat)
+							.background(Color("democrat"))
 							.clipShape(Capsule())
 							.padding()
 						}

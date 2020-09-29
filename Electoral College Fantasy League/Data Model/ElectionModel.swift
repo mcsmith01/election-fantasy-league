@@ -17,6 +17,8 @@ var rowShape: RoundedRectangle {
 enum Constants: String {
 	case currentElection
 	case seenTutorial
+	case email
+	case name
 }
 
 class ElectionModel: NSObject, ObservableObject {
@@ -83,6 +85,12 @@ class ElectionModel: NSObject, ObservableObject {
 			(auth, user) in
 			if let user = user {
 				UserData.userID = user.uid
+				UserData.data[.email] = user.email
+				self.playerRef.child("name").observeSingleEvent(of: .value) { (snapshot) in
+					if let name = snapshot.value as? String {
+						UserData.data[.name] = name
+					}
+				}
 				self.state = .logInSuccess
 				self.status = "Logged in"
 				self.loadData()
@@ -104,6 +112,10 @@ class ElectionModel: NSObject, ObservableObject {
 			if let error = error {
 				completion(error)
 			} else if let user = result?.user {
+				let changeRequest = user.createProfileChangeRequest()
+				changeRequest.displayName = displayName
+				changeRequest.commitChanges(completion: nil)
+				//TODO: Make this so it's not done directly.
 				Database.database().reference().child("players").child(user.uid).child("name").setValue(displayName)
 				completion(nil)
 			} else {
@@ -159,19 +171,16 @@ class ElectionModel: NSObject, ObservableObject {
 				}
 				// Load Predictions
 				self.status = "Loading User Data..."
-				
-				
-				
 				self.predictionsQuery.observeSingleEvent(of: .value) { (snapshot) in
-						for snap in snapshot.children {
-							if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let raceID = data["race"] as? String {
-								election.setPredictionForRace(withID: raceID, predictionID: child.key, data: data)
-							}
+					for snap in snapshot.children {
+						if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let raceID = data["race"] as? String {
+							election.setPredictionForRace(withID: raceID, predictionID: child.key, data: data)
 						}
-						self.listenToElection(election)
-						self.raceType = election.raceTypes.sorted().first!
-						self.state = .logInComplete
-						self.status = nil
+					}
+					self.listenToElection(election)
+					self.raceType = election.raceTypes.sorted().first!
+					self.state = .logInComplete
+					self.status = nil
 				}
 			}
 		}
@@ -183,6 +192,7 @@ class ElectionModel: NSObject, ObservableObject {
 			if let data = snapshot.value as? [String: Any] {
 				election.updateOrCreateRace(withID: snapshot.key, data: data)
 				self.numbersModel.updateNumbers()
+				self.objectWillChange.send()
 			}
 		}
 		predictionsQuery.observe(.childAdded) { (snapshot) in
@@ -231,36 +241,43 @@ class ElectionModel: NSObject, ObservableObject {
 			// Joined or applied to league
 			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
 				self.listenToLeague(league)
+			} else {
+				debugPrint("Error listening to league")
 			}
 		}
 		leaguesRef.observe(.childChanged) { (snapshot) in
 			// Accepted to league
 			if let data = snapshot.value as? [String: Any], let league = self.leaguesModel.updateMemberStatusForLeague(withID: snapshot.key, data: data) {
-				debugPrint("League \(league.name) removed")
 				self.listenToLeague(league)
 			}
 		}
 		leaguesRef.observe(.childRemoved) { (snapshot) in
 			// Left league / withdrew application
 			if let league = self.leaguesModel.removeMembershipFromLeague(withID: snapshot.key) {
+				// Removes all league listeners
 				self.listenToLeague(league)
 			}
 		}
 	}
 	
+	// TODO: Rename, because will stop listening if removed (intentionally)
 	func listenToLeague(_ league: League) {
 		if !observedLeagues.contains(league.id) && league.status == .member {
-			// I am a mmeber but not observing the league
-			leagueDataRef.child(league.id).child("scores").observe(.childAdded) { (snapshot) in
-				// Scores updated
-				if let data = snapshot.value as? [String: Double] {
-					self.leaguesModel.updateScores(forLeagueWithID: league.id, withData: data, forRaceWithID: snapshot.key)
-				}
+			Messaging.messaging().subscribe(toTopic: league.id)
+			if league.ownerID == UserData.userID {
+				Messaging.messaging().subscribe(toTopic: "\(league.id)-owner")
 			}
+			// I am a mmeber but not observing the league
 			leagueDataRef.child(league.id).child("members").observe(.value) { (snapshot) in
 				// Members added or removed
 				if let data = snapshot.value as? [String: [String: Any]] {
 					self.leaguesModel.updateActiveMembersForLeague(withID: league.id, data: data)
+				}
+			}
+			leagueDataRef.child(league.id).child("scores").observe(.childAdded) { (snapshot) in
+				// Scores updated
+				if let data = snapshot.value as? [String: Double] {
+					self.leaguesModel.updateScores(forLeagueWithID: league.id, withData: data, forRaceWithID: snapshot.key)
 				}
 			}
 			if league.ownerID == UserData.userID {
@@ -277,6 +294,8 @@ class ElectionModel: NSObject, ObservableObject {
 			}
 			observedLeagues.insert(league.id)
 		} else if observedLeagues.contains(league.id) && league.status != .member {
+			Messaging.messaging().unsubscribe(fromTopic: league.id)
+			Messaging.messaging().unsubscribe(fromTopic: "\(league.id)-owner")
 			// I am not a member but am observing the league
 			leagueDataRef.child(league.id).child("scores").child(league.id).removeAllObservers()
 			leagueDataRef.child(league.id).child("active").removeAllObservers()
@@ -301,14 +320,6 @@ class ElectionModel: NSObject, ObservableObject {
 		}
 	}
 
-	func savePrediction(_ numbers: [String: Int], forRaceWithID raceID: String, completion: ((Error?) -> Void)?) {
-		let payload: [String: Any] = ["prediction": numbers, "election": election.id, "race": raceID]
-		Functions.functions().httpsCallable("makePrediction").call(payload) {
-			(_, error) in
-			completion?(error)
-		}
-	}
-	
 	func createLeague(name: String, isOpen: Bool, raceTypes: [Int], completion: @escaping (Error?) -> Void) {
 		let payload: [String: Any] = ["name": name, "isOpen": isOpen, "races": raceTypes, "election": election.id]
 		Functions.functions().httpsCallable("createLeague").call(payload) { (_, error) in
@@ -328,13 +339,13 @@ class ElectionModel: NSObject, ObservableObject {
 	func processLeagueRequest(league: League, player: LeagueMember, accept: Bool, completion: @escaping (Error?) -> Void) {
 		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": player.id]
 		if accept {
-			status = "Accepting \(player.name) to \(league.name)"
+			status = "Accepting \(player.name) to '\(league.name)'"
 			Functions.functions().httpsCallable("acceptToLeague").call(payload) { (_, error) in
 				self.status = nil
 				completion(error)
 			}
 		} else {
-			status = "Rejecting \(player.name)'s appliction to \(league.name)"
+			status = "Rejecting \(player.name)'s appliction to '\(league.name)'"
 			Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in
 				self.status = nil
 				completion(error)
@@ -344,10 +355,10 @@ class ElectionModel: NSObject, ObservableObject {
 	
 	func removeFromLeague(league: League, playerID: String, completion: @escaping (Error?) -> Void) {
 		if playerID == UserData.userID {
-			status = "Leaving \(league.name)..."
+			status = "Leaving '\(league.name)'"
 		} else {
 			// TODO: Take in LeagueMember
-			status = "Removing player from \(league.name)..."
+			status = "Removing player from '\(league.name)'"
 		}
 		let payload: [String: Any] = ["league": league.id, "election": election.id, "player": playerID]
 		Functions.functions().httpsCallable("removeFromLeague").call(payload) { (_, error) in

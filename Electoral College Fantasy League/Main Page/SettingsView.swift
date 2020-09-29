@@ -26,6 +26,16 @@ struct SettingsView: View {
 				Spacer()
 			}
 			.padding()
+			HStack {
+				VStack(alignment: .leading) {
+					Text("Name: \(UserData.data[.name] as? String ?? "Unknown")")
+						.font(.system(size: 25))
+						.padding(.bottom)
+					Text("Email: \(UserData.data[.email] as? String ?? "Unknown")")
+				}
+				.padding()
+				Spacer()
+			}
 			Spacer()
 			Button("Log Out") {
 				self.logoutAlert = true

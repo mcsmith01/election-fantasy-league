@@ -41,7 +41,7 @@ struct TutorialHomeView: View {
 				HStack {
 					ForEach(0..<numberOfPages) { index in
 						Text("•")
-							.foregroundColor(index == self.pageIndex ? .democrat : .gray)
+							.foregroundColor(index == self.pageIndex ? Color("democrat") : .gray)
 					}
 				}
 				.padding(.horizontal)

@@ -25,6 +25,15 @@ enum RaceType: Int, CaseIterable, Comparable, Identifiable {
 		return lhs.rawValue < rhs.rawValue
 	}
 	
+	var adjective: String {
+		switch self {
+		case .president: return "Presidential"
+		case .senate: return "senate"
+		case .house: return "house"
+		case .governor: return "gubernatorial"
+		}
+	}
+	
 	case president = 0
 	case senate
 	case house

@@ -20,6 +20,7 @@ class NumbersModel: NSObject, ObservableObject {
 	var safeDems: Int = 0
 	var safeInds: Int = 0
 	var safeReps: Int = 0
+	var total: Int = 0
 	
 	var results = false {
 		didSet {
@@ -39,6 +40,7 @@ class NumbersModel: NSObject, ObservableObject {
 		safeDems = 0
 		safeReps = 0
 		safeInds = 0
+		total = 0
 		
 		for race in races {
 			if !results {
@@ -75,8 +77,10 @@ class NumbersModel: NSObject, ObservableObject {
 					} else if party.starts(with: "r") {
 						safeReps += count
 					}
+					total += count
 				}
 			}
+			total += race.seats
 		}
 		demText = "\(dems)\(safeDems > 0 ? " (\(dems + safeDems))" : "")"
 		indText = "\(inds)\(safeInds > 0 ? " (\(inds + safeInds))" : "")"

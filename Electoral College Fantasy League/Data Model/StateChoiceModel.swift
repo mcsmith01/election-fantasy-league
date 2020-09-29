@@ -14,23 +14,8 @@ class StateChoiceModel: ObservableObject {
 
 	@Published var race: Race {
 		didSet {
-			if let prediction = race.prediction?.prediction {
-				if race.type == .house || race.splits {
-					demNum = Double(prediction["d"] ?? 0)
-					indNum = Double(prediction["i"] ?? 0)
-					repNum = Double(prediction["r"] ?? 0)
-				} else {
-					candidateID = prediction.keys.first!
-				}
-			} else {
-				if race.type == .house || race.splits {
-					demNum = 0
-					indNum = 0
-					repNum = 0
-				} else {
-					candidateID = ""
-				}
-			}
+			updateNumbers()
+			raceID = race.id
 			updated = false
 		}
 	}
@@ -41,12 +26,18 @@ class StateChoiceModel: ObservableObject {
 	}
 	var raceID: String {
 		didSet {
-					if updated {
-						showWarning = true
-					} else {
-						updateRace()
-					}
-			
+			if raceID != race.id {
+				nextRace = self.allRaces.first(where: { $0.id == self.raceID })!
+			}
+		}
+	}
+	private var nextRace: Race {
+		didSet {
+			if updated {
+				showWarning = true
+			} else {
+				updateRace()
+			}
 		}
 	}
 	@Published var candidateID: String = "" { didSet { updated = true } }
@@ -61,7 +52,7 @@ class StateChoiceModel: ObservableObject {
 	}
 	var isClosed: Bool
 	var updated = false
-	var numbers: [String: Int] {
+	private var numbers: [String: Int] {
 		get {
 			let numbers: [String: Int]
 			if race.type == .house || race.splits {
@@ -77,15 +68,21 @@ class StateChoiceModel: ObservableObject {
 	var called: Bool {
 		return race.results != nil
 	}
+	@Published var showIncumbents = false {
+		didSet {
+			updateNumbers()
+		}
+	}
 	
 	init(race: Race, isClosed: Bool) {
 		self.race = race
+		self.nextRace = race
 		self.raceID = race.id
 		self.isClosed = isClosed
 	}
 	
 	func updateRace() {
-		self.race = self.allRaces.first(where: { $0.id == self.raceID })!
+		race = nextRace
 	}
 
 	func colorForPrediction() -> Color {
@@ -94,6 +91,10 @@ class StateChoiceModel: ObservableObject {
 	
 	func colorForResults() -> Color {
 		return Color.blend(race.results ?? [:])
+	}
+	
+	func colorForIncumbency() -> Color {
+		return Color.blend(race.incumbency ?? [:])
 	}
 	
 	func backgroundForState() -> LinearGradient {
@@ -111,6 +112,7 @@ class StateChoiceModel: ObservableObject {
 	func savePrediction(completion: @escaping (Error?) -> Void) {
 		saving = true
 		let payload: [String: Any] = ["prediction": numbers, "election": race.election.id, "race": race.id]
+		debugPrint(payload)
 		Functions.functions().httpsCallable("makePrediction").call(payload) {
 			(_, error) in
 			self.saving = false
@@ -118,8 +120,38 @@ class StateChoiceModel: ObservableObject {
 		}
 	}
 	
-//	func colorForResults() -> Color {
-//		if let 
-//	}
+	func changeRaceTo(_ newRace: Race) {
+		nextRace = newRace
+	}
+
+	func updateNumbers() {
+		let updateSave = updated
+		if showIncumbents {
+			if race.type == .house || race.splits {
+				demNum = Double(race.incumbency?["d"] ?? 0)
+				indNum = Double(race.incumbency?["i"] ?? 0)
+				repNum = Double(race.incumbency?["r"] ?? 0)
+			} else {
+				candidateID = race.incumbency!.keys.first!
+			}
+		} else if let prediction = race.prediction?.prediction {
+			if race.type == .house || race.splits {
+				demNum = Double(prediction["d"] ?? 0)
+				indNum = Double(prediction["i"] ?? 0)
+				repNum = Double(prediction["r"] ?? 0)
+			} else {
+				candidateID = prediction.keys.first!
+			}
+		} else {
+			if race.type == .house || race.splits {
+				demNum = 0
+				indNum = 0
+				repNum = 0
+			} else {
+				candidateID = ""
+			}
+		}
+		updated = updateSave
+	}
 	
 }

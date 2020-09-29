@@ -10,35 +10,36 @@ import SwiftUI
 
 struct ScoresView: View {
 	@EnvironmentObject var electionModel: ElectionModel
-	var totalScore: Double {
+	
+    var body: some View {
+		NavigationView {
+			List {
+				ForEach(electionModel.election.raceTypes.sorted()) { type in
+					Section(header: Text("\(String(describing: type).capitalized) - \(String(format: "%.2f", self.scoreForType(type)))")) {
+						ForEach(self.racesForType(type)) { race in
+							HStack {
+								Text(race.state)
+								Spacer()
+								Text("\(String(format: "%.2f", race.prediction?.score ?? 0.0))")
+							}
+							.padding()
+							.background(Color.forScore(race.prediction?.score ?? 0.0))
+							.modifier(RectangleBorder())
+						}
+					}
+				}
+			}
+			.navigationBarTitle(Text("Score: \(String(format: "%.2f", totalScore()))"))
+		}
+	}
+	
+	func totalScore() -> Double {
 		return electionModel.election.calledRaces().reduce(0.0) { (total, race) in
 			if let score = race.prediction?.score {
 				return total + score
 			} else {
 				return total
 			}
-		}
-	}
-	
-    var body: some View {
-		NavigationView {
-		List {
-			Text("Total: \(String(format: "%.2f", totalScore))")
-			ForEach(electionModel.election.raceTypes.sorted()) { type in
-				Section(header: Text("\(String(describing: type).capitalized) - \(String(format: "%.2f", self.scoreForType(type)))")) {
-					ForEach(self.racesForType(type)) { race in
-						HStack {
-							Text(race.state)
-							Spacer()
-							Text("\(String(format: "%.2f", race.prediction?.score ?? 0.0))")
-						}
-						.padding()
-						.modifier(RectangleBorder())
-					}
-				}
-			}
-		}
-		.navigationBarTitle("Scores")
 		}
 	}
 	

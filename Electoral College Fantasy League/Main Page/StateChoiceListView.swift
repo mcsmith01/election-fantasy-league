@@ -21,7 +21,6 @@ struct StateChoiceListView: View {
 		}
 	}
 	
-
 }
 
 //struct StateChoiceListView_Previews: PreviewProvider {
@@ -50,6 +49,22 @@ struct StateRow: View {
 		}
 	}
 	
+	var gradient: Gradient {
+		if showResults {
+			if let results = race.results {
+				return Color.gradient(results)
+			} else {
+				return Gradient(colors: [Color.primary])
+			}
+		} else {
+			if let prediction = race.prediction {
+				return Color.gradient(prediction.prediction)
+			} else {
+				return Gradient(colors: [Color.primary])
+			}
+		}
+	}
+
 	var body: some View {
 		ZStack {
 			if color == .primary {

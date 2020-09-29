@@ -43,6 +43,7 @@ class Election: NSObject, Comparable {
 	
 	func updateOrCreateRace(withID id: String, data: [String: Any]) {
 		if let race = races.first(where: {$0.id == id}) {
+			debugPrint("Updated \(race.state) \(race.type)")
 			race.updateRace(withData: data)
 		} else if let race = Race(id: id, data: data, election: self) {
 			races.append(race)
@@ -65,6 +66,26 @@ class Election: NSObject, Comparable {
 	func setPredictionForRace(withID id: String, predictionID pid: String, data: [String: Any]) {
 		if let race = races.first(where: { $0.id == id }) {
 				race.prediction = Prediction(id: pid, data: data)
+		}
+	}
+	
+	func nextRace(after race: Race) -> Race {
+		let races = racesOfType(race.type).sorted()
+		let index = races.firstIndex(of: race)?.advanced(by: 1)
+		if let index = index, index < races.count {
+			return races[index]
+		} else {
+			return races.first!
+		}
+	}
+	
+	func nextRace(before race: Race) -> Race {
+		let races = racesOfType(race.type).sorted()
+		let index = races.firstIndex(of: race)?.advanced(by: -1)
+		if let index = index, index >= 0 {
+			return races[index]
+		} else {
+			return races.last!
 		}
 	}
 	

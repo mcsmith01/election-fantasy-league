@@ -11,7 +11,13 @@ import SwiftUI
 struct MultipleCandidateChoiceView: View {
 	@ObservedObject var model: StateChoiceModel
 	var labels: (dems: String, inds: String, reps: String) {
-		if let candidates = model.race.candidates {
+		if model.showIncumbents {
+			if model.race.type == .president {
+				return ("Democrat", "", "Republican")
+			} else {
+				return ("Democrats", "Independents", "Republicans")
+			}
+		} else if let candidates = model.race.candidates {
 			let dem = candidates["d"] ?? "Democrat"
 			let ind = candidates["i"] ?? ""
 			let rep = candidates["r"] ?? "Republican"
@@ -30,7 +36,7 @@ struct MultipleCandidateChoiceView: View {
 				GeometryReader { geometry in
 					HStack {
 						Spacer()
-						VerticalSliderView(num: self.$model.demNum, model: self.model, title: self.labels.dems, color: Color.democrat, height: geometry.size.height, width: geometry.size.width / 5)
+						VerticalSliderView(num: self.$model.demNum, model: self.model, title: self.labels.dems, color: Color("democrat"), height: geometry.size.height, width: geometry.size.width / 5)
 						if self.labels.inds != "" {
 							Spacer()
 							VerticalSliderView(num: self.$model.indNum, model: self.model, title: self.labels.inds, color: Color.independent, height: geometry.size.height, width: geometry.size.width / 5)
@@ -42,8 +48,17 @@ struct MultipleCandidateChoiceView: View {
 					.disabled(self.model.isClosed)
 				}
 				HStack {
-					Text("Too Close to Call:")
-					Text("\(self.model.tccNum >= 0 ? self.model.tccNum : 0)")
+					if model.race.type == .president {
+						if !model.showIncumbents {
+							Text("Too Close to Call:")
+							Text("\(self.model.tccNum >= 0 ? self.model.tccNum : 0)")
+						} else {
+							Text(" ")
+						}
+					} else {
+						Text(!model.showIncumbents ? "Too Close to Call:" : "Open Seats:")
+						Text("\(self.model.tccNum >= 0 ? self.model.tccNum : 0)")
+					}
 					Spacer()
 				}
 				.padding(.horizontal)

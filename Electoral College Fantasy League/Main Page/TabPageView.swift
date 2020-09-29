@@ -41,7 +41,7 @@ struct TabPageView: View {
 						}
 					.tag(3)
 				}
-				.accentColor(.democrat)
+				.accentColor(Color("democrat"))
 				TabCirclesImageView(size: geometry.size, leaguesModel: self.electionModel.leaguesModel, alertsModel: self.electionModel.alertsModel)
 			}
 		}

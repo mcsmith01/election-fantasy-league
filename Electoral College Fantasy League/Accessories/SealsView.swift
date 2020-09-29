@@ -12,17 +12,22 @@ struct SealsView: View {
 	var body: some View {
 		GeometryReader { geometry in
 			VStack {
+				Spacer()
 				Image("president")
 					.resizable()
 					.modifier(SealModifier(viewWidth: geometry.size.width))
 				HStack {
+					Spacer()
 					Image("senate")
 						.resizable()
 						.modifier(SealModifier(viewWidth: geometry.size.width))
+					Spacer()
 					Image("house_seal")
 						.resizable()
 						.modifier(SealModifier(viewWidth: geometry.size.width))
+					Spacer()
 				}
+				Spacer()
 			}
 		}
 	}

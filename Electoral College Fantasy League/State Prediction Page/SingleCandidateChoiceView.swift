@@ -12,11 +12,23 @@ struct SingleCandidateChoiceView: View {
 	@ObservedObject var model: StateChoiceModel
 	
 	var candidates: [String: String] {
-		return model.race.candidates ?? [:]
+		if model.showIncumbents {
+			let party = model.race.incumbency?.keys.first ?? ""
+			switch party {
+			case "d": return ["d": "Democrat"]
+			case "r": return ["r": "Republican"]
+			case "i": return ["i": "Independent"]
+			default: return ["t": "No Incumbent"]
+			}
+		} else {
+			return model.race.candidates ?? [:]
+		}
 	}
 	var partyList: [String] {
 		var list = candidates.keys.sorted()
-		list.append("t")
+		if !model.showIncumbents {
+			list.append("t")
+		}
 		return list
 	}
 	

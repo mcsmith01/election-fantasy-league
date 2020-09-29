@@ -14,8 +14,13 @@ struct MainPageView: View {
 	@State var selectedRace: Race?
 	@State var navigationTag: Int?
 	@State var mapOffset = CGSize.zero
+	@State var showVisual = true
 	@State var showMap = true
 	@State var showSettings = false
+	@State var viewIndex = 0
+	var viewArray: [AnyView] {
+		return [AnyView(ElectionMapView().padding(.bottom)), AnyView(ElectionGraphView(model: electionModel.numbersModel).padding())]
+	}
 	
 	var body: some View {
 		NavigationView{
@@ -26,15 +31,14 @@ struct MainPageView: View {
 					}
 				}
 				.pickerStyle(SegmentedPickerStyle())
-				.disabled(electionModel.predictionsLocked)
 				.padding(.horizontal)
 				ZStack(alignment: .bottom) {
-					if showMap {
-						ElectionMapView()
-							.padding(.bottom)
+					if showVisual {
+						PagedView(index: $viewIndex, showView: $showVisual, pages: viewArray)
+//							.transition(.move(edge: .top))
 							.transition(.scale(scale: 0.0, anchor: .top))
 					}
-					NumbersView(model: electionModel.numbersModel, smallSize: $showMap)
+					NumbersView(model: electionModel.numbersModel, smallSize: $showVisual)
 				}
 				.animation(.easeInOut)
 				.gesture(
@@ -42,11 +46,15 @@ struct MainPageView: View {
 						.onEnded { (value) in
 							if value.translation.height < -50 {
 								withAnimation {
-									self.showMap = false
+									self.showVisual = false
 								}
 							} else if value.translation.height > 25 {
 								withAnimation {
-									self.showMap = true
+									self.showVisual = true
+								}
+							} else if abs(value.translation.width) > 50 {
+								withAnimation(Animation.spring()) {
+									self.showMap.toggle()
 								}
 							}
 					}
@@ -57,7 +65,7 @@ struct MainPageView: View {
 							Text(self.electionModel.lists[index])
 						}
 					}
-					.disabled(!electionModel.predictionsLocked)
+//					.disabled(!electionModel.predictionsLocked)
 					.pickerStyle(SegmentedPickerStyle())
 					.padding(.horizontal)) {
 						StateChoiceListView(selectedRace: $selectedRace)
@@ -72,7 +80,7 @@ struct MainPageView: View {
 					Button(
 						action: { self.showSettings = true },
 						label: {
-							Image(systemName: "person.crop.circle.fill")
+							Image(systemName: "gear")
 					})
 						.sheet(isPresented: $showSettings) {
 							SettingsView().environmentObject(self.electionModel)
@@ -102,7 +110,7 @@ struct NumbersView: View {
 	var body: some View {
 		HStack {
 			Spacer()
-			NumberCell(text: model.demText, color: .democrat, oversized: !smallSize)
+			NumberCell(text: model.demText, color: Color("democrat"), oversized: !smallSize)
 			if model.indText != "0" {
 				Spacer()
 				NumberCell(text: model.indText, color: .independent, oversized: !smallSize)

@@ -31,7 +31,7 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 	var ownerName: String
 	var desc: String?
 	@Published var memberCount: Int
-	var status: MemberStatus = .none
+	@Published var status: MemberStatus = .none
 	var raceTypes: Set<RaceType>
 	var allMembers = Set<LeagueMember>()
 	var activeMembers = [LeagueMember]()
@@ -74,7 +74,7 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 		allMembers.removeAll()
 		allMembers.formUnion(activeMembers)
 		allMembers.formUnion(pendingMembers)
-		activeMembers.sort(by: { $0.score != $1.score ? $0.score > $1.score : $0 < $1 })
+		activeMembers.sort()
 		objectWillChange.send()
 	}
 	
@@ -100,8 +100,14 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 		for (player, score) in data {
 			if let member = allMembers.first(where: { $0.id == player }) {
 				member.updateScore(score, forRaceWithID: raceID)
+			} else {
+				let member = LeagueMember(id: player, name: nil, member: true)
+				member.updateScore(score, forRaceWithID: raceID)
+				activeMembers.append(member)
 			}
 		}
+		activeMembers.sort()
+		objectWillChange.send()
 	}
 	
 	func containsMember(withID id: String) -> Bool {
@@ -110,6 +116,12 @@ class League: NSObject, Identifiable, Comparable, ObservableObject {
 	
 	func searchFilter(_ text: String) -> Bool {
 		return text == "" || name.contains(text)
+	}
+	
+	func rankingFor(_ member: LeagueMember) -> Double {
+		let fewer = activeMembers.filter({ $0.score < member.score}).count
+		let greater = activeMembers.filter({ $0.score > member.score}).count
+		return Double(fewer + 1) / Double(greater + 1)
 	}
 	
 }

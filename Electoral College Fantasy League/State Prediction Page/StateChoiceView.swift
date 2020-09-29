@@ -44,31 +44,60 @@ struct StateChoiceView: View {
 					.padding()
 					Text("\(self.model.race.state)\(self.model.race.type == .president || self.model.race.type == .house ? " (\(self.model.race.seats))" : "")")
 						.font(.title)
-					ZStack {
-						Image(self.model.race.state)
-							.resizable()
-							.aspectRatio(contentMode: .fit)
-							.frame(height: geometry.size.height / 2.5)
-							.colorMultiply(self.model.colorForPrediction())
-							.shadow(color: .gray, radius: 5)
-							.animation(.easeInOut)
-						if self.model.called {
-							Image(self.model.race.state)
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.frame(height: geometry.size.height / 2.5)
-								.colorMultiply(self.model.colorForResults())
-								.animation(.easeInOut)
-								.clipShape(Triangle())
+					HStack {
+						Image(systemName: "chevron.left.circle.fill")
+							.foregroundColor(.blue)
+							.padding()
+							.onTapGesture {
+								let newRace = model.race.election.nextRace(before: model.race)
+								model.changeRaceTo(newRace)
+							}
+						Spacer()
+						VStack {
+							ZStack {
+								Image(self.model.race.state)
+									.resizable()
+									.aspectRatio(contentMode: .fit)
+									.frame(height: geometry.size.height / 2.5)
+									.colorMultiply(!model.showIncumbents ? self.model.colorForPrediction() : self.model.colorForIncumbency())
+									.shadow(color: .gray, radius: 5)
+								if self.model.called {
+									Image(self.model.race.state)
+										.resizable()
+										.aspectRatio(contentMode: .fit)
+										.frame(height: geometry.size.height / 2.5)
+										.colorMultiply(self.model.colorForResults())
+										.clipShape(Triangle())
+								}
+							}
+							Spacer()
+							HStack {
+								Spacer()
+								Text("Incumbency")
+								Image(systemName: model.showIncumbents ? "checkmark.square.fill" : "square")
+									.onTapGesture {
+										model.showIncumbents.toggle()
+									}
+							}
 						}
+						Spacer()
+						Image(systemName: "chevron.right.circle.fill")
+							.foregroundColor(.blue)
+							.padding()
+							.onTapGesture {
+								let newRace = model.race.election.nextRace(after: model.race)
+								model.changeRaceTo(newRace)
+							}
 					}
 					if self.model.race.type == .house || self.model.race.splits {
 						MultipleCandidateChoiceView(model: self.model)
 							.padding(.horizontal)
+							.disabled(model.showIncumbents)
 							.animation(.easeInOut)
 					} else {
 						SingleCandidateChoiceView(model: self.model)
 							.padding(.horizontal)
+							.disabled(model.showIncumbents)
 							.animation(.easeInOut)
 					}
 					Spacer()

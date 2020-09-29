@@ -73,7 +73,7 @@ struct CreateLeagueView: View {
 					}
 					.foregroundColor(.white)
 					.padding(.horizontal)
-					.background(name == "" ? Color.gray : Color.democrat)
+					.background(name == "" ? Color.gray : Color("democrat"))
 					.clipShape(Capsule())
 					.disabled(name == "")
 				)

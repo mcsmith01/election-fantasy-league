@@ -18,7 +18,6 @@ struct AlertsView: View {
 			List {
 				ForEach(alertsModel.alerts) { alert in
 					AlertRow(alert: alert)
-//						.modifier(RectangleBorder())
 						.onAppear() {
 							if !alert.read {
 								self.viewedAlerts.insert(alert.id)
@@ -43,9 +42,27 @@ struct AlertsView: View {
 //    }
 //}
 
+struct AlertRow_Previews: PreviewProvider {
+	static var previews: some View {
+		VStack {
+			AlertRow(alert: ElectionAlert.testAlert(status: .info))
+			AlertRow(alert: ElectionAlert.testAlert(status: .alert))
+			AlertRow(alert: ElectionAlert.testAlert(status: .critical))
+			AlertRow(alert: ElectionAlert.testAlert(status: .info, message: "Short message"))
+		}
+	}
+}
+
 struct AlertRow: View {
 	
 	var alert: ElectionAlert
+	var color: Color {
+		switch alert.status {
+		case .info: return .green
+		case .alert: return .orange
+		case .critical: return .red
+		}
+	}
 	
 	let dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
@@ -54,30 +71,36 @@ struct AlertRow: View {
 	}()
 	
 	var body: some View {
-		VStack {
-			Text(dateFormatter.string(from: alert.time))
-				.font(.caption)
-				.foregroundColor(.gray)
-				.frame(alignment: .center)
+		VStack(alignment: .leading) {
 			HStack {
-				if alert.status == .info {
-					Image(systemName: "exclamationmark.circle.fill")
-						.foregroundColor(.green)
-				} else if alert.status == .alert {
-					Image(systemName: "exclamationmark.triangle.fill")
-						.foregroundColor(.orange)
-				} else if alert.status == .critical {
-					Image(systemName: "exclamationmark.octagon.fill")
-						.foregroundColor(.red)
-				}
+//				if alert.status == .info {
+//					Image(systemName: "exclamationmark.circle.fill")
+//						.foregroundColor(.green)
+//						.padding(.leading)
+//				} else if alert.status == .alert {
+//					Image(systemName: "exclamationmark.triangle.fill")
+//						.foregroundColor(.orange)
+//						.padding(.leading)
+//				} else if alert.status == .critical {
+//					Image(systemName: "exclamationmark.octagon.fill")
+//						.foregroundColor(.red)
+//						.padding(.leading)
+//				}
+				Text(dateFormatter.string(from: alert.time))
+					.font(.caption)
+					.foregroundColor(.gray)
+					.padding()
+//					.frame(alignment: .center)
+			}
+			HStack {
 				Text(alert.text)
 					.font(alert.read ? Font.body : Font.body.bold())
-//					.frame(alignment: .leading)
 					.lineLimit(nil)
-				Spacer()
+					.padding()
+					.modifier(ColoredCell(color: color))
+//				Spacer()
 			}
-			.padding()
-			.modifier(RectangleBorder())
+			.padding(.horizontal)
 		}
 		.padding(.bottom)
 	}

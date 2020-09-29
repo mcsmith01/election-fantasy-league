@@ -45,4 +45,11 @@ class ElectionAlert: NSObject, Comparable, Identifiable {
 		self.read = read
 	}
 	
+	class func testAlert(status: ElectionAlert.Status, message: String? = nil) -> ElectionAlert {
+		var data: [String: Any] = ["message": "This is a test message. It should be long enough to run to the second line", "status": status.rawValue, "time": "2020-02-20T01:42:16.446Z"]
+		if let message = message {
+			data["message"] = message
+		}
+		return ElectionAlert(id: "A0", data: data)!
+	}
 }

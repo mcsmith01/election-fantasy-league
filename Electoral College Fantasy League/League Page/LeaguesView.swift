@@ -14,29 +14,18 @@ struct LeaguesView: View {
 	@State var navigationTag: Int?
 	@State var findLeague = false
 	@State var joinLeague: League?
-	@State var withdrawApplication: League?
+//	@State var withdrawApplication: League?
 	
 	var body: some View {
 		NavigationView {
 			List {
 				ForEach(electionModel.leaguesModel.memberLeagues) { league in
+					// TODO:
 					NavigationLink(destination: LeagueInfoView(league: league)) {
 						LeagueRow(league: league)
 					}
 					.padding(.trailing)
 					.modifier(RectangleBorder())
-				}
-				.alert(item: $withdrawApplication) { (league) -> Alert in
-					let primary = Alert.Button.destructive(Text("Withdraw")) {
-						self.electionModel.status = "Withdrawing application to \(league.name)"
-						self.electionModel.removeFromLeague(league: league, playerID: UserData.userID) { (error) in
-							self.electionModel.status = nil
-							if let error = error {
-								debugPrint("Error withdrawing application to league\n\(error)")
-							}
-						}
-					}
-					return Alert(title: Text("Withdraw application to \(league.name)?"), message: Text("This action cannot be undone"), primaryButton: primary, secondaryButton: .cancel())
 				}
 				if electionModel.leaguesModel.pendingLeagues.count > 0 {
 					Section(header: Text("Pending Leagues")) {
@@ -80,10 +69,6 @@ struct LeaguesView: View {
 		}
 	}
 	
-	func removeAppliction(at offset: IndexSet) {
-		debugPrint("Remove League Appliction")
-	}
-	
 }
 
 //struct LeaguesView_Previews: PreviewProvider {
@@ -114,10 +99,7 @@ struct LeagueRow: View {
 					.font(.subheadline)
 			}
 			.padding()
-			.background(
-				Image("american_flag")
-					.opacity(0.1)
-			)
+			.modifier(CellBackground())
 		}
 	}
 }

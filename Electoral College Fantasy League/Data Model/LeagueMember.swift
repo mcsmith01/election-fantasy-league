@@ -12,7 +12,7 @@ class LeagueMember: NSObject, Identifiable, Comparable, ObservableObject {
 
 	static func < (lhs: LeagueMember, rhs: LeagueMember) -> Bool {
 		if lhs.score != rhs.score {
-			return lhs.score < rhs.score
+			return lhs.score > rhs.score
 		} else if lhs.name != rhs.name {
 			return lhs.name < rhs.name
 		} else {
@@ -36,9 +36,9 @@ class LeagueMember: NSObject, Identifiable, Comparable, ObservableObject {
 		}
 	}
 	
-	init(id: String, name: String, member: Bool) {
+	init(id: String, name: String?, member: Bool) {
 		self.id = id
-		self.name  = name
+		self.name  = name ?? "Unknown"
 		self.member = member
 	}
 	

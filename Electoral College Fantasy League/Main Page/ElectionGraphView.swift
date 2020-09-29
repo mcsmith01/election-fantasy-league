@@ -9,11 +9,20 @@
 import SwiftUI
 
 struct ElectionGraphView: View {
-	
-	var dems: Double
-	var inds: Double
-	var reps: Double
-	var total: Double
+	@ObservedObject var model: NumbersModel
+
+	var dems: Double {
+		return Double(model.dems + model.safeDems)
+	}
+	var inds: Double {
+		return Double(model.inds + model.safeInds)
+	}
+	var reps: Double {
+		return Double(model.reps + model.safeReps)
+	}
+	var total: Double {
+		return Double(model.total)
+	}
 
 	var body: some View {
 		GeometryReader { geometry in
@@ -21,13 +30,13 @@ struct ElectionGraphView: View {
 				GraphWedge(offset: 0, number: self.total, total: self.total)
 					.fill(Color.gray)
 				GraphWedge(offset: 0.0, number: self.dems, total: self.total)
-					.fill(Color.blue)
+					.fill(Color.democrat)
 				GraphWedge(offset: self.dems, number: self.inds, total: self.total)
-					.fill(Color.green)
+					.fill(Color.independent)
 				GraphWedge(offset: self.total - self.reps, number: self.reps, total: self.total)
-					.fill(Color.red)
+					.fill(Color.republican)
 			}
-			.frame(width: geometry.size.width * 0.9, height: geometry.size.width / 2)
+			.frame(width: geometry.size.width, height: geometry.size.width / 2)
 		}
 
 	}
@@ -69,8 +78,8 @@ struct GraphWedge: Shape {
 	
 }
 
-struct ElectionGraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        ElectionGraphView(dems: 135, inds: 2, reps: 110, total: 435)
-    }
-}
+//struct ElectionGraphView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ElectionGraphView(dems: 135, inds: 2, reps: 110, total: 435)
+//    }
+//}
