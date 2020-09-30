@@ -153,7 +153,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
 	
 	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-		debugPrint("FCM Token: \(fcmToken)")
+//		debugPrint("FCM Token: \(fcmToken)")
 		Messaging.messaging().subscribe(toTopic: "all")
 	}
 	

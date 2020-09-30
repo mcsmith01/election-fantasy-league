@@ -153,6 +153,9 @@ class ElectionModel: NSObject, ObservableObject {
 		clearElectionData()
 		self.election = election
 
+		// Subscribe to election messages
+		Messaging.messaging().subscribe(toTopic: election.id)
+		
 		// Load Races
 		racesRef.observeSingleEvent(of: .value) { (snapshot) in
 			for snap in snapshot.children {
@@ -263,11 +266,13 @@ class ElectionModel: NSObject, ObservableObject {
 	// TODO: Rename, because will stop listening if removed (intentionally)
 	func listenToLeague(_ league: League) {
 		if !observedLeagues.contains(league.id) && league.status == .member {
+			// I am a mmeber but not observing the league
+			// Subscribe to messags for this league
 			Messaging.messaging().subscribe(toTopic: league.id)
 			if league.ownerID == UserData.userID {
+				// TODO: Just send messages to owner instead of subscribing?w3
 				Messaging.messaging().subscribe(toTopic: "\(league.id)-owner")
 			}
-			// I am a mmeber but not observing the league
 			leagueDataRef.child(league.id).child("members").observe(.value) { (snapshot) in
 				// Members added or removed
 				if let data = snapshot.value as? [String: [String: Any]] {

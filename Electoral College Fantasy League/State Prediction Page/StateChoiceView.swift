@@ -50,7 +50,7 @@ struct StateChoiceView: View {
 								.resizable()
 								.frame(width: geometry.size.width / 12, height:  geometry.size.width / 12)
 								.aspectRatio(contentMode: .fit)
-								.foregroundColor(.blue)
+								.foregroundColor(.democrat)
 								.padding(.leading)
 								.onTapGesture {
 									model.changeRaceTo(model.getPrevRace())
@@ -60,9 +60,6 @@ struct StateChoiceView: View {
 								.padding(.top, 5)
 						}
 						.padding()
-//						ChevronView(direction: .left, text: model.getPrevRace().state)
-//							.frame(width: geometry.size.width / 12)
-//							.padding()
 						Spacer()
 						VStack {
 							ZStack {
@@ -81,6 +78,7 @@ struct StateChoiceView: View {
 										.clipShape(Triangle())
 								}
 							}
+							.animation(.none)
 							Spacer()
 							HStack {
 								Spacer()
@@ -97,7 +95,7 @@ struct StateChoiceView: View {
 								.resizable()
 								.frame(width: geometry.size.width / 12, height:  geometry.size.width / 12)
 								.aspectRatio(contentMode: .fit)
-								.foregroundColor(.blue)
+								.foregroundColor(.democrat)
 								.padding(.trailing)
 								.onTapGesture {
 									model.changeRaceTo(model.getNextRace())
