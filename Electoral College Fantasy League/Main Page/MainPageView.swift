@@ -17,6 +17,7 @@ struct MainPageView: View {
 	@State var showVisual = true
 	@State var showMap = true
 	@State var showSettings = false
+	@State var showRules = false
 	@State var viewIndex = 0
 	var viewArray: [AnyView] {
 		return [AnyView(ElectionMapView().padding(.bottom)), AnyView(ElectionGraphView(model: electionModel.numbersModel).padding())]
@@ -77,6 +78,14 @@ struct MainPageView: View {
 			.navigationBarTitle(electionModel.name)
 			.navigationBarItems(trailing:
 				HStack {
+					Button(
+						action: { self.showRules = true },
+						label: {
+							Image(systemName: "questionmark.circle")
+					})
+						.sheet(isPresented: $showRules) {
+							ScoringRulesView()
+					}
 					Button(
 						action: { self.showSettings = true },
 						label: {

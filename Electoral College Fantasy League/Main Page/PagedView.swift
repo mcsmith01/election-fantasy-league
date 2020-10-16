@@ -29,15 +29,15 @@ struct PagedView<Content: View>: View {
 			.content.offset(x: isGestureActive ? self.offset : -geometry.size.width * CGFloat(index))
 			.frame(width: geometry.size.width, alignment: .leading)
 			.gesture(DragGesture().onChanged({ value in
+				// TODO: Remove external views until drag begins
+				// TODO: Make the views wrap
 				isGestureActive = true
 				offset = value.translation.width + -geometry.size.width * CGFloat(index)
 			}).onEnded({ value in
-				debugPrint("Drag Ended")
-				// TODO: Make the views wrap?
 				if -value.predictedEndTranslation.height > geometry.size.height / 2 {
 					showView = false
 				}
-				if -value.predictedEndTranslation.width > geometry.size.width / 3{
+				if -value.predictedEndTranslation.width > geometry.size.width / 3 {
 					index = min(index + 1, pages.count - 1)
 				}
 				if value.predictedEndTranslation.width > geometry.size.width / 3 {

@@ -18,7 +18,9 @@ struct StateChoiceListView: View {
 				.onTapGesture {
 					self.selectedRace = race
 			}
+				.listRowBackground(Color.blue)
 		}
+		.listRowBackground(Color.blue)
 	}
 	
 }

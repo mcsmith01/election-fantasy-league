@@ -295,6 +295,33 @@
 			path = "Tutorial Pages";
 			sourceTree = "<group>";
 		};
+		8FC4DE0D252B51B400538322 /* Old Files */ = {
+			isa = PBXGroup;
+			children = (
+				8F7CE9E81DB3A77700C62ACE /* SplashPageViewController.swift */,
+				8F7CE9EA1DB3A9C800C62ACE /* LogInViewController.swift */,
+				8F3CD38C2042447700580A0E /* DataLoadingViewController.swift */,
+				8F7CE9E61DB2EBCF00C62ACE /* MainViewController.swift */,
+				8FA62DAC1DD780DF005AF9BB /* ElectionPageViewController.swift */,
+				8FA62DAA1DD74990005AF9BB /* ElectoralMapViewController.swift */,
+				8F77393E214FE1CC00F813E9 /* ElectionsViewController.swift */,
+				8F7739402150FB6200F813E9 /* ElectionRepresentation.swift */,
+				8FEF4BC2214ABC8B00447888 /* ElectoralGraphViewController.swift */,
+				8FA62DA61DD64773005AF9BB /* TabbedTableViewController.swift */,
+				8F7CE9FB1DB550BD00C62ACE /* LeagueChoiceViewController.swift */,
+				8F34B6032177FECE0049ADFC /* LeagueCreationViewController.swift */,
+				8F7CE9F91DB42A5000C62ACE /* LeagueViewController.swift */,
+				8FC708B01DAEF9480034B334 /* StateTableViewController.swift */,
+				8FEADC8A1DAF078E00FCDA3F /* StateChoiceViewConroller.swift */,
+				8FC256061DCB998A00D50078 /* SettingsViewController.swift */,
+				8F7CE9F61DB3E1FF00C62ACE /* KeychainAccess.swift */,
+				8FFE34631DC6AA4E00669138 /* LeagueCell.swift */,
+				8F7CE9EE1DB3B17200C62ACE /* ElectoralMapView.swift */,
+				8F7CE9EC1DB3B10B00C62ACE /* ElectoralMapView.xib */,
+			);
+			path = "Old Files";
+			sourceTree = "<group>";
+		};
 		8FC708A21DAEF9480034B334 = {
 			isa = PBXGroup;
 			children = (
@@ -333,26 +360,7 @@
 				8F1D26FE239A923A0035E5EA /* State Prediction Page */,
 				8F1D26FF239A92590035E5EA /* League Page */,
 				8F1D2700239A92960035E5EA /* Accessories */,
-				8F7CE9E81DB3A77700C62ACE /* SplashPageViewController.swift */,
-				8F7CE9EA1DB3A9C800C62ACE /* LogInViewController.swift */,
-				8F3CD38C2042447700580A0E /* DataLoadingViewController.swift */,
-				8F7CE9E61DB2EBCF00C62ACE /* MainViewController.swift */,
-				8FA62DAC1DD780DF005AF9BB /* ElectionPageViewController.swift */,
-				8FA62DAA1DD74990005AF9BB /* ElectoralMapViewController.swift */,
-				8F77393E214FE1CC00F813E9 /* ElectionsViewController.swift */,
-				8F7739402150FB6200F813E9 /* ElectionRepresentation.swift */,
-				8FEF4BC2214ABC8B00447888 /* ElectoralGraphViewController.swift */,
-				8FA62DA61DD64773005AF9BB /* TabbedTableViewController.swift */,
-				8F7CE9FB1DB550BD00C62ACE /* LeagueChoiceViewController.swift */,
-				8F34B6032177FECE0049ADFC /* LeagueCreationViewController.swift */,
-				8F7CE9F91DB42A5000C62ACE /* LeagueViewController.swift */,
-				8FC708B01DAEF9480034B334 /* StateTableViewController.swift */,
-				8FEADC8A1DAF078E00FCDA3F /* StateChoiceViewConroller.swift */,
-				8FC256061DCB998A00D50078 /* SettingsViewController.swift */,
-				8F7CE9F61DB3E1FF00C62ACE /* KeychainAccess.swift */,
-				8FFE34631DC6AA4E00669138 /* LeagueCell.swift */,
-				8F7CE9EE1DB3B17200C62ACE /* ElectoralMapView.swift */,
-				8F7CE9EC1DB3B10B00C62ACE /* ElectoralMapView.xib */,
+				8FC4DE0D252B51B400538322 /* Old Files */,
 				8FC708B81DAEF9480034B334 /* Assets.xcassets */,
 				8FC708BA1DAEF9480034B334 /* LaunchScreen.storyboard */,
 				8FDE67DE231F21DA00B25C67 /* president.xml */,
@@ -761,7 +769,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Electoral College Fantasy League/Electoral College Fantasy League.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -785,7 +793,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Electoral College Fantasy League/Electoral College Fantasy League.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = D7TRX2T2ZU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

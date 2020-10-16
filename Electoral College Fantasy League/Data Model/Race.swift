@@ -27,6 +27,7 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	var incumbency: [String: Int]?
 	var splits: Bool
 	var state: String
+	var abbreviation: String
 	var type: RaceType
 	var candidates: [String: String]?
 	var safety: [String: Int]?
@@ -45,11 +46,12 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	}
 
 	init?(id: String, data: [String: Any], election: Election) {
-		guard let rawType = data["type"] as? Int, let type = RaceType(rawValue: rawType), let state = data["state"] as? String else { return nil }
+		guard let rawType = data["type"] as? Int, let type = RaceType(rawValue: rawType), let state = data["state"] as? String, let abbreviation = data["abbreviation"] as? String else { debugPrint("Bad state \n\(data)"); return nil }
 		self.election = election
 		self.id = id
 		self.state = state
 		self.type = type
+		self.abbreviation = abbreviation
 		if let incumbency = data["incumbency"] as? [String: Int] {
 			self.incumbency = incumbency
 		}

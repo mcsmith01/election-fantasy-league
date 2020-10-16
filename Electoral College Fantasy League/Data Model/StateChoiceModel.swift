@@ -37,7 +37,7 @@ class StateChoiceModel: ObservableObject {
 				showWarning = true
 			} else {
 				withAnimation {
-				updateRace()
+					updateRace()
 				}
 			}
 		}
