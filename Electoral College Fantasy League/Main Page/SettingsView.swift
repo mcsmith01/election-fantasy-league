@@ -15,7 +15,6 @@ struct SettingsView: View {
 	@State var changeElectionAlert = false
 
 	var body: some View {
-		// TODO: Add 'Switch Election' option
 		VStack {
 			HStack {
 				Button("Dismiss") {
@@ -48,10 +47,12 @@ struct SettingsView: View {
 				.actionSheet(isPresented: $changeElectionAlert) { () -> ActionSheet in
 					var electionButtons = [ActionSheet.Button]()
 					for election in electionModel.elections {
+						if !election.locked {
 						let button = ActionSheet.Button.default(Text(election.name)) {
 							electionModel.loadElection(election)
 						}
 						electionButtons.append(button)
+						}
 					}
 					electionButtons.append(ActionSheet.Button.cancel())
 					return ActionSheet(title: Text("Which election would you like to load?"), message: nil, buttons: electionButtons)

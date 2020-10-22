@@ -23,6 +23,7 @@ class Election: NSObject, Comparable {
 	let date: Date
 	var raceTypes = Set<RaceType>()
 	var races = [Race]()
+	var locked: Bool
 	
 	init?(id: String, data: [String: Any]) {
 		guard let name = data["name"] as? String, let dateString = data["date"] as? String, let date = Objects.dateFormatter.date(from: dateString) else {
@@ -31,6 +32,7 @@ class Election: NSObject, Comparable {
 		self.id = id
 		self.name = name
 		self.date = date
+		self.locked = data["locked"] as? Bool ?? false
 	}
 	
 	func racesOfType(_ type: RaceType, activeOnly: Bool = true) -> [Race] {
