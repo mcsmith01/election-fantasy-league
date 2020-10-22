@@ -18,6 +18,7 @@ struct ScoresView: View {
 				ForEach(electionModel.election.raceTypes.sorted()) { type in
 					Section(header: HStack {
 						Text("\(String(describing: type).capitalized) - \(String(format: "%.2f", self.scoreForType(type)))")
+						Image(systemName: collapsed.contains(type) ? "chevron.right" : "chevron.down")
 					}
 					.onTapGesture {
 //						withAnimation {
