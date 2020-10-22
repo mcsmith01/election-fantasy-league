@@ -116,6 +116,7 @@ struct VerticalSliderView: View {
 //	}
 //}
 
+// TODO: Show how score is calculated
 struct MultipleCandidateResultsView: View {
 	var race: Race
 	var prediction: [String: Int] {

@@ -14,7 +14,7 @@ struct StateChoiceListView: View {
 	
 	var body: some View {
 		List(electionModel.election.racesOfType(electionModel.raceType).sorted(), id: \.id) { race in
-			StateRow(race: race, showResults: self.electionModel.showResults)
+			StateRow(race: race, showResults: self.electionModel.showResults, predictionsLocked: self.electionModel.predictionsLocked)
 				.onTapGesture {
 					self.selectedRace = race
 			}
@@ -34,6 +34,7 @@ struct StateChoiceListView: View {
 struct StateRow: View {
 	@ObservedObject var race: Race
 	var showResults: Bool
+	var predictionsLocked: Bool
 	
 	var color: Color {
 		if showResults {
@@ -77,7 +78,14 @@ struct StateRow: View {
 			HStack {
 				Text("\(race.state)\(race.type == .president || race.type == .house ? " (\(race.seats))" : "")")
 				Spacer()
-				Image(systemName: "chevron.right")
+//				Image(systemName: "chevron.right")
+				if !predictionsLocked {
+					Image(systemName: "square.and.pencil")
+				} else if race.results != nil {
+					Image(systemName: "magnifyingglass.circle.fill")
+				} else {
+					Image(systemName: "lock.fill")
+				}
 			}
 			.foregroundColor(color == .primary ? Color.primary : .white)
 			.padding()

@@ -52,6 +52,7 @@ struct SingleCandidateChoiceView: View {
 	
 }
 
+// TODO: Show how score is calculated
 struct SingleCandidateResultsView: View {
 	var race: Race
 	var prediction: String {

@@ -143,7 +143,13 @@ class ElectionModel: NSObject, ObservableObject {
 				self.election = self.elections.first
 				UserData.data[Constants.currentElection] = self.election.id
 			}
-			// TODO: Ask if want a change if most recent is not current
+			// FIXIT: Ask if want a change if most recent is not current, currently always makes most recent the current
+			// FIXIT: Maybe don't change except in settings screen; easier for UI
+			if let first = self.elections.first, self.election != first {
+				self.election = first
+				UserData.data[Constants.currentElection] = self.election.id
+				debugPrint("I don't have the most recent election")
+			}
 			self.loadElection(self.election)
 		}
 	}
@@ -181,7 +187,8 @@ class ElectionModel: NSObject, ObservableObject {
 						}
 					}
 					self.listenToElection(election)
-					self.raceType = election.raceTypes.sorted().first!
+					debugPrint(election.raceTypes)
+					self.raceType = election.raceTypes.sorted().first ?? .president
 					self.state = .logInComplete
 					self.status = nil
 				}

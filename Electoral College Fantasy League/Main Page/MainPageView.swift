@@ -22,10 +22,17 @@ struct MainPageView: View {
 	var viewArray: [AnyView] {
 		return [AnyView(ElectionMapView().padding(.bottom)), AnyView(ElectionGraphView(model: electionModel.numbersModel).padding())]
 	}
+	var electionDateFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "EEEE, MMMM dd, yyyy"
+		return formatter
+	}()
 	
 	var body: some View {
-		NavigationView{
+		NavigationView {
 			VStack {
+				Text(electionDateFormatter.string(from: electionModel.election.date))
+					.font(.subheadline)
 				Picker(selection: $electionModel.raceType, label: EmptyView()) {
 					ForEach(electionModel.election.raceTypes.sorted(), id: \.self) { raceType in
 						Text(String(describing: raceType).capitalized)
@@ -66,7 +73,7 @@ struct MainPageView: View {
 							Text(self.electionModel.lists[index])
 						}
 					}
-//					.disabled(!electionModel.predictionsLocked)
+					.disabled(!electionModel.predictionsLocked)
 					.pickerStyle(SegmentedPickerStyle())
 					.padding(.horizontal)) {
 						StateChoiceListView(selectedRace: $selectedRace)
@@ -75,7 +82,8 @@ struct MainPageView: View {
 			.sheet(item: $selectedRace) { (selected) in
 				StateChoiceView(race: selected, isClosed: self.electionModel.predictionsLocked)
 			}
-			.navigationBarTitle(electionModel.name)
+			.navigationBarTitle("\(electionModel.name)")
+//			.navigationBarTitle("\(electionModel.name)", displayMode: showVisual ? .automatic : .inline)
 			.navigationBarItems(trailing:
 				HStack {
 					Button(

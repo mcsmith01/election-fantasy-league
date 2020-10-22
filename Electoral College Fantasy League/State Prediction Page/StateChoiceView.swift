@@ -11,6 +11,7 @@ import SwiftUI
 struct StateChoiceView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@ObservedObject var model: StateChoiceModel
+	var canChangeRace: Bool
 	@State var alertMessage: AlertMessage?
 
 	var body: some View {
@@ -39,12 +40,13 @@ struct StateChoiceView: View {
 						.padding(.horizontal)
 						.background(!self.model.updated ? Color.gray : Color.democrat)
 						.clipShape(Capsule())
-						.disabled(!self.model.updated)
+						.disabled(!self.model.updated || self.model.isClosed)
 					}
 					.padding()
 					Text("\(self.model.race.state)\(self.model.race.type == .president || self.model.race.type == .house ? " (\(self.model.race.seats))" : "")")
 						.font(.title)
 					HStack {
+						if canChangeRace {
 						VStack(alignment: .center) {
 							Image(systemName: "chevron.left.circle.fill")
 								.resizable()
@@ -60,6 +62,7 @@ struct StateChoiceView: View {
 								.animation(.none)
 						}
 						.padding()
+						}
 						Spacer()
 						VStack {
 							ZStack {
@@ -81,6 +84,7 @@ struct StateChoiceView: View {
 							.animation(.none)
 						}
 						Spacer()
+						if canChangeRace {
 						VStack(alignment: .center) {
 							Image(systemName: "chevron.right.circle.fill")
 								.resizable()
@@ -96,7 +100,9 @@ struct StateChoiceView: View {
 								.animation(.none)
 						}
 						.padding()
+						}
 					}
+					// FIXIT: Incumbency checkbox inactive for results
 					HStack {
 						Spacer()
 						Text("Incumbency")
@@ -118,6 +124,7 @@ struct StateChoiceView: View {
 							.animation(.easeInOut)
 					}
 					Spacer()
+					if canChangeRace {
 					Picker(selection: self.$model.raceID, label: EmptyView()) {
 						ForEach(self.model.allRaces) { race in
 							Text(String(describing: race.type).capitalized)
@@ -125,6 +132,13 @@ struct StateChoiceView: View {
 					}
 					.pickerStyle(SegmentedPickerStyle())
 					.padding([.horizontal, .bottom])
+					} else {
+						Picker(selection: self.$model.raceID, label: EmptyView()) {
+							Text(String(describing: self.model.race.type).capitalized)
+						}
+						.pickerStyle(SegmentedPickerStyle())
+						.padding([.horizontal, .bottom])
+					}
 				}
 				.blur(radius: self.model.saving ? 3 : 0)
 				.disabled(self.model.saving)
@@ -150,11 +164,13 @@ struct StateChoiceView: View {
 						.transition(.scale)
 				}
 			}
+			.navigationBarTitle("\(self.model.race.state) \(String(describing: self.model.race.type).capitalized)", displayMode: .inline)
 		}
 	}
 	
-	init(race: Race, isClosed: Bool) {
+	init(race: Race, isClosed: Bool, canChange: Bool = true) {
 		self.model = StateChoiceModel(race: race, isClosed: isClosed)
+		canChangeRace = canChange
 	}
 	
 }

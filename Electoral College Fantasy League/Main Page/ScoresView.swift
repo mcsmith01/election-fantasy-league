@@ -10,22 +10,40 @@ import SwiftUI
 
 struct ScoresView: View {
 	@EnvironmentObject var electionModel: ElectionModel
+	@State var collapsed = Set<RaceType>()
 	
     var body: some View {
 		NavigationView {
 			List {
 				ForEach(electionModel.election.raceTypes.sorted()) { type in
-					Section(header: Text("\(String(describing: type).capitalized) - \(String(format: "%.2f", self.scoreForType(type)))")) {
-						ForEach(self.racesForType(type)) { race in
-							HStack {
-								Text(race.state)
-								Spacer()
-								Text("\(String(format: "%.2f", race.prediction?.score ?? 0.0))")
-							}
-							.padding()
-							.background(Color.forScore(race.prediction?.score ?? 0.0))
-							.modifier(RectangleBorder())
+					Section(header: HStack {
+						Text("\(String(describing: type).capitalized) - \(String(format: "%.2f", self.scoreForType(type)))")
+					}
+					.onTapGesture {
+//						withAnimation {
+						// TODO: Animate without cells overlapping title
+						if collapsed.contains(type) {
+							collapsed.remove(type)
+						} else {
+							collapsed.insert(type)
 						}
+//						}
+					}) {
+						if !collapsed.contains(type) {
+							ForEach(self.racesForType(type)) { race in
+								NavigationLink(destination: StateChoiceView(race: race, isClosed: true, canChange: false)) {
+									HStack {
+										Text(race.state)
+										Spacer()
+										Text("\(String(format: "%.2f", race.prediction?.score ?? 0.0))")
+									}
+									.padding()
+									.background(Color.forScore(race.prediction?.score ?? 0.0))
+									.modifier(RectangleBorder())
+								}
+							}
+						}
+						
 					}
 				}
 			}

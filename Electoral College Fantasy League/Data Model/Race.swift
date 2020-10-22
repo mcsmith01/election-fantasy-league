@@ -31,7 +31,7 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	var type: RaceType
 	var candidates: [String: String]?
 	var safety: [String: Int]?
-	var results: [String: Int]?
+	@Published var results: [String: Int]?
 	@Published var prediction: Prediction?
 	var seats: Int {
 		get {
@@ -73,9 +73,10 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 	}
 	
 	func updateRace(withData data: [String: Any]) {
+		let newResults = results == nil
 		if let results = data["results"] as? [String: Int] {
 			self.results = results
-			presentResultsNotification(fromResults: results)
+			presentResultsNotification(fromResults: results, areNew: newResults)
 		} else {
 			self.results = nil
 		}
@@ -85,11 +86,11 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 		return election.racesForState(self.state, activeOnly: activeOnly)
 	}
 	
-	func presentResultsNotification(fromResults results: [String: Int]) {
+	func presentResultsNotification(fromResults results: [String: Int], areNew: Bool) {
 		let center = UNUserNotificationCenter.current()
 		let raceActions = "Race Called Actions"
 		let content = UNMutableNotificationContent()
-		content.title = "Results are in for the \(state) \(type.adjective) race!"
+		content.title = "Results \(areNew ? "are in" : "have been updated") for the \(state) \(type.adjective) race!"
 		if type == .house {
 			let d = results["d"] ?? 0
 			let i = results["i"] ?? 0
@@ -100,10 +101,10 @@ class Race: NSObject, Identifiable, Comparable, ObservableObject {
 				resultStrings.append("\(d) Democrat\(d > 1 ? "s":"")")
 			}
 			if i > 0 {
-				resultStrings.append("\(i) Democrat\(i > 1 ? "s":"")")
+				resultStrings.append("\(i) Independent\(i > 1 ? "s":"")")
 			}
 			if r > 0 {
-				resultStrings.append("\(r) Democrat\(r > 1 ? "s":"")")
+				resultStrings.append("\(r) Republican\(r > 1 ? "s":"")")
 			}
 			var body = "The congressional delegation will be "
 			switch resultStrings.count {
