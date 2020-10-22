@@ -12,7 +12,7 @@ struct SettingsView: View {
 	@EnvironmentObject var electionModel: ElectionModel
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@State var logoutAlert = false
-	@State var showRules = false
+	@State var changeElectionAlert = false
 
 	var body: some View {
 		// TODO: Add 'Switch Election' option
@@ -38,6 +38,28 @@ struct SettingsView: View {
 				.padding()
 				Spacer()
 			}
+			.modifier(RectangleBorder())
+			.padding()
+			VStack {
+				Text("Current Election: \(electionModel.election.name)")
+				Button("Change Election") {
+					self.changeElectionAlert = true
+				}
+				.actionSheet(isPresented: $changeElectionAlert) { () -> ActionSheet in
+					var electionButtons = [ActionSheet.Button]()
+					for election in electionModel.elections {
+						let button = ActionSheet.Button.default(Text(election.name)) {
+							electionModel.loadElection(election)
+						}
+						electionButtons.append(button)
+					}
+					electionButtons.append(ActionSheet.Button.cancel())
+					return ActionSheet(title: Text("Which election would you like to load?"), message: nil, buttons: electionButtons)
+				}
+			}
+			.padding()
+			.modifier(RectangleBorder())
+			.padding()
 			Spacer()
 			Button("Log Out") {
 				self.logoutAlert = true

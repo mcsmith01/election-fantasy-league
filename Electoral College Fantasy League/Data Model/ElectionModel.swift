@@ -133,28 +133,24 @@ class ElectionModel: NSObject, ObservableObject {
 			for snap in snapshot.children {
 				if let child = snap as? DataSnapshot, let data = child.value as? [String: Any], let election = Election(id: child.key, data: data) {
 					self.elections.append(election)
-					if let id = UserData.data[Constants.currentElection] as? String, election.id == id {
-						self.election = election
-					}
 				}
 			}
 			self.elections.sort()
-			if self.election == nil {
-				self.election = self.elections.first
-				UserData.data[Constants.currentElection] = self.election.id
+			if let id = UserData.data[Constants.currentElection] as? String, let election = self.elections.first(where: {$0.id == id}) {
+				self.loadElection(election)
+			} else if let first = self.elections.first {
+				self.loadElection(first)
+			} else {
+				// TODO: Fatal error, no elections in database
+				self.status = "Could not load any elections, please try later"
 			}
-			// FIXIT: Ask if want a change if most recent is not current, currently always makes most recent the current
-			// FIXIT: Maybe don't change except in settings screen; easier for UI
-			if let first = self.elections.first, self.election != first {
-				self.election = first
-				UserData.data[Constants.currentElection] = self.election.id
-				debugPrint("I don't have the most recent election")
-			}
-			self.loadElection(self.election)
 		}
 	}
 	
 	func loadElection(_ election: Election) {
+		self.election = election
+		UserData.data[Constants.currentElection] = election.id
+
 		status = "Loading Race Data..."
 		clearElectionData()
 		self.election = election
